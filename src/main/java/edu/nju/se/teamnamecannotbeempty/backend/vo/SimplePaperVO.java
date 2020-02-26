@@ -5,9 +5,9 @@ import java.util.List;
 public class SimplePaperVO {
     private String title;
 
-    private String author;
+    private List<String> author;
 
-    private String affiliation;
+    private List<String> affiliation;
 
     private String publicationTitle;
 
@@ -21,19 +21,19 @@ public class SimplePaperVO {
         this.title = title;
     }
 
-    public String getAuthor() {
+    public List<String> getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(List<String> author) {
         this.author = author;
     }
 
-    public String getAffiliation() {
+    public List<String> getAffiliation() {
         return affiliation;
     }
 
-    public void setAffiliation(String affiliation) {
+    public void setAffiliation(List<String> affiliation) {
         this.affiliation = affiliation;
     }
 

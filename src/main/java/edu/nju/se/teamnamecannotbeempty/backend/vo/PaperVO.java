@@ -4,13 +4,13 @@ import java.util.Date;
 import java.util.List;
 
 public class PaperVO {
-    private int id;
+    private long id;
 
     private String title;
 
-    private String author;
+    private List<String> author;
 
-    private String affiliation; // 机构
+    private List<String> affiliation; // 机构
 
     private String publicationTitle; // 会议
 
@@ -42,11 +42,11 @@ public class PaperVO {
 
     private String identifier;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -58,19 +58,19 @@ public class PaperVO {
         this.title = title;
     }
 
-    public String getAuthor() {
+    public List<String> getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(List<String> author) {
         this.author = author;
     }
 
-    public String getAffiliation() {
+    public List<String> getAffiliation() {
         return affiliation;
     }
 
-    public void setAffiliation(String affiliation) {
+    public void setAffiliation(List<String> affiliation) {
         this.affiliation = affiliation;
     }
 
