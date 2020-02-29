@@ -1,5 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.po;
 
+import org.hibernate.search.annotations.Field;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,14 +12,9 @@ import javax.persistence.Table;
 public class Author {
     @Id
     private Long id;
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-    @Column(name = "middle_name")
-    // 中名
-    private String middleName;
-    @Column(name = "last_name", nullable = false)
-    // 姓氏
-    private String lastName;
+    @Column(name = "au_name", nullable = false)
+    @Field
+    private String name;
 
     public Author() {
     }
@@ -26,9 +23,7 @@ public class Author {
     public String toString() {
         return "Author{" +
                 "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", lastName='" + lastName + '\'' +
+                ", name='" + name + '\'' +
                 '}';
     }
 
@@ -40,27 +35,12 @@ public class Author {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setName(String firstName) {
+        this.name = firstName;
     }
 
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
 }

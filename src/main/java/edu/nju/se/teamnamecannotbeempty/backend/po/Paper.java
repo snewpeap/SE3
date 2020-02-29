@@ -1,5 +1,8 @@
 package edu.nju.se.teamnamecannotbeempty.backend.po;
 
+import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Index;
+
 import javax.persistence.*;
 import java.net.URL;
 import java.util.ArrayList;
@@ -9,8 +12,10 @@ import java.util.List;
 @Embeddable
 class Author_Affiliation {
     @ManyToOne
+    @IndexedEmbedded(depth = 1)
     private Author author;
     @ManyToOne
+    @IndexedEmbedded(depth = 1)
     private Affiliation affiliation;
 
     public Author_Affiliation() {
@@ -35,18 +40,22 @@ class Author_Affiliation {
 
 @Entity
 @Table(name = "papers")
+@Indexed
 public class Paper {
     @Id
     // 论文的id
     private Long id;
     @Column(nullable = false)
+    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
     // 论文的标题
     private String title;
     @ElementCollection
+    @IndexedEmbedded
     // 发表论文的每个作者-机构构成的对象的列表
     private List<Author_Affiliation> aa = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "conference_id", foreignKey = @ForeignKey(name = "FK_PAPER_CONFERENCE"))
+    @IndexedEmbedded
     // 会议对象。对应数据中的出版物
     private Conference conference;
     @Temporal(TemporalType.DATE)
@@ -72,6 +81,7 @@ public class Paper {
     // pdf原文链接
     private URL pdf_link;
     @ManyToMany
+    @IndexedEmbedded
     // 作者给出的关键字
     private List<Term> author_keywords = new ArrayList<>();
     @ManyToMany
@@ -114,6 +124,26 @@ public class Paper {
                 ", aa=" + aa +
                 ", conference=" + conference +
                 '}';
+    }
+
+    public static String getFieldName_searchByTitle() {
+        return "title";
+    }
+
+    public static String getFieldName_searchByAuthor() {
+        return "aa.author.name";
+    }
+
+    public static String getFieldName_searchByAffiliation() {
+        return "aa.affiliation.name";
+    }
+
+    public static String getFieldName_searchByConference() {
+        return "conference.name";
+    }
+
+    public static String getFieldName_searchByAuthorKeywords() {
+        return "author_keywords.content";
     }
 
     public Long getId() {

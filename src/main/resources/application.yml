@@ -4,3 +4,14 @@ spring:
       enabled: true
   jpa:
     open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+        show_sql: true
+        format_sql: true
+        search:
+          default:
+            directory_provider: "local-heap"
+    hibernate:
+      ddl-auto: update

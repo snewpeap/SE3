@@ -54,6 +54,19 @@
             <artifactId>hibernate-core</artifactId>
             <version>5.4.12.Final</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-search-orm</artifactId>
+            <version>5.11.5.Final</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>hibernate-core</artifactId>
+                    <groupId>org.hibernate</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

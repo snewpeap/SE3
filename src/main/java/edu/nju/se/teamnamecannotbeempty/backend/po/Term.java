@@ -1,5 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.po;
 
+import org.hibernate.search.annotations.Field;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,6 +13,7 @@ public class Term {
     @Id
     private Long id;
     @Column(nullable = false)
+    @Field
     private String content;
 
     public Term() {
