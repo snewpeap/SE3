@@ -16,17 +16,19 @@ public interface SearchService {
      * @param keywords 关键词列表
      * @param mode 搜索模式，皆为Bean，请用Bean的方式来获取
      * @param pageable 分页模式，请自行了解
+     * @param sortMode 排序模式，也皆为Bean
      * @return 对应的搜索结果页
      */
-    Page<Paper> search(List<String> keywords, SearchMode mode, Pageable pageable);
+    Page<Paper> search(List<String> keywords, SearchMode mode, Pageable pageable, SortMode sortMode);
 
     /**
      * 用搜索关键词串（可以是用户的原始输入）、搜索模式和分页模式来搜索
      * @param keywords 关键词字符串
      * @param mode 搜索模式，皆为Bean，请用Bean的方式来获取
      * @param pageable 分页模式，请自行了解
+     * @param sortMode 排序模式，也皆为Bean
      * @return 对应的搜索结果页
      */
-    Page<Paper> search(String keywords, SearchMode mode, Pageable pageable);
+    Page<Paper> search(String keywords, SearchMode mode, Pageable pageable, SortMode sortMode);
 }
 

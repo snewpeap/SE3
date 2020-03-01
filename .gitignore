@@ -60,3 +60,5 @@ Temporary Items
 
 sql/**
 !sql/.gitkeep
+
+/config/

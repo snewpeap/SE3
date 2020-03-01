@@ -1,8 +1,12 @@
 package edu.nju.se.teamnamecannotbeempty.backend.po;
 
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.NumericField;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "conferences")
@@ -13,6 +17,8 @@ public class Conference {
     @Field
     private String name;
     @Column(name = "hold_year")
+    @Field
+    @NumericField
     private Integer year;
     // 届数
     private Integer ordno;
