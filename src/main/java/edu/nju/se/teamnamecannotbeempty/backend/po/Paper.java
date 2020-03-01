@@ -1,7 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.po;
 
-import org.hibernate.search.annotations.*;
 import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.*;
 
 import javax.persistence.*;
 import java.net.URL;
@@ -46,7 +46,11 @@ public class Paper {
     // 论文的id
     private Long id;
     @Column(nullable = false)
-    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
+    @Fields({
+            @Field(name = "title", index = Index.YES, analyze = Analyze.YES, store = Store.NO),
+            @Field(name = "sortTitle", index = Index.NO, analyze = Analyze.NO, store = Store.NO)
+    })
+    @SortableField(forField = "sortField")
     // 论文的标题
     private String title;
     @ElementCollection

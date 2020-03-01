@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -27,4 +28,12 @@ public interface PaperDao extends CrudRepository<Paper, Long> {
      * @后置条件 按照pageable所指定的条件返回所需结果页
      */
     Page<Paper> findAll(Pageable pageable);
+
+    /**
+     * 查找在给定会议年份（也即发表年份）区间内的论文
+     * @param from 开始年份
+     * @param to 截止年份
+     * @return 符合条件的论文列表
+     */
+    List<Paper> findAllByConference_YearBetween(Integer from, Integer to);
 }

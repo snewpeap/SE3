@@ -2,6 +2,7 @@ package edu.nju.se.teamnamecannotbeempty.backend.po;
 
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.NumericField;
+import org.hibernate.search.annotations.SortableField;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,6 +20,7 @@ public class Conference {
     @Column(name = "hold_year")
     @Field
     @NumericField
+    @SortableField
     private Integer year;
     // 届数
     private Integer ordno;
