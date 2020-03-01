@@ -7,7 +7,7 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL5Dialect
+        dialect: org.hibernate.dialect.MySQL57Dialect
         show_sql: true
         format_sql: true
         search:
@@ -22,4 +22,4 @@ global-msg:
   internal-error: "内部错误"
 
 paper-msg:
- mismatch-id: "找不到ID所对应的论文"
+  mismatch-id: "找不到ID所对应的论文"

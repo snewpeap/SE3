@@ -2,15 +2,13 @@ package edu.nju.se.teamnamecannotbeempty.backend.po;
 
 import org.hibernate.search.annotations.Field;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "authors")
 public class Author {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "au_name", nullable = false)
     @Field

@@ -4,15 +4,13 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.NumericField;
 import org.hibernate.search.annotations.SortableField;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "conferences")
 public class Conference {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "c_name")
     @Field
@@ -66,7 +64,7 @@ public class Conference {
         return ordno;
     }
 
-    public void setOrdno(Integer order) {
-        this.ordno = order;
+    public void setOrdno(Integer ordno) {
+        this.ordno = ordno;
     }
 }

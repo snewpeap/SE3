@@ -14,6 +14,7 @@ import java.util.List;
 @Indexed
 public class Paper {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     // 论文的id
     private Long id;
     @Column(nullable = false)
