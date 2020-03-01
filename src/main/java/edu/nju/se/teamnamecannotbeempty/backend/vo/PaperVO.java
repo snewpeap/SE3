@@ -8,9 +8,8 @@ public class PaperVO {
 
     private String title;
 
-    private List<String> author;
+    private List<Author_AffiliationVO> author_affiliationVOS;
 
-    private List<String> affiliation; // 机构
 
     private String publicationTitle; // 会议
 
@@ -42,6 +41,27 @@ public class PaperVO {
 
     private String identifier;
 
+    public PaperVO(long id, String title, List<Author_AffiliationVO> author_affiliationVOS, String publicationTitle, int publicationYear, int startPage, int endPage, String summary, String DOI, String PDFLink, List<String> authorKeywords, List<String> IEEETerms, List<String> controlledTerms, List<String> nonControlledTerms, int citationCount, int referenceCount, String publisher, String identifier) {
+        this.id = id;
+        this.title = title;
+        this.author_affiliationVOS = author_affiliationVOS;
+        this.publicationTitle = publicationTitle;
+        this.publicationYear = publicationYear;
+        this.startPage = startPage;
+        this.endPage = endPage;
+        this.summary = summary;
+        this.DOI = DOI;
+        this.PDFLink = PDFLink;
+        this.authorKeywords = authorKeywords;
+        this.IEEETerms = IEEETerms;
+        this.controlledTerms = controlledTerms;
+        this.nonControlledTerms = nonControlledTerms;
+        this.citationCount = citationCount;
+        this.referenceCount = referenceCount;
+        this.publisher = publisher;
+        this.identifier = identifier;
+    }
+
     public long getId() {
         return id;
     }
@@ -58,20 +78,12 @@ public class PaperVO {
         this.title = title;
     }
 
-    public List<String> getAuthor() {
-        return author;
+    public List<Author_AffiliationVO> getAuthor_affiliationVOS() {
+        return author_affiliationVOS;
     }
 
-    public void setAuthor(List<String> author) {
-        this.author = author;
-    }
-
-    public List<String> getAffiliation() {
-        return affiliation;
-    }
-
-    public void setAffiliation(List<String> affiliation) {
-        this.affiliation = affiliation;
+    public void setAuthor_affiliationVOS(List<Author_AffiliationVO> author_affiliationVOS) {
+        this.author_affiliationVOS = author_affiliationVOS;
     }
 
     public String getPublicationTitle() {

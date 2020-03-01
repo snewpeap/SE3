@@ -3,15 +3,33 @@ package edu.nju.se.teamnamecannotbeempty.backend.vo;
 import java.util.List;
 
 public class SimplePaperVO {
+
+    public SimplePaperVO(long id, String title, List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS, String publicationTitle, List<String> keywords) {
+        this.id = id;
+        this.title = title;
+        this.author_simpleAffiliationVOS = author_simpleAffiliationVOS;
+        this.publicationTitle = publicationTitle;
+        this.keywords = keywords;
+    }
+
+    private long id;
+
     private String title;
 
-    private List<String> author;
+    private List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS;
 
-    private List<String> affiliation;
 
     private String publicationTitle;
 
     private List<String> keywords;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -21,20 +39,12 @@ public class SimplePaperVO {
         this.title = title;
     }
 
-    public List<String> getAuthor() {
-        return author;
+    public List<Author_SimpleAffiliationVO> getAuthor_simpleAffiliationVOS() {
+        return author_simpleAffiliationVOS;
     }
 
-    public void setAuthor(List<String> author) {
-        this.author = author;
-    }
-
-    public List<String> getAffiliation() {
-        return affiliation;
-    }
-
-    public void setAffiliation(List<String> affiliation) {
-        this.affiliation = affiliation;
+    public void setAuthor_simpleAffiliationVOS(List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS) {
+        this.author_simpleAffiliationVOS = author_simpleAffiliationVOS;
     }
 
     public String getIssue() {
