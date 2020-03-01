@@ -15,3 +15,11 @@ spring:
             directory_provider: "local-heap"
     hibernate:
       ddl-auto: update
+
+
+################ 消息配置 ################
+global-msg:
+  internal-error: "内部错误"
+
+paper-msg:
+ mismatch-id: "找不到ID所对应的论文"

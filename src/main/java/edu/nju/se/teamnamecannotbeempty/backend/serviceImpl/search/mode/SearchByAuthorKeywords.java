@@ -7,7 +7,7 @@ import org.hibernate.search.query.dsl.SimpleQueryStringMatchingContext;
 import org.hibernate.search.query.dsl.TermMatchingContext;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("Keyword")
 public class SearchByAuthorKeywords implements SearchMode {
     @Override
     public TermMatchingContext getFieldsBaseOnKeyword(QueryBuilder queryBuilder) {

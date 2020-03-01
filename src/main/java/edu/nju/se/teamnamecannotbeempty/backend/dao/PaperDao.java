@@ -15,7 +15,7 @@ public interface PaperDao extends CrudRepository<Paper, Long> {
      * @param id 要查找的论文id
      * @return 通过Optional包装的Paper对象
      * @前置条件 参数id不为null
-     * @后置条件 如果有与参数所给的id对应的论文数据，则Optional.get可获得该对象；否则Optional.empty==true
+     * @后置条件 如果有与参数所给的id对应的论文数据，则Optional.get可获得该对象；否则Optional.isPresent==false
      */
     Optional<Paper> findById(Long id);
 

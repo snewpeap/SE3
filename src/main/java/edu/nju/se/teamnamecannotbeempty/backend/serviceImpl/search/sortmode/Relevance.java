@@ -4,7 +4,7 @@ import edu.nju.se.teamnamecannotbeempty.backend.service.search.SortMode;
 import org.apache.lucene.search.Sort;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("Relevance")
 public class Relevance implements SortMode {
 
     @Override

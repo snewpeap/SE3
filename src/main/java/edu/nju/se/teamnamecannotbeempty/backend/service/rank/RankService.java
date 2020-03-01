@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
  * @author 赖宝光
  * @date 2020.2.25
  */
-@Service
 public interface RankService {
 
     /**
