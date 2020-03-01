@@ -1,6 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.controller.paper;
 
 import edu.nju.se.teamnamecannotbeempty.backend.controller.rank.RankController;
+import edu.nju.se.teamnamecannotbeempty.backend.service.paper.PaperService;
 import edu.nju.se.teamnamecannotbeempty.backend.service.rank.RankService;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.PaperVO;
 import org.junit.Before;
@@ -16,21 +17,20 @@ public class paperTest {
     private MockMvc mvc;
 
     @Mock
-    private RankService rankService;
+    private PaperService paperService;
 
     @InjectMocks
-    private RankController rankController;
+    private PaperController controller;
 
     @Before
     public void setup(){
         MockitoAnnotations.initMocks(this);
-        mvc = MockMvcBuilders.standaloneSetup(rankController).build();
+        mvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
     @Test
-    public void getRank() throws Exception{
-        Mockito.when(rankService.getRank("All",0,true,2010,2010))
+    public void getPaper() throws Exception{
+        Mockito.when(paperService.getPaper(1))
                 .thenReturn(new PaperVO());
-
     }
 }
