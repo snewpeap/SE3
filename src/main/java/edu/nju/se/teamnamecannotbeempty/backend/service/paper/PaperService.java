@@ -28,5 +28,5 @@ public interface PaperService {
      * @param id 论文id
      * @return PaperVO 论文详细信息的VO对象
      */
-    Object getPaper(int id);
+    Object getPaper(long id);
 }
