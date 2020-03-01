@@ -21,7 +21,7 @@ public class Paper {
             @Field(name = "title", index = Index.YES, analyze = Analyze.YES, store = Store.NO),
             @Field(name = "sortTitle", index = Index.NO, analyze = Analyze.NO, store = Store.NO)
     })
-    @SortableField(forField = "sortField")
+    @SortableField(forField = "sortTitle")
     // 论文的标题
     private String title;
     @ElementCollection
