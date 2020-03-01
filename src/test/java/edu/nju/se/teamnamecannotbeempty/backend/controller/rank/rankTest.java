@@ -37,7 +37,6 @@ public class rankTest {
     @Test
     public void getRank() throws Exception{
         Mockito.when(rankService.getRank("All",0,true,2010,2010))
-                .thenReturn(new PaperVO());
-
+                .thenReturn("");
     }
 }
