@@ -5,7 +5,7 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("Newest")
 public class Newest implements SortMode {
     private static Sort sort;
 

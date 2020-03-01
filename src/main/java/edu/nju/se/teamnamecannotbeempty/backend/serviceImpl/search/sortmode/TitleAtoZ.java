@@ -5,7 +5,7 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("Title A-Z")
 public class TitleAtoZ implements SortMode {
     private static Sort sort;
 

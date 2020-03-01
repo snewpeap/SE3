@@ -9,35 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Embeddable
-class Author_Affiliation {
-    @ManyToOne
-    @IndexedEmbedded(depth = 1)
-    private Author author;
-    @ManyToOne
-    @IndexedEmbedded(depth = 1)
-    private Affiliation affiliation;
-
-    public Author_Affiliation() {
-    }
-
-    public Author getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Author author) {
-        this.author = author;
-    }
-
-    public Affiliation getAffiliation() {
-        return affiliation;
-    }
-
-    public void setAffiliation(Affiliation affiliation) {
-        this.affiliation = affiliation;
-    }
-}
-
 @Entity
 @Table(name = "papers")
 @Indexed
