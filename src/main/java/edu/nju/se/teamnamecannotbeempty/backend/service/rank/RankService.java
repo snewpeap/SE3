@@ -1,6 +1,5 @@
 package edu.nju.se.teamnamecannotbeempty.backend.service.rank;
 
-import org.springframework.stereotype.Service;
 
 /**
  * 定义排名相关的业务逻辑接口
