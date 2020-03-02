@@ -1,6 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.controller.rank;
 
 import edu.nju.se.teamnamecannotbeempty.backend.service.rank.RankService;
+import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,7 @@ public class RankController {
      * @return 排行榜信息 RankVO??
      */
     @RequestMapping(value = "/rank/{mode}")
-    public Object getRank(@PathVariable String mode, @RequestParam(required = false) int pageNumber,@RequestParam boolean descend,@RequestParam int startYear,@RequestParam int endYear){
+    public ResponseVO getRank(@PathVariable String mode, @RequestParam(required = false) int pageNumber, @RequestParam boolean descend, @RequestParam int startYear, @RequestParam int endYear){
         return rankService.getRank(mode,pageNumber,descend,startYear,endYear);
     }
 }

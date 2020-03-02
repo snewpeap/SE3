@@ -7,6 +7,11 @@ public class RankVO {
 
     private List <RankItem> rankList;
 
+    public RankVO(int totalPage, List<RankItem> rankList) {
+        this.totalPage = totalPage;
+        this.rankList = rankList;
+    }
+
     public int getTotalPage() {
         return totalPage;
     }

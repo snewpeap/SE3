@@ -67,4 +67,8 @@ public class Conference {
     public void setOrdno(Integer ordno) {
         this.ordno = ordno;
     }
+
+    public String buildName(){
+        return String.valueOf(year) + " " + ordno + " " + name;
+    }
 }

@@ -5,6 +5,11 @@ public class RankItem {
 
     private int value;
 
+    public RankItem(String name, int value) {
+        this.name = name;
+        this.value = value;
+    }
+
     public String getName() {
         return name;
     }

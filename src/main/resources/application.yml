@@ -23,3 +23,7 @@ global-msg:
 
 paper-msg:
   mismatch-id: "找不到ID所对应的论文"
+
+rank-msg:
+  each-num: 10
+  mismatch-page-number: "查询的页号与结果数量不匹配"

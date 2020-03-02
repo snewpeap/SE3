@@ -1,4 +1,4 @@
-package edu.nju.se.teamnamecannotbeempty.backend.config.message;
+package edu.nju.se.teamnamecannotbeempty.backend.config.parameter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

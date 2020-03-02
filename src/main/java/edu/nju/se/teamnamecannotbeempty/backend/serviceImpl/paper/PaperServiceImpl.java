@@ -1,6 +1,6 @@
 package edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.paper;
 
-import edu.nju.se.teamnamecannotbeempty.backend.config.message.PaperMsg;
+import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.PaperMsg;
 import edu.nju.se.teamnamecannotbeempty.backend.dao.PaperDao;
 import edu.nju.se.teamnamecannotbeempty.backend.po.Author_Affiliation;
 import edu.nju.se.teamnamecannotbeempty.backend.po.Paper;
