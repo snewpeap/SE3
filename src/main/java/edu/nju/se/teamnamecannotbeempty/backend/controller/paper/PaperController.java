@@ -1,22 +1,31 @@
 package edu.nju.se.teamnamecannotbeempty.backend.controller.paper;
 
 import edu.nju.se.teamnamecannotbeempty.backend.service.paper.PaperService;
+import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.paper.PaperServiceImpl;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.PaperVO;
+import edu.nju.se.teamnamecannotbeempty.backend.vo.SimplePaperVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
 
 /**
- * 论文
+ * 论文controller层
  * @author ava_xu
  *
  */
 
 @RestController
+@Service
 public class PaperController {
-    @Autowired PaperService paperService;
+    @Autowired
+    PaperService paperService;
+
+    public void setPaperService(PaperService paperService) {
+        this.paperService = paperService;
+    }
 
     /**
      * 获得符合用户搜索条件的论文列表
@@ -28,7 +37,7 @@ public class PaperController {
      * @return （应该是SimplePaperVO的List??）
      */
     @RequestMapping(value = "/search/{text}/{mode}",method = RequestMethod.GET)
-    public List<Object> search(@PathVariable String text,@PathVariable String mode,@RequestParam(required = false) int pageNumber,@RequestParam String sortmode,int perpage){
+    public List<SimplePaperVO> search(@PathVariable String text, @PathVariable String mode, @RequestParam(required = false) int pageNumber, @RequestParam String sortmode, int perpage){
         return paperService.search(text,mode,pageNumber,sortmode,perpage);
     }
 
