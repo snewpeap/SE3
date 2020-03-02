@@ -25,7 +25,7 @@ public class Paper {
     @SortableField(forField = "sortTitle")
     // 论文的标题
     private String title;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @IndexedEmbedded
     // 发表论文的每个作者-机构构成的对象的列表
     private List<Author_Affiliation> aa = new ArrayList<>();

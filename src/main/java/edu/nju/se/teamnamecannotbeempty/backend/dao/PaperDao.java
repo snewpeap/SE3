@@ -17,6 +17,7 @@ public interface PaperDao extends CrudRepository<Paper, Long> {
      * @return 通过Optional包装的Paper对象
      * @前置条件 参数id不为null
      * @后置条件 如果有与参数所给的id对应的论文数据，则Optional.get可获得该对象；否则Optional.isPresent==false
+     * @throws org.springframework.dao.InvalidDataAccessApiUsageException，如果id为null
      */
     Optional<Paper> findById(Long id);
 
@@ -34,6 +35,8 @@ public interface PaperDao extends CrudRepository<Paper, Long> {
      * @param from 开始年份
      * @param to 截止年份
      * @return 符合条件的论文列表
+     * @throws org.springframework.dao.InvalidDataAccessApiUsageException，如果任意参数为null
+     * @apiNote 如果from大于true，不会抛出异常，会返回空列表
      */
     List<Paper> findAllByConference_YearBetween(Integer from, Integer to);
 }

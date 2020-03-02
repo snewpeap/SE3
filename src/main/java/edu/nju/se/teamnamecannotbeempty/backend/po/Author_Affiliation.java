@@ -14,6 +14,14 @@ public class Author_Affiliation {
     @IndexedEmbedded(depth = 1)
     private Affiliation affiliation;
 
+    @Override
+    public String toString() {
+        return "Author_Affiliation{" +
+                "author=" + author +
+                ", affiliation=" + affiliation +
+                '}';
+    }
+
     public Author_Affiliation() {
     }
 
