@@ -5,9 +5,9 @@ import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchMode;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.search.query.dsl.SimpleQueryStringMatchingContext;
 import org.hibernate.search.query.dsl.TermMatchingContext;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service("All")
+@Component("All")
 public class FuzzySearch implements SearchMode {
     @Override
     public TermMatchingContext getFieldsBaseOnKeyword(QueryBuilder queryBuilder) {
