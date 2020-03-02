@@ -3,6 +3,7 @@ package edu.nju.se.teamnamecannotbeempty.backend.controller.paper;
 import edu.nju.se.teamnamecannotbeempty.backend.service.paper.PaperService;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.paper.PaperServiceImpl;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.PaperVO;
+import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.SimplePaperVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,7 +49,7 @@ public class PaperController {
      * @return 论文详细信息PaperVO??
      */
     @RequestMapping(value = "/paperDetail/{id}",method = RequestMethod.GET)
-    public Object getPaper(@PathVariable long id){
+    public ResponseVO getPaper(@PathVariable long id){
         return paperService.getPaper(id);
     }
 

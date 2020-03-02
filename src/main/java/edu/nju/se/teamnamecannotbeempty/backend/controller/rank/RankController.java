@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class RankController {
     @Autowired RankService rankService;
 
+    public void setRankService(RankService rankService) {
+        this.rankService = rankService;
+    }
+
     /**
      * 获得用户要求的排行榜
      * @param mode 排行模式
