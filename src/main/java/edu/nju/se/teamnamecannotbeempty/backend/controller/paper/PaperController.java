@@ -33,13 +33,13 @@ public class PaperController {
      * @param text 用户输入在搜索框中的文本
      * @param mode 搜索模式（是否是模糊搜索）
      * @param pageNumber 当前展示到第几页（没有默认为1）
-     * @param sortmode 排序模式（默认降序）
-     * @param perpage 每页显示多少条目
+     * @param sortMode 排序模式（默认降序）
+     * @param perPage 每页显示多少条目
      * @return （应该是SimplePaperVO的List??）
      */
     @RequestMapping(value = "/search/{text}/{mode}",method = RequestMethod.GET)
-    public List<SimplePaperVO> search(@PathVariable String text, @PathVariable String mode, @RequestParam(required = false) int pageNumber, @RequestParam String sortmode, int perpage){
-        return paperService.search(text,mode,pageNumber,sortmode,perpage);
+    public List<SimplePaperVO> search(@PathVariable String text, @PathVariable String mode, @RequestParam(required = false) int pageNumber, @RequestParam String sortMode, @RequestParam int perPage){
+        return paperService.search(text,mode,pageNumber,sortMode,perPage);
     }
 
 
