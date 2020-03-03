@@ -3,15 +3,15 @@ package edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.sortmode;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SortMode;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service("Title A-Z")
+@Component("Title A-Z")
 public class TitleAtoZ implements SortMode {
     private static Sort sort;
 
     public TitleAtoZ() {
         sort = new Sort(
-                new SortField("title", SortField.Type.STRING),
+                new SortField("sortTitle", SortField.Type.STRING),
                 SortField.FIELD_SCORE
         );
     }

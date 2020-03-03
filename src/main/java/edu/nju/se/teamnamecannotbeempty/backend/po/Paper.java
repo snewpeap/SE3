@@ -12,6 +12,20 @@ import java.util.List;
 @Entity
 @Table(name = "papers")
 @Indexed
+@AnalyzerDef(
+        name = "noStopWords",
+        tokenizer = @TokenizerDef(
+                factory = org.apache.lucene.analysis.standard.StandardTokenizerFactory.class
+        ),
+        filters = {
+                @TokenFilterDef(
+                        factory = org.apache.lucene.analysis.standard.StandardFilterFactory.class
+                ),
+                @TokenFilterDef(
+                        factory = org.apache.lucene.analysis.core.LowerCaseFilterFactory.class
+                )
+        }
+)
 public class Paper {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -87,7 +101,7 @@ public class Paper {
     // 出版商
     private String publisher;
     // 文档标识符？
-    private String Document_identifier;
+    private String document_identifier;
 
     public Paper() {
     }
@@ -331,10 +345,10 @@ public class Paper {
     }
 
     public String getDocument_identifier() {
-        return Document_identifier;
+        return document_identifier;
     }
 
     public void setDocument_identifier(String document_identifier) {
-        Document_identifier = document_identifier;
+        this.document_identifier = document_identifier;
     }
 }

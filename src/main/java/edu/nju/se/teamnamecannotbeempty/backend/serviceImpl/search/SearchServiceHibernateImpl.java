@@ -44,12 +44,14 @@ public class SearchServiceHibernateImpl implements SearchService {
 
     @Override
     public Page<Paper> search(List<String> keywords, SearchMode mode, Pageable pageable, SortMode sortMode) {
+        Assert.notNull(keywords, "关键字列表不能为null");
         String combined = String.join(" ", keywords);
         return search(combined, mode, pageable, sortMode);
     }
 
     @Override
     public Page<Paper> search(String keywords, SearchMode mode, Pageable pageable, SortMode sortMode) {
+        Assert.notNull(keywords, "查询不能为null");
         Assert.notNull(mode, "SearchMode不能为null");
         Assert.notNull(pageable, "Pageable不能为null");
         Assert.notNull(sortMode, "SortMode不能为null");
