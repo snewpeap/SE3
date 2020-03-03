@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.transaction.Transactional;
@@ -34,19 +35,26 @@ public class PaperDaoTest {
         assertTrue(result.isPresent());
         Paper paper = result.get();
         assertEquals("data mining", paper.getTitle());
+
         Conference conference = paper.getConference();
         assertNotNull(conference);
         assertEquals("ase", conference.getName());
         assertEquals(1, conference.getOrdno().intValue());
         assertEquals(2000, conference.getYear().intValue());
+
         List<Author_Affiliation> aa = paper.getAa();
         assertNotNull(aa);
         assertEquals(2, aa.size());
         aa.forEach(System.out::println);
+
         List<Term> terms = paper.getAuthor_keywords();
         assertNotNull(terms);
         assertEquals(2, terms.size());
         terms.forEach(System.out::println);
+
+        assertNull(paper.getDocument_identifier());
+        assertNull(paper.getEnd_page());
+
         System.out.println(paper);
     }
 
@@ -60,6 +68,20 @@ public class PaperDaoTest {
     public void findById_null() {
         Optional<Paper> result = paperDao.findById(null);
         assertFalse(result.isPresent());
+    }
+
+    @Test
+    @Sql(statements = {
+            "insert into papers(id,title,conference_id) value (4,'test',2)",
+            "insert into paper_aa value (4,2,3)"
+    })
+    @Transactional
+    public void findById_noKeyword() {
+        Optional<Paper> result = paperDao.findById(4L);
+        assertTrue(result.isPresent());
+        Paper paper = result.get();
+        assertNotNull(paper.getAuthor_keywords());
+        assertEquals(0, paper.getAuthor_keywords().size());
     }
 
     @Test

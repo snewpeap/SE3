@@ -8,14 +8,24 @@ import org.hibernate.search.query.dsl.TermMatchingContext;
 import org.springframework.stereotype.Component;
 
 @Component("Keyword")
-public class SearchByAuthorKeywords implements SearchMode {
+public class SearchByKeywords implements SearchMode {
     @Override
     public TermMatchingContext getFieldsBaseOnKeyword(QueryBuilder queryBuilder) {
-        return queryBuilder.keyword().onField(Paper.getFieldName_searchByAuthorKeywords());
+        return queryBuilder.keyword().onFields(
+                Paper.getFieldName_authorKeywords(),
+                Paper.getFieldName_ieeeTerms(),
+                Paper.getFieldName_inspecControlled(),
+                Paper.getFieldName_inspecNonControlled()
+        );
     }
 
     @Override
     public SimpleQueryStringMatchingContext getFieldsBaseOnSQS(QueryBuilder queryBuilder) {
-        return queryBuilder.simpleQueryString().onField(Paper.getFieldName_searchByAuthorKeywords());
+        return queryBuilder.simpleQueryString().onFields(
+                Paper.getFieldName_authorKeywords(),
+                Paper.getFieldName_ieeeTerms(),
+                Paper.getFieldName_inspecControlled(),
+                Paper.getFieldName_inspecNonControlled()
+        );
     }
 }

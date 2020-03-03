@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 public class SearchByTitle implements SearchMode {
     @Override
     public TermMatchingContext getFieldsBaseOnKeyword(QueryBuilder queryBuilder) {
-        return queryBuilder.keyword().onField(Paper.getFieldName_searchByTitle());
+        return queryBuilder.keyword().onField(Paper.getFieldName_title());
     }
 
     @Override
     public SimpleQueryStringMatchingContext getFieldsBaseOnSQS(QueryBuilder queryBuilder) {
-        return queryBuilder.simpleQueryString().onField(Paper.getFieldName_searchByTitle());
+        return queryBuilder.simpleQueryString().onField(Paper.getFieldName_title());
     }
 }

@@ -13,4 +13,4 @@ spring:
       hbm2ddl:
         import_files: "classpath:import.sql"
     hibernate:
-      ddl-auto: create
+      ddl-auto: none

@@ -5,6 +5,7 @@ import org.hibernate.search.annotations.NumericField;
 import org.hibernate.search.annotations.SortableField;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "conferences")
@@ -34,6 +35,21 @@ public class Conference {
                 ", year=" + year +
                 ", ordno=" + ordno +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Conference that = (Conference) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(year, that.year) &&
+                Objects.equals(ordno, that.ordno);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, year, ordno);
     }
 
     public Long getId() {
@@ -68,7 +84,7 @@ public class Conference {
         this.ordno = ordno;
     }
 
-    public String buildName(){
+    public String buildName() {
         return String.valueOf(year) + " " + ordno + " " + name;
     }
 }

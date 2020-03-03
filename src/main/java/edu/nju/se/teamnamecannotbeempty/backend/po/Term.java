@@ -3,6 +3,7 @@ package edu.nju.se.teamnamecannotbeempty.backend.po;
 import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "terms")
@@ -15,6 +16,19 @@ public class Term {
     private String content;
 
     public Term() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Term term = (Term) o;
+        return content.equals(term.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(content);
     }
 
     @Override

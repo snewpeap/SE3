@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 public class SearchByAffiliation implements SearchMode {
     @Override
     public TermMatchingContext getFieldsBaseOnKeyword(QueryBuilder queryBuilder) {
-        return queryBuilder.keyword().onField(Paper.getFieldName_searchByAffiliation());
+        return queryBuilder.keyword().onField(Paper.getFieldName_affiliation());
     }
 
     @Override
     public SimpleQueryStringMatchingContext getFieldsBaseOnSQS(QueryBuilder queryBuilder) {
-        return queryBuilder.simpleQueryString().onField(Paper.getFieldName_searchByAffiliation());
+        return queryBuilder.simpleQueryString().onField(Paper.getFieldName_affiliation());
     }
 }

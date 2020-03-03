@@ -12,22 +12,22 @@ public class FuzzySearch implements SearchMode {
     @Override
     public TermMatchingContext getFieldsBaseOnKeyword(QueryBuilder queryBuilder) {
         return queryBuilder.keyword().onFields(
-                        Paper.getFieldName_searchByTitle(),
-                        Paper.getFieldName_searchByAuthor(),
-                        Paper.getFieldName_searchByAffiliation(),
-                        Paper.getFieldName_searchByConference(),
-                        Paper.getFieldName_searchByAuthorKeywords()
+                        Paper.getFieldName_title(),
+                        Paper.getFieldName_author(),
+                        Paper.getFieldName_affiliation(),
+                        Paper.getFieldName_conference(),
+                        Paper.getFieldName_authorKeywords()
                 );
     }
 
     @Override
     public SimpleQueryStringMatchingContext getFieldsBaseOnSQS(QueryBuilder queryBuilder) {
         return queryBuilder.simpleQueryString().onFields(
-                Paper.getFieldName_searchByTitle(),
-                Paper.getFieldName_searchByAuthor(),
-                Paper.getFieldName_searchByAffiliation(),
-                Paper.getFieldName_searchByConference(),
-                Paper.getFieldName_searchByAuthorKeywords()
+                Paper.getFieldName_title(),
+                Paper.getFieldName_author(),
+                Paper.getFieldName_affiliation(),
+                Paper.getFieldName_conference(),
+                Paper.getFieldName_authorKeywords()
         );
     }
 }
