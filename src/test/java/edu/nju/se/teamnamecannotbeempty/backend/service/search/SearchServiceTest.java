@@ -33,6 +33,7 @@ import static org.junit.Assert.assertNotNull;
 )
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
+@Sql("classpath:import.sql")
 public class SearchServiceTest {
     @Autowired
     private SearchService searchService;
@@ -162,7 +163,7 @@ public class SearchServiceTest {
     public void testSearch_searchByAuthorKeyword_noPage_relevance() {
         Page<Paper> result = searchService.search(
                 "data",
-                AppContextProvider.getBean(SearchByAuthorKeywords.class),
+                AppContextProvider.getBean(SearchByKeywords.class),
                 Pageable.unpaged()
         );
         assertNotNull(result);
@@ -178,7 +179,7 @@ public class SearchServiceTest {
     public void testSearch_searchByAuthorKeywords_noPage_relevance() {
         Page<Paper> result = searchService.search(
                 "data mining",
-                AppContextProvider.getBean(SearchByAuthorKeywords.class),
+                AppContextProvider.getBean(SearchByKeywords.class),
                 Pageable.unpaged()
         );
         assertNotNull(result);
@@ -190,7 +191,7 @@ public class SearchServiceTest {
     public void testSearch_searchBy2AuthorKeywords_2Pages_relevance() {
         Page<Paper> result = searchService.search(
                 "data mining",
-                AppContextProvider.getBean(SearchByAuthorKeywords.class),
+                AppContextProvider.getBean(SearchByKeywords.class),
                 PageRequest.of(0, 2)
         );
         assertNotNull(result);
@@ -198,7 +199,7 @@ public class SearchServiceTest {
         assertEquals(2, result.getNumberOfElements());
         result = searchService.search(
                 "data mining",
-                AppContextProvider.getBean(SearchByAuthorKeywords.class),
+                AppContextProvider.getBean(SearchByKeywords.class),
                 PageRequest.of(1, 2)
         );
         assertNotNull(result);

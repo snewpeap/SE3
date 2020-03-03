@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 public class SearchByAuthor implements SearchMode {
     @Override
     public TermMatchingContext getFieldsBaseOnKeyword(QueryBuilder queryBuilder) {
-        return queryBuilder.keyword().onField(Paper.getFieldName_searchByAuthor());
+        return queryBuilder.keyword().onField(Paper.getFieldName_author());
     }
 
     @Override
     public SimpleQueryStringMatchingContext getFieldsBaseOnSQS(QueryBuilder queryBuilder) {
-        return queryBuilder.simpleQueryString().onField(Paper.getFieldName_searchByAuthor());
+        return queryBuilder.simpleQueryString().onField(Paper.getFieldName_author());
     }
 }

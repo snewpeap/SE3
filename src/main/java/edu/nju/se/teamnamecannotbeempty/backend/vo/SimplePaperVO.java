@@ -62,4 +62,10 @@ public class SimplePaperVO {
     public void setKeywords(List<String> keywords) {
         this.keywords = keywords;
     }
+
+    public boolean equals(Object o){
+        if(!(o instanceof SimplePaperVO)) return false;
+        return id==((SimplePaperVO) o).id&&title.equals(((SimplePaperVO) o).title)&&author_simpleAffiliationVOS.equals(((SimplePaperVO) o).author_simpleAffiliationVOS)
+                &&publicationTitle.equals(((SimplePaperVO) o).publicationTitle)&&keywords.equals(((SimplePaperVO) o).keywords);
+    }
 }

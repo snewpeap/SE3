@@ -75,12 +75,15 @@ public class Paper {
     // 作者给出的关键字
     private List<Term> author_keywords = new ArrayList<>();
     @ManyToMany
+    @IndexedEmbedded
     // IEEE术语
     private List<Term> ieee_terms = new ArrayList<>();
     @ManyToMany
+    @IndexedEmbedded
     // INSPEC受控索引，有限集合
     private List<Term> inspec_controlled = new ArrayList<>();
     @ManyToMany
+    @IndexedEmbedded
     // INSPEC非受控索引，无限集合
     private List<Term> inspec_non_controlled = new ArrayList<>();
     @ManyToMany
@@ -116,24 +119,36 @@ public class Paper {
                 '}';
     }
 
-    public static String getFieldName_searchByTitle() {
+    public static String getFieldName_title() {
         return "title";
     }
 
-    public static String getFieldName_searchByAuthor() {
+    public static String getFieldName_author() {
         return "aa.author.name";
     }
 
-    public static String getFieldName_searchByAffiliation() {
+    public static String getFieldName_affiliation() {
         return "aa.affiliation.name";
     }
 
-    public static String getFieldName_searchByConference() {
+    public static String getFieldName_conference() {
         return "conference.name";
     }
 
-    public static String getFieldName_searchByAuthorKeywords() {
+    public static String getFieldName_authorKeywords() {
         return "author_keywords.content";
+    }
+
+    public static String getFieldName_ieeeTerms() {
+        return "ieee_terms.content";
+    }
+
+    public static String getFieldName_inspecControlled() {
+        return "inspec_controlled.content";
+    }
+
+    public static String getFieldName_inspecNonControlled() {
+        return "inspec_non_controlled.content";
     }
 
     public Long getId() {

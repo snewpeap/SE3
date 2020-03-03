@@ -3,6 +3,7 @@ package edu.nju.se.teamnamecannotbeempty.backend.po;
 import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "affiliations")
@@ -16,6 +17,20 @@ public class Affiliation {
     private String name;
     // 实际上是地理位置，最精确到市
     private String country;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Affiliation that = (Affiliation) o;
+        return name.equals(that.name) &&
+                Objects.equals(country, that.country);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, country);
+    }
 
     public Affiliation() {
     }

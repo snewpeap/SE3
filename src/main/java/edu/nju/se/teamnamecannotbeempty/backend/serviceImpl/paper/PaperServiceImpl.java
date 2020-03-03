@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,20 +25,21 @@ import java.util.stream.Collectors;
 @Service
 public class PaperServiceImpl implements PaperService {
 
-    private SearchService searchService;
+    private final SearchService searchService;
     private final PaperDao paperDao;
     private final PaperMsg paperMsg;
 
     @Autowired
-    public PaperServiceImpl(PaperDao paperDao, PaperMsg paperMsg) {
+    public PaperServiceImpl(PaperDao paperDao, PaperMsg paperMsg, SearchService searchService) {
         this.paperDao = paperDao;
         this.paperMsg = paperMsg;
+        this.searchService = searchService;
     }
 
     @Override
     public List<SimplePaperVO> search(String text, String mode, int pageNumber, String sortMode, int perPage) {
         SearchMode searchMode = (SearchMode)ApplicationContextUtil.getBean(mode);
-        Pageable pageable = PageRequest.of(pageNumber,perPage);
+        Pageable pageable = PageRequest.of(pageNumber-1,perPage);
         SortMode sort = (SortMode)ApplicationContextUtil.getBean(sortMode);
         Page<Paper> paperPage = searchService.search(text,searchMode,pageable,sort);
         List<Paper> paperList = paperPage.getContent();
@@ -61,6 +63,7 @@ public class PaperServiceImpl implements PaperService {
 
 
     @Override
+    @Transactional
     public ResponseVO getPaper(long id) {
         Optional<Paper> optionalPaper = paperDao.findById(id);
         ResponseVO responseVO;
