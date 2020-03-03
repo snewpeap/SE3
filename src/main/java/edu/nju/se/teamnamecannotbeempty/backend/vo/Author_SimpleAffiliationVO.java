@@ -24,4 +24,9 @@ public class Author_SimpleAffiliationVO {
     public void setAffiliation(String affiliation) {
         this.affiliation = affiliation;
     }
+
+    public boolean equals(Object o){
+        if(!(o instanceof Author_SimpleAffiliationVO)) return false;
+        return author.equals(((Author_SimpleAffiliationVO) o).author)&&affiliation.equals(((Author_SimpleAffiliationVO) o).affiliation);
+    }
 }

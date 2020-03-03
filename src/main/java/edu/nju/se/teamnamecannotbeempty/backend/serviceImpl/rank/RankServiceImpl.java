@@ -9,6 +9,7 @@ import edu.nju.se.teamnamecannotbeempty.backend.vo.RankVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,6 +27,7 @@ public class RankServiceImpl implements RankService {
     }
 
     @Override
+    @Transactional
     public ResponseVO getRank(String mode, int pageNumber, boolean descend, int startYear, int endYear) {
         List<Paper> paperList = paperDao.findAllByConference_YearBetween(startYear,endYear);
         List<RankItem> rankItemList = new ArrayList<>();
@@ -47,7 +49,7 @@ public class RankServiceImpl implements RankService {
                 rankItemList=publicationPaper(paperList,descend);
                 break;
             case "Keyword-Paper":
-                rankItemList=publicationPaper(paperList,descend);
+                rankItemList=keywordpaper(paperList,descend);
                 break;
              default:
                  break;
