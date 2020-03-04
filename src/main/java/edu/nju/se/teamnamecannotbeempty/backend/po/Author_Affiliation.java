@@ -22,6 +22,11 @@ public class Author_Affiliation {
                 '}';
     }
 
+    public Author_Affiliation(Author author, Affiliation affiliation) {
+        this.author = author;
+        this.affiliation = affiliation;
+    }
+
     public Author_Affiliation() {
     }
 
