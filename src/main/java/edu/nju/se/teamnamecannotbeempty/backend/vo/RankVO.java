@@ -1,6 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.vo;
 
 import java.util.List;
+import java.util.Objects;
 
 public class RankVO {
     private int totalPage;
@@ -26,5 +27,20 @@ public class RankVO {
 
     public void setRankList(List<RankItem> rankList) {
         this.rankList = rankList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RankVO rankVO = (RankVO) o;
+        return totalPage == rankVO.totalPage &&
+                Objects.equals(rankList, rankVO.rankList);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(totalPage, rankList);
     }
 }

@@ -26,9 +26,33 @@ public class RankServiceImpl implements RankService {
         this.rankMsg = rankMsg;
     }
 
+    class AuthorPaperCitationNum {
+
+        private String author;
+        private int paperCitation;
+
+        AuthorPaperCitationNum(String author, int paperCitation) {
+            this.author = author;
+            this.paperCitation = paperCitation;
+        }
+
+        String getAuthor() {
+            return author;
+        }
+
+        void setAuthor(String author) {
+            this.author = author;
+        }
+
+        int getPaperCitation() {
+            return paperCitation;
+        }
+    }
+
     @Override
     @Transactional
     public ResponseVO getRank(String mode, Integer pageNumber, boolean descend, int startYear, int endYear) {
+        if(pageNumber==null||pageNumber<=0) pageNumber=1;
         List<Paper> paperList = paperDao.findAllByConference_YearBetween(startYear,endYear);
         List<RankItem> rankItemList = new ArrayList<>();
         //'Paper-Cited', 'Author-Cited', 'Author-Paper', 'Affiliation-Paper', 'Publication-Paper', 'Keyword-Paper'
@@ -49,19 +73,21 @@ public class RankServiceImpl implements RankService {
                 rankItemList=publicationPaper(paperList,descend);
                 break;
             case "Keyword-Paper":
-                rankItemList=keywordpaper(paperList,descend);
+                rankItemList=keywordPaper(paperList,descend);
                 break;
              default:
                  break;
         }
         int len = rankItemList.size();
         ResponseVO responseVO;
-        if(pageNumber<=0 || pageNumber*rankMsg.getEachNum()-len>rankMsg.getEachNum()){
+        if(pageNumber*rankMsg.getEachNum()-len>rankMsg.getEachNum()){
             responseVO = ResponseVO.fail(rankMsg.getMismatchPageNumber());
             return responseVO;
         }
         int totalPage = len%rankMsg.getEachNum()==0? len/rankMsg.getEachNum():len/rankMsg.getEachNum()+1;
-        List<RankItem> result = rankItemList.subList((pageNumber-1)*rankMsg.getEachNum(),pageNumber*rankMsg.getEachNum()-1);
+        int resultStart = (pageNumber-1)*rankMsg.getEachNum();
+        int resultLen = len-resultStart>=rankMsg.getEachNum()?rankMsg.getEachNum():len-resultStart;
+        List<RankItem> result = rankItemList.subList(resultStart,resultStart+resultLen);
         responseVO = ResponseVO.success();
         responseVO.setContent(new RankVO(totalPage,result));
         return responseVO;
@@ -87,7 +113,8 @@ public class RankServiceImpl implements RankService {
     }
 
     private List<RankItem> affiliationPaper(List<Paper> paperList, boolean descend){
-        List<Affiliation> affiliationList = paperList.stream().flatMap(paper -> paper.getAa().stream()
+        List<Affiliation> affiliationList = paperList.stream().flatMap(paper -> paper.getAa().stream().collect(Collectors.collectingAndThen(Collectors.toCollection(()->
+                new TreeSet<>(Comparator.comparing(a->a.getAffiliation().getName()+";"+a.getAffiliation().getCountry()))),ArrayList::new)).stream()
                                                 .map(Author_Affiliation::getAffiliation)).collect(Collectors.toList());
         Map<String,Long> affiliationPaperNums = affiliationList.stream().collect(Collectors.groupingBy(Affiliation::getName,Collectors.counting()));
         return mapToList(affiliationPaperNums,descend);
@@ -99,7 +126,7 @@ public class RankServiceImpl implements RankService {
         return mapToList(publicationPaperNums,descend);
     }
 
-    private List<RankItem> keywordpaper(List<Paper> paperList, boolean descend){
+    private List<RankItem> keywordPaper(List<Paper> paperList, boolean descend){
         List<Term> termList = paperList.stream().flatMap(paper -> paper.getAuthor_keywords().stream()).collect(Collectors.toList());
         termList.addAll(paperList.stream().flatMap(paper -> paper.getIeee_terms().stream()).collect(Collectors.toList()));
         termList.addAll(paperList.stream().flatMap(paper -> paper.getInspec_controlled().stream()).collect(Collectors.toList()));

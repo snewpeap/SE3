@@ -38,6 +38,7 @@ public class PaperServiceImpl implements PaperService {
 
     @Override
     public List<SimplePaperVO> search(String text, String mode, Integer pageNumber, String sortMode, int perPage) {
+        if(pageNumber==null||pageNumber<=0) pageNumber=1;
         SearchMode searchMode = (SearchMode)ApplicationContextUtil.getBean(mode);
         Pageable pageable = PageRequest.of(pageNumber-1,perPage);
         SortMode sort = (SortMode)ApplicationContextUtil.getBean(sortMode);
@@ -91,9 +92,10 @@ public class PaperServiceImpl implements PaperService {
         ieees = termList_IEEE.stream().map(Term::getContent).collect(Collectors.toList());
         controls = termList_control.stream().map(Term::getContent).collect(Collectors.toList());
         noncontrols = termList_noncontrol.stream().map(Term::getContent).collect(Collectors.toList());
+        String pdf = paper.getPdf_link()==null?null:paper.getPdf_link().toString();
         responseVO = ResponseVO.success();
         responseVO.setContent(new PaperVO(paper.getId(),paper.getTitle(),author_affiliationVOS,paper.getConference().getName(),paper.getConference().getYear(),paper.getStart_page(),
-                paper.getEnd_page(),paper.getSummary(),paper.getDoi(),paper.getPdf_link().toString(),keywords,ieees,controls,
+                paper.getEnd_page(),paper.getSummary(),paper.getDoi(),pdf,keywords,ieees,controls,
                 noncontrols,paper.getCitation(),paper.getReference(),paper.getPublisher(),paper.getDocument_identifier()));
         return responseVO;
     }

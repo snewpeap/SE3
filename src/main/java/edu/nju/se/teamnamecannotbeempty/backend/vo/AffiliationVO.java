@@ -26,4 +26,9 @@ public class AffiliationVO {
     public void setCountry(String country) {
         this.country = country;
     }
+
+    public boolean equals(Object o){
+        if(!(o instanceof AffiliationVO)) return false;
+        return name.equals(((AffiliationVO) o).name)&&country.equals(((AffiliationVO) o).country);
+    }
 }
