@@ -19,5 +19,5 @@ public interface RankService {
      * @param endYear 参与排行的对象不得晚于该年份
      * @return RankVO 返回的排行对象VO，包含一个列表
      */
-    ResponseVO getRank(String mode, int pageNumber, boolean descend, int startYear, int endYear);
+    ResponseVO getRank(String mode, Integer pageNumber, boolean descend, int startYear, int endYear);
 }

@@ -125,4 +125,19 @@ public class paperTest {
                 .andReturn();
     }
 
+    @Test
+    public void testSearch3() throws Exception{
+        url = "/search/text/All";
+        List<SimplePaperVO> simplePaperVOList = new ArrayList<>();
+        Mockito.when(paperService.search("text","All",0,"descend",20))
+                .thenReturn(simplePaperVOList);
+        MvcResult result = mvc
+                .perform(MockMvcRequestBuilders.get(url)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("sortMode","descend")
+                        .param("perPage","20"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+    }
 }

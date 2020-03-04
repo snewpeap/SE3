@@ -28,7 +28,7 @@ public class RankServiceImpl implements RankService {
 
     @Override
     @Transactional
-    public ResponseVO getRank(String mode, int pageNumber, boolean descend, int startYear, int endYear) {
+    public ResponseVO getRank(String mode, Integer pageNumber, boolean descend, int startYear, int endYear) {
         List<Paper> paperList = paperDao.findAllByConference_YearBetween(startYear,endYear);
         List<RankItem> rankItemList = new ArrayList<>();
         //'Paper-Cited', 'Author-Cited', 'Author-Paper', 'Affiliation-Paper', 'Publication-Paper', 'Keyword-Paper'

@@ -65,4 +65,20 @@ public class rankTest {
                 .andExpect(status().isOk())
                 .andReturn();
     }
+
+    @Test
+    public void testGetRank3() throws Exception{
+        ResponseVO responseVO = new ResponseVO();
+        Mockito.when(rankService.getRank("All",0,true,2010,2010))
+                .thenReturn(responseVO);
+        MvcResult result = mvc
+                .perform(MockMvcRequestBuilders.get("/rank/All")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("descend","true")
+                        .param("startYear","2010")
+                        .param("endYear","2010"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+    }
 }

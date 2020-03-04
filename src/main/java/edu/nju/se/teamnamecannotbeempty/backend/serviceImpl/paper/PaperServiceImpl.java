@@ -37,7 +37,7 @@ public class PaperServiceImpl implements PaperService {
     }
 
     @Override
-    public List<SimplePaperVO> search(String text, String mode, int pageNumber, String sortMode, int perPage) {
+    public List<SimplePaperVO> search(String text, String mode, Integer pageNumber, String sortMode, int perPage) {
         SearchMode searchMode = (SearchMode)ApplicationContextUtil.getBean(mode);
         Pageable pageable = PageRequest.of(pageNumber-1,perPage);
         SortMode sort = (SortMode)ApplicationContextUtil.getBean(sortMode);

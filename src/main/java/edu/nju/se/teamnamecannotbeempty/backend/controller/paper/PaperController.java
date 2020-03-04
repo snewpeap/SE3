@@ -38,7 +38,7 @@ public class PaperController {
      * @return （应该是SimplePaperVO的List??）
      */
     @RequestMapping(value = "/search/{text}/{mode}",method = RequestMethod.GET)
-    public List<SimplePaperVO> search(@PathVariable String text, @PathVariable String mode, @RequestParam(required = false) int pageNumber, @RequestParam String sortMode, @RequestParam int perPage){
+    public List<SimplePaperVO> search(@PathVariable String text, @PathVariable String mode, @RequestParam(required = false) Integer pageNumber, @RequestParam String sortMode, @RequestParam int perPage){
         return paperService.search(text,mode,pageNumber,sortMode,perPage);
     }
 
