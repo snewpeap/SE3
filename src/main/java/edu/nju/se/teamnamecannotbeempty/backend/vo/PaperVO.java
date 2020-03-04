@@ -1,6 +1,5 @@
 package edu.nju.se.teamnamecannotbeempty.backend.vo;
 
-import java.util.Date;
 import java.util.List;
 
 public class PaperVO {
@@ -40,6 +39,7 @@ public class PaperVO {
     private String publisher;
 
     private String identifier;
+
 
     public PaperVO(long id, String title, List<Author_AffiliationVO> author_affiliationVOS, String publicationTitle, int publicationYear, int startPage, int endPage, String summary, String DOI, String PDFLink, List<String> authorKeywords, List<String> IEEETerms, List<String> controlledTerms, List<String> nonControlledTerms, int citationCount, int referenceCount, String publisher, String identifier) {
         this.id = id;
@@ -204,5 +204,17 @@ public class PaperVO {
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+    }
+
+    public boolean equals(Object o){
+        if(!(o instanceof PaperVO)) return false;
+        return id == ((PaperVO) o).getId()&&title.equals(((PaperVO) o).getTitle())&&author_affiliationVOS.equals(((PaperVO) o).getAuthor_affiliationVOS())
+                &&publicationTitle.equals(((PaperVO) o).getPublicationTitle())&&publicationYear == ((PaperVO) o).getPublicationYear()
+                &&startPage == ((PaperVO) o).getStartPage()&&endPage == ((PaperVO) o).endPage&&summary.equals(((PaperVO) o).getSummary())
+                &&DOI.equals(((PaperVO) o).getDOI())&&((PDFLink==null&&((PaperVO) o).getPDFLink()==null)||PDFLink.equals(((PaperVO) o).getPDFLink()))&&authorKeywords.equals(((PaperVO) o).getAuthorKeywords())
+                &&IEEETerms.equals(((PaperVO) o).getIEEETerms())&&controlledTerms.equals(((PaperVO) o).getControlledTerms())
+                &&nonControlledTerms.equals(((PaperVO) o).getNonControlledTerms())&&citationCount==((PaperVO) o).getCitationCount()
+                &&referenceCount==((PaperVO) o).getReferenceCount()&& ((publisher==null&&((PaperVO) o).getPublisher()==null)|| publisher.equals(((PaperVO) o).getPublisher()))&&((identifier==null&&((PaperVO) o).getIdentifier()==null)||identifier.equals(((PaperVO) o).getIdentifier()));
+
     }
 }
