@@ -21,7 +21,7 @@ public interface PaperService {
      * @param perPage 每页的显示数量
      * @return List<SimplePaperVO> 一个论文简略信息的VO对象的List
      */
-    List<SimplePaperVO> search(String text, String mode, int pageNumber, String sortMode, int perPage);
+    List<SimplePaperVO> search(String text, String mode, Integer pageNumber, String sortMode, int perPage);
 
     /**
      * 根据id返回用户所要查看的论文的详细信息

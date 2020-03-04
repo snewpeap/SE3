@@ -31,7 +31,7 @@ public class RankController {
      * @return 排行榜信息 RankVO??
      */
     @RequestMapping(value = "/rank/{mode}")
-    public ResponseVO getRank(@PathVariable String mode, @RequestParam(required = false) int pageNumber, @RequestParam boolean descend, @RequestParam int startYear, @RequestParam int endYear){
+    public ResponseVO getRank(@PathVariable String mode, @RequestParam(required = false) Integer pageNumber, @RequestParam boolean descend, @RequestParam int startYear, @RequestParam int endYear){
         return rankService.getRank(mode,pageNumber,descend,startYear,endYear);
     }
 }

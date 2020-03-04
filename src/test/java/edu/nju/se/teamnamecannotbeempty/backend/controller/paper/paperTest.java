@@ -49,7 +49,7 @@ public class paperTest {
 
     @InjectMocks
     private PaperController controller;
-    private MockMvc mockMvc;
+    //private MockMvc mockMvc;
     private String url;
 
     @Before
@@ -58,8 +58,13 @@ public class paperTest {
         mvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
+    /**
+     * 对PaperController中 getPaper的测试1
+     * 通过PaperController对象直接调用方法
+     * @throws Exception
+     */
     @Test
-    public void getPaper() throws Exception{
+    public void testGetPaper1() throws Exception{
         ResponseVO responseVO = new ResponseVO();
         Mockito.when(paperService.getPaper(1))
                 .thenReturn(responseVO);
@@ -68,10 +73,14 @@ public class paperTest {
         assertEquals(paperController.getPaper(1),responseVO);
     }
 
+    /**
+     * 对PaperController中 search的测试1
+     * 通过PaperController对象直接调用方法
+     * @throws Exception
+     */
     @Test
-    public void search() throws Exception{
+    public void tsetSearch1() throws Exception{
         List<SimplePaperVO> simplePaperVOList = new ArrayList<>();
-        //simplePaperVOList.add(mock(SimplePaperVO.class));
         Mockito.when(paperService.search("","All",0,"descend",20))
                 .thenReturn(simplePaperVOList);
         PaperController paperController = new PaperController();
@@ -79,32 +88,66 @@ public class paperTest {
         assertEquals(paperController.search("","All",0,"descend",20),simplePaperVOList);
     }
 
-//    @Autowired
-//    protected WebApplicationContext wac;
-//
-//    @Mock
-//    private PaperService paperService;
-//
+    /**
+     * 对PaperController中 getPaper的测试2
+     * 通过url测试
+     * @throws Exception
+     */
+    @Test
+    public void testGetPaper2() throws Exception{
+        url = "/paperDetail/1";
+        Paper paper = new Paper();
+        ResponseVO responseVO = new ResponseVO();
+        responseVO.setSuccess(true);
+        Mockito.when(paperService.getPaper(1)).thenReturn(responseVO);
+        MvcResult result = mvc
+                .perform(MockMvcRequestBuilders.get(url)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+    }
 
-//
-//    @Before
-//    public void setUp() throws Exception{
-//        MockitoAnnotations.initMocks(this);
-//        mockMvc = MockMvcBuilders.standaloneSetup(wac).build();
-//    }
-//
-//    @Test
-//    public void testGetPaper() throws Exception{
-//        url = "/paperDetail/1";
-//        Paper paper = new Paper();
-//        ResponseVO responseVO = new ResponseVO();
-//        when(paperService.getPaper(1)).thenReturn(responseVO);
-//        MvcResult result = mockMvc
-//                .perform(MockMvcRequestBuilders.post(url)
-//                .accept(MediaType.APPLICATION_JSON))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andReturn();
-//    }
+    /**
+     * 对PaperController中 search的测试2
+     * 通过url测试 一般情况
+     * @throws Exception
+     */
+    @Test
+    public void testSearch2() throws Exception{
+        url = "/search/text/All";
+        List<SimplePaperVO> simplePaperVOList = new ArrayList<>();
+        Mockito.when(paperService.search("text","All",0,"descend",20))
+                .thenReturn(simplePaperVOList);
+        MvcResult result = mvc
+                .perform(MockMvcRequestBuilders.get(url)
+                .accept(MediaType.APPLICATION_JSON)
+                .param("pageNumber","0")
+                .param("sortMode","descend")
+                .param("perPage","20"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+    }
 
+    /**
+     * 对PaperController中 search的测试3
+     * 通过url测试 可选参数pageNumber没有填的情况
+     * @throws Exception
+     */
+    @Test
+    public void testSearch3() throws Exception{
+        url = "/search/text/All";
+        List<SimplePaperVO> simplePaperVOList = new ArrayList<>();
+        Mockito.when(paperService.search("text","All",0,"descend",20))
+                .thenReturn(simplePaperVOList);
+        MvcResult result = mvc
+                .perform(MockMvcRequestBuilders.get(url)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("sortMode","descend")
+                        .param("perPage","20"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+    }
 }

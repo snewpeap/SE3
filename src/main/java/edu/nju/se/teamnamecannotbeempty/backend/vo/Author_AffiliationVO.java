@@ -6,8 +6,7 @@ public class Author_AffiliationVO {
 
     public Author_AffiliationVO(String author, String name, String country) {
         this.author = author;
-        this.affiliation.setName(name);
-        this.affiliation.setCountry(country);
+        this.affiliation = new AffiliationVO(name,country);
     }
 
     public String getAuthor() {
@@ -24,5 +23,10 @@ public class Author_AffiliationVO {
 
     public void setAffiliation(AffiliationVO affiliation) {
         this.affiliation = affiliation;
+    }
+
+    public boolean equals(Object o){
+        if(!(o instanceof Author_AffiliationVO)) return false;
+        return author.equals(((Author_AffiliationVO) o).author)&&affiliation.equals(((Author_AffiliationVO) o).affiliation);
     }
 }
