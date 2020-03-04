@@ -58,6 +58,11 @@ public class paperTest {
         mvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
+    /**
+     * 对PaperController中 getPaper的测试1
+     * 通过PaperController对象直接调用方法
+     * @throws Exception
+     */
     @Test
     public void testGetPaper1() throws Exception{
         ResponseVO responseVO = new ResponseVO();
@@ -68,10 +73,14 @@ public class paperTest {
         assertEquals(paperController.getPaper(1),responseVO);
     }
 
+    /**
+     * 对PaperController中 search的测试1
+     * 通过PaperController对象直接调用方法
+     * @throws Exception
+     */
     @Test
     public void tsetSearch1() throws Exception{
         List<SimplePaperVO> simplePaperVOList = new ArrayList<>();
-        //simplePaperVOList.add(mock(SimplePaperVO.class));
         Mockito.when(paperService.search("","All",0,"descend",20))
                 .thenReturn(simplePaperVOList);
         PaperController paperController = new PaperController();
@@ -79,20 +88,11 @@ public class paperTest {
         assertEquals(paperController.search("","All",0,"descend",20),simplePaperVOList);
     }
 
-//    @Autowired
-//    protected WebApplicationContext wac;
-//
-//    @Mock
-//    private PaperService paperService;
-//
-
-//
-//    @Before
-//    public void setUp() throws Exception{
-//        MockitoAnnotations.initMocks(this);
-//        mockMvc = MockMvcBuilders.standaloneSetup(wac).build();
-//    }
-//
+    /**
+     * 对PaperController中 getPaper的测试2
+     * 通过url测试
+     * @throws Exception
+     */
     @Test
     public void testGetPaper2() throws Exception{
         url = "/paperDetail/1";
@@ -108,6 +108,11 @@ public class paperTest {
                 .andReturn();
     }
 
+    /**
+     * 对PaperController中 search的测试2
+     * 通过url测试 一般情况
+     * @throws Exception
+     */
     @Test
     public void testSearch2() throws Exception{
         url = "/search/text/All";
@@ -125,6 +130,11 @@ public class paperTest {
                 .andReturn();
     }
 
+    /**
+     * 对PaperController中 search的测试3
+     * 通过url测试 可选参数pageNumber没有填的情况
+     * @throws Exception
+     */
     @Test
     public void testSearch3() throws Exception{
         url = "/search/text/All";

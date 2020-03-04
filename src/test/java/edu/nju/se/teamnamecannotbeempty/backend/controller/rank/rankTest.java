@@ -39,6 +39,11 @@ public class rankTest {
         mvc = MockMvcBuilders.standaloneSetup(rankController).build();
     }
 
+    /**
+     * 对RankController中 getRank的测试1
+     * 通过RankController对象直接调用方法
+     * @throws Exception
+     */
     @Test
     public void testGetRank1() throws Exception{
         ResponseVO responseVO = new ResponseVO();
@@ -49,6 +54,11 @@ public class rankTest {
         assertEquals(rankController.getRank("All",0,true,2010,2010),responseVO);
     }
 
+    /**
+     * 对RankController中 getRank的测试2
+     * 通过url测试 一般情况
+     * @throws Exception
+     */
     @Test
     public void testGetRank2() throws Exception{
         ResponseVO responseVO = new ResponseVO();
@@ -66,6 +76,11 @@ public class rankTest {
                 .andReturn();
     }
 
+    /**
+     * 对RankController中 getRank的测试3
+     * 通过url测试 不传可选参数pageNumber时
+     * @throws Exception
+     */
     @Test
     public void testGetRank3() throws Exception{
         ResponseVO responseVO = new ResponseVO();
