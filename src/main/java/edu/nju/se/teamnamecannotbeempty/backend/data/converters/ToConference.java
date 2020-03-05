@@ -4,11 +4,9 @@ import com.opencsv.bean.AbstractBeanField;
 import edu.nju.se.teamnamecannotbeempty.backend.AppContextProvider;
 import edu.nju.se.teamnamecannotbeempty.backend.dao.ConferenceDao;
 import edu.nju.se.teamnamecannotbeempty.backend.po.Conference;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Component
 public class ToConference extends AbstractBeanField {
     private final ConferenceDao conferenceDao;
 

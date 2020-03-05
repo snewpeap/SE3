@@ -1,4 +1,7 @@
 spring:
+  h2:
+    console:
+      enabled: false
   jpa:
     open-in-view: true
     show-sql: false
