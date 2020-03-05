@@ -164,8 +164,10 @@ public class PaperDelegation {
         paper.setInspec_controlled(ict);
         paper.setInspec_non_controlled(inct);
         paper.setMesh_terms(mt);
-        paper.setCitation(citation == null ? 0 : citation);
-        paper.setReference(reference == null ? 0 : citation);
+        if (citation == null) paper.setCitation(0);
+        else paper.setCitation(citation);
+        if (reference == null) paper.setReference(0);
+        else paper.setReference(reference);
         paper.setLicense(license);
         paper.setOnline_date(online_date);
         paper.setIssue_date(issue_date);
