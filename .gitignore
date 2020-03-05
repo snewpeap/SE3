@@ -62,3 +62,4 @@ sql/**
 !sql/.gitkeep
 
 /config/
+/src/main/groovy/pipeline.gdsl

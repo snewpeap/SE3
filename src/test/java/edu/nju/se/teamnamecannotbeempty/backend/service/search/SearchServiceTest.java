@@ -7,7 +7,6 @@ import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.mode.*;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.sortmode.*;
 import org.hibernate.search.exception.EmptyQueryException;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Collections;
@@ -28,21 +26,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @SpringBootTest(classes = BackendApplication.class,
-        webEnvironment = SpringBootTest.WebEnvironment.NONE,
-        properties = {"spring.jpa.hibernate.ddl-auto=none"}
+        webEnvironment = SpringBootTest.WebEnvironment.NONE
 )
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
-@Sql("classpath:import.sql")
 public class SearchServiceTest {
     @Autowired
     private SearchService searchService;
 
-    @Before
-    @Sql("classpath:import.sql")
-    public void setUp() {
-        System.out.println("set up");
-    }
+//    @Before
+//    @Sql("classpath:import.sql")
+//    public void setUp() {
+//        System.out.println("set up");
+//    }
 
     @Test
     public void testSearch_searchByTitle_noPage_relevance() {

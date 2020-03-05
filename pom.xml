@@ -13,6 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>backend</name>
     <description>Backend of se3 project</description>
+    <packaging>jar</packaging>
 
     <repositories>
         <repository>
@@ -132,6 +133,7 @@
     </dependencies>
 
     <build>
+        <finalName>se3</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

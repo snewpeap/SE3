@@ -1,0 +1,25 @@
+spring:
+  jpa:
+    open-in-view: true
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: edu.nju.se.teamnamecannotbeempty.backend.config.MyDialect
+        show_sql: false
+        format_sql: false
+        search:
+          analyzer: "noStopWords"
+          default:
+            directory_provider: "filesystem"
+            indexBase: "/var/lucene/indexes"
+    hibernate:
+      ddl-auto: validate
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://se3mysql:3306/se3?serverTimezone=CTT&characterEncoding=UTF-8
+    username: root
+    password: root
+
+server:
+  port: 9090

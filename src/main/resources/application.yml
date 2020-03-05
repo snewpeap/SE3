@@ -7,7 +7,7 @@ spring:
     show-sql: false
     properties:
       hibernate:
-        dialect: edu.nju.se.teamnamecannotbeempty.backend.config.MyDialect
+        dialect: org.hibernate.dialect.H2Dialect
         show_sql: false
         format_sql: false
         search:
