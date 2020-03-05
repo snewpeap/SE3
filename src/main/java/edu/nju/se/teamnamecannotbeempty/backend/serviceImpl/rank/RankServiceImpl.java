@@ -113,8 +113,9 @@ public class RankServiceImpl implements RankService {
     }
 
     private List<RankItem> affiliationPaper(List<Paper> paperList, boolean descend) {
-        List<Affiliation> affiliationList = paperList.stream().flatMap(paper -> paper.getAa().stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
-                new TreeSet<>(Comparator.comparing(a -> a.getAffiliation().getName() + ";" + a.getAffiliation().getCountry()))), ArrayList::new)).stream()
+        List<Affiliation> affiliationList = paperList.stream().flatMap(paper -> paper.getAa().stream().filter(author_affiliation -> !"".equals(author_affiliation.getAffiliation().getName()))
+                .collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
+                        new TreeSet<>(Comparator.comparing(a -> a.getAffiliation().getName() + ";" + a.getAffiliation().getCountry()))), ArrayList::new)).stream()
                 .map(Author_Affiliation::getAffiliation)).collect(Collectors.toList());
         Map<String, Long> affiliationPaperNums = affiliationList.stream().collect(Collectors.groupingBy(Affiliation::getName, Collectors.counting()));
         return mapToList(affiliationPaperNums, descend);
@@ -127,11 +128,11 @@ public class RankServiceImpl implements RankService {
     }
 
     private List<RankItem> keywordPaper(List<Paper> paperList, boolean descend) {
-        List<Term> termList = paperList.stream().flatMap(paper -> paper.getAuthor_keywords().stream()).collect(Collectors.toList());
-        termList.addAll(paperList.stream().flatMap(paper -> paper.getIeee_terms().stream()).collect(Collectors.toList()));
-        termList.addAll(paperList.stream().flatMap(paper -> paper.getInspec_controlled().stream()).collect(Collectors.toList()));
-        termList.addAll(paperList.stream().flatMap(paper -> paper.getInspec_non_controlled().stream()).collect(Collectors.toList()));
-        termList.addAll(paperList.stream().flatMap(paper -> paper.getMesh_terms().stream()).collect(Collectors.toList()));
+        List<Term> termList = paperList.stream().flatMap(paper -> paper.getAuthor_keywords().stream().filter(a->!"".equals(a.getContent()))).collect(Collectors.toList());
+        termList.addAll(paperList.stream().flatMap(paper -> paper.getIeee_terms().stream().filter(a->!"".equals(a.getContent()))).collect(Collectors.toList()));
+        termList.addAll(paperList.stream().flatMap(paper -> paper.getInspec_controlled().stream().filter(a->!"".equals(a.getContent()))).collect(Collectors.toList()));
+        termList.addAll(paperList.stream().flatMap(paper -> paper.getInspec_non_controlled().stream().filter(a->!"".equals(a.getContent()))).collect(Collectors.toList()));
+        termList.addAll(paperList.stream().flatMap(paper -> paper.getMesh_terms().stream().filter(a->!"".equals(a.getContent()))).collect(Collectors.toList()));
         Map<String, Long> termPaperNums = termList.stream().collect(Collectors.groupingBy(Term::getContent, Collectors.counting()));
         return mapToList(termPaperNums, descend);
     }
@@ -139,8 +140,8 @@ public class RankServiceImpl implements RankService {
     //从Paper的list转为AuthorPaperCitationNum的List
     private List<AuthorPaperCitationNum> getAuthorPaperCitationNumList(List<Paper> paperList) {
         return paperList.stream().
-                flatMap(paper -> paper.getAa().stream().
-                        map(author_affiliation -> new AuthorPaperCitationNum(author_affiliation.getAuthor().getName(), paper.getCitation())))
+                flatMap(paper -> paper.getAa().stream().filter(author_affiliation -> !"".equals(author_affiliation.getAuthor().getName()))
+                        .map(author_affiliation -> new AuthorPaperCitationNum(author_affiliation.getAuthor().getName(), paper.getCitation())))
                 .collect(Collectors.toList());
     }
 
