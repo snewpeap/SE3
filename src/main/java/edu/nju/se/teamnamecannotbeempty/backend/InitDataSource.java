@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
+import java.io.InputStream;
 
 @Component
 public class InitDataSource implements ApplicationListener<ContextRefreshedEvent> {
@@ -27,13 +27,15 @@ public class InitDataSource implements ApplicationListener<ContextRefreshedEvent
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (event.getApplicationContext().getParent() == null && runMe) {
-            File ase_csv = new File(getClass().getResource("/datasource/ase13_15_16_17_19.csv").getPath());
+            String name = "/datasource/ase13_15_16_17_19.csv";
+            InputStream ase_csv = getClass().getResourceAsStream(name);
             paperDao.saveAll(fromCSV.convert(ase_csv));
-            logger.info("Done Saving data from " + ase_csv.getName());
+            logger.info("Done Saving data from " + name);
 
-            File icse_csv = new File(getClass().getResource("/datasource/icse15_16_17_18_19.csv").getPath());
+            name = "/datasource/icse15_16_17_18_19.csv";
+            InputStream icse_csv = getClass().getResourceAsStream(name);
             paperDao.saveAll(fromCSV.convert(icse_csv));
-            logger.info("Done Saving data from " + icse_csv.getName());
+            logger.info("Done Saving data from " + name);
         }
     }
 }
