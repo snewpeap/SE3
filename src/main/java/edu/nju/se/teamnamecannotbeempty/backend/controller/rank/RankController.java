@@ -3,16 +3,14 @@ package edu.nju.se.teamnamecannotbeempty.backend.controller.rank;
 import edu.nju.se.teamnamecannotbeempty.backend.service.rank.RankService;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 排行
  * @author ava_xu
  *
  */
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 public class RankController {
     @Autowired RankService rankService;
