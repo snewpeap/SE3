@@ -12,6 +12,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.QueryScorer;
 import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
+import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
@@ -80,7 +81,10 @@ public class SearchServiceHibernateImpl implements SearchService {
 
         List<Paper> result = fullTextQuery.getResultList();
 
-        result.forEach(paper -> mode.highlight(highlighter, new StandardAnalyzer(CharArraySet.EMPTY_SET), paper));
+        for (Paper paper : result) {
+            mode.highlight(highlighter, new StandardAnalyzer(CharArraySet.EMPTY_SET), paper);
+            entityManager.unwrap(Session.class).evict(paper);
+        }
 
         return new PageImpl<>(result, pageable, total);
     }

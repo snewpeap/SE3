@@ -43,11 +43,14 @@ public class SearchServiceTest {
 
     @Test
     public void testSearch_searchByTitle_noPage_relevance() {
-        Page<Paper> result = searchService.search(
-                "data",
-                AppContextProvider.getBean(SearchByTitle.class),
-                Pageable.unpaged()
-        );
+        Page<Paper> result = null;
+        for (int i=0;i<5;i++) {
+            result = searchService.search(
+                    "data",
+                    AppContextProvider.getBean(SearchByTitle.class),
+                    Pageable.unpaged()
+            );
+        }
         assertNotNull(result);
         assertEquals(1, result.getTotalPages());
     }
@@ -115,6 +118,21 @@ public class SearchServiceTest {
                 AppContextProvider.getBean(SearchByConference.class),
                 Pageable.unpaged()
         );
+        assertNotNull(result);
+        assertEquals(1, result.getTotalPages());
+        result.forEach(paper -> Assert.assertEquals("ase", paper.getConference().getName()));
+    }
+
+    @Test
+    public void testSearch_searchByConference_noPage_relevance_5() {
+        Page<Paper> result = null;
+        for (int i=0;i<5;i++) {
+            result = searchService.search(
+                    "ase",
+                    AppContextProvider.getBean(SearchByConference.class),
+                    Pageable.unpaged()
+            );
+        }
         assertNotNull(result);
         assertEquals(1, result.getTotalPages());
         result.forEach(paper -> Assert.assertEquals("ase", paper.getConference().getName()));

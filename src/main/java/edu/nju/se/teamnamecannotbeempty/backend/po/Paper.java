@@ -43,7 +43,7 @@ public class Paper {
     @IndexedEmbedded
     // 发表论文的每个作者-机构构成的对象的列表
     private List<Author_Affiliation> aa = new ArrayList<>();
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "conference_id", foreignKey = @ForeignKey(name = "FK_PAPER_CONFERENCE"))
     @IndexedEmbedded
     // 会议对象。对应数据中的出版物
@@ -70,23 +70,23 @@ public class Paper {
     private String funding_info;
     // pdf原文链接
     private URL pdf_link;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.DETACH)
     @IndexedEmbedded
     // 作者给出的关键字
     private List<Term> author_keywords = new ArrayList<>();
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.DETACH)
     @IndexedEmbedded
     // IEEE术语
     private List<Term> ieee_terms = new ArrayList<>();
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.DETACH)
     @IndexedEmbedded
     // INSPEC受控索引，有限集合
     private List<Term> inspec_controlled = new ArrayList<>();
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.DETACH)
     @IndexedEmbedded
     // INSPEC非受控索引，无限集合
     private List<Term> inspec_non_controlled = new ArrayList<>();
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.DETACH)
     // mesh terms，作用未知
     private List<Term> mesh_terms = new ArrayList<>();
     // 被引数

@@ -10,7 +10,7 @@ import org.hibernate.search.query.dsl.TermMatchingContext;
 import org.springframework.stereotype.Component;
 
 @Component("All")
-public class FuzzySearch implements SearchMode {
+public class FuzzySearch extends SearchMode {
     @Override
     public TermMatchingContext getFieldsBaseOnKeyword(QueryBuilder queryBuilder) {
         return queryBuilder.keyword().onFields(
@@ -34,7 +34,6 @@ public class FuzzySearch implements SearchMode {
     }
 
     @Override
-    public Paper highlight(Highlighter highlighter, Analyzer analyzer, Paper paper) {
-        return paper;
+    public void highlight(Highlighter highlighter, Analyzer analyzer, Paper paper) {
     }
 }

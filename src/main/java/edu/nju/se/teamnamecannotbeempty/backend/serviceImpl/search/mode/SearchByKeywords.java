@@ -9,12 +9,14 @@ import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.search.query.dsl.SimpleQueryStringMatchingContext;
 import org.hibernate.search.query.dsl.TermMatchingContext;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component("Keyword")
-public class SearchByKeywords implements SearchMode {
+public class SearchByKeywords extends SearchMode {
     @Override
     public TermMatchingContext getFieldsBaseOnKeyword(QueryBuilder queryBuilder) {
         return queryBuilder.keyword().onFields(
@@ -36,18 +38,23 @@ public class SearchByKeywords implements SearchMode {
     }
 
     @Override
-    public Paper highlight(Highlighter highlighter, Analyzer analyzer, Paper paper) {
-        for (Term term : paper.getAuthor_keywords()) {
+    public void highlight(Highlighter highlighter, Analyzer analyzer, Paper paper) {
+        List<Term> author_keywords = paper.getAuthor_keywords();
+        for (int i = 0; i < author_keywords.size(); i++) {
+            Term term = author_keywords.get(i);
+            Term copy = new Term();
+            BeanUtils.copyProperties(term, copy);
             String hl = null;
             try {
-                hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_authorKeywords(), term.getContent());
+                hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_authorKeywords(), copy.getContent());
             } catch (IOException | InvalidTokenOffsetsException e) {
                 e.printStackTrace();
             } finally {
-                if (hl != null)
-                    term.setContent(hl);
+                if (hl != null) {
+                    copy.setContent(hl);
+                    author_keywords.set(i, copy);
+                }
             }
         }
-        return paper;
     }
 }

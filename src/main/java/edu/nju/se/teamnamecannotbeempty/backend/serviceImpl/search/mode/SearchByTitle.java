@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component("Title")
-public class SearchByTitle implements SearchMode {
+public class SearchByTitle extends SearchMode {
     @Override
     public TermMatchingContext getFieldsBaseOnKeyword(QueryBuilder queryBuilder) {
         return queryBuilder.keyword().onField(Paper.getFieldName_title());
@@ -25,16 +25,18 @@ public class SearchByTitle implements SearchMode {
     }
 
     @Override
-    public Paper highlight(Highlighter highlighter, Analyzer analyzer, Paper paper) {
+    public void highlight(Highlighter highlighter, Analyzer analyzer, Paper paper) {
         String hl = null;
         try {
-            hl = highlighter.getBestFragment(analyzer,Paper.getFieldName_title(),paper.getTitle());
+            String text = paper.getTitle();
+            hl = highlighter.getBestFragment(analyzer,Paper.getFieldName_title(),text);
         } catch (IOException | InvalidTokenOffsetsException e) {
             e.printStackTrace();
         } finally {
-            if (hl != null)
+            if (hl != null) {
+                evict(paper);
                 paper.setTitle(hl);
+            }
         }
-        return paper;
     }
 }

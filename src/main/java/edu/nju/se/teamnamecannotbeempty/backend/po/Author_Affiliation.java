@@ -2,15 +2,16 @@ package edu.nju.se.teamnamecannotbeempty.backend.po;
 
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 
 @Embeddable
 public class Author_Affiliation {
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     @IndexedEmbedded(depth = 1)
     private Author author;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     @IndexedEmbedded(depth = 1)
     private Affiliation affiliation;
 
