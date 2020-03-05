@@ -2,7 +2,7 @@ FROM openjdk:8-jre-alpine
 
 ADD ./target/se3.jar /app.jar
 
-RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 EXPOSE 9090
 
