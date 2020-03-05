@@ -38,26 +38,26 @@ public class PaperServiceImpl implements PaperService {
 
     @Override
     public List<SimplePaperVO> search(String text, String mode, Integer pageNumber, String sortMode, int perPage) {
-        if(pageNumber==null||pageNumber<=0) pageNumber=1;
-        SearchMode searchMode = (SearchMode)ApplicationContextUtil.getBean(mode);
-        Pageable pageable = PageRequest.of(pageNumber-1,perPage);
-        SortMode sort = (SortMode)ApplicationContextUtil.getBean(sortMode);
-        Page<Paper> paperPage = searchService.search(text,searchMode,pageable,sort);
+        if (pageNumber == null || pageNumber <= 0) pageNumber = 1;
+        SearchMode searchMode = (SearchMode) ApplicationContextUtil.getBean(mode);
+        Pageable pageable = PageRequest.of(pageNumber - 1, perPage);
+        SortMode sort = (SortMode) ApplicationContextUtil.getBean(sortMode);
+        Page<Paper> paperPage = searchService.search(text, searchMode, pageable, sort);
         List<Paper> paperList = paperPage.getContent();
         List<SimplePaperVO> simplePaperVOList = new ArrayList<>();
-        for (Paper paper:paperList){
+        for (Paper paper : paperList) {
             List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS = new ArrayList<>();
             List<Author_Affiliation> author_affiliations = paper.getAa();
-            for(Author_Affiliation author_affiliation:author_affiliations){
+            for (Author_Affiliation author_affiliation : author_affiliations) {
                 author_simpleAffiliationVOS.add(new Author_SimpleAffiliationVO(author_affiliation.getAuthor().getName(),
                         author_affiliation.getAffiliation().getName()));
             }
             List<String> keywords = new ArrayList<>();
             List<Term> termList = paper.getAuthor_keywords();
-            for(Term term:termList){
+            for (Term term : termList) {
                 keywords.add(term.getContent());
             }
-            simplePaperVOList.add(new SimplePaperVO(paper.getId(),paper.getTitle(), author_simpleAffiliationVOS, paper.getConference().getName(), keywords));
+            simplePaperVOList.add(new SimplePaperVO(paper.getId(), paper.getTitle(), author_simpleAffiliationVOS, paper.getConference().getName(), keywords));
         }
         return simplePaperVOList;
     }
@@ -68,7 +68,7 @@ public class PaperServiceImpl implements PaperService {
     public ResponseVO getPaper(long id) {
         Optional<Paper> optionalPaper = paperDao.findById(id);
         ResponseVO responseVO;
-        if(!optionalPaper.isPresent()){
+        if (!optionalPaper.isPresent()) {
             responseVO = ResponseVO.fail();
             responseVO.setMessage(paperMsg.getMismatchId());
             return responseVO;
@@ -76,7 +76,7 @@ public class PaperServiceImpl implements PaperService {
         Paper paper = optionalPaper.get();
         List<Author_AffiliationVO> author_affiliationVOS = new ArrayList<>();
         List<Author_Affiliation> author_affiliations = paper.getAa();
-        for(Author_Affiliation author_affiliation:author_affiliations){
+        for (Author_Affiliation author_affiliation : author_affiliations) {
             author_affiliationVOS.add(new Author_AffiliationVO(author_affiliation.getAuthor().getName(),
                     author_affiliation.getAffiliation().getName(), author_affiliation.getAffiliation().getCountry()));
         }
@@ -92,11 +92,21 @@ public class PaperServiceImpl implements PaperService {
         ieees = termList_IEEE.stream().map(Term::getContent).collect(Collectors.toList());
         controls = termList_control.stream().map(Term::getContent).collect(Collectors.toList());
         noncontrols = termList_noncontrol.stream().map(Term::getContent).collect(Collectors.toList());
-        String pdf = paper.getPdf_link()==null?null:paper.getPdf_link().toString();
+        String pdf = paper.getPdf_link() == null ? null : paper.getPdf_link().toString();
+
         responseVO = ResponseVO.success();
-        responseVO.setContent(new PaperVO(paper.getId(),paper.getTitle(),author_affiliationVOS,paper.getConference().getName(),paper.getConference().getYear(),paper.getStart_page(),
-                paper.getEnd_page(),paper.getSummary(),paper.getDoi(),pdf,keywords,ieees,controls,
-                noncontrols,paper.getCitation(),paper.getReference(),paper.getPublisher(),paper.getDocument_identifier()));
+        responseVO.setContent(new PaperVO(paper.getId(), paper.getTitle(), author_affiliationVOS, paper.getConference().getName(), paper.getConference().getYear(),
+                assembleOrdno(paper.getConference().getOrdno()), paper.getStart_page(),
+                paper.getEnd_page(), paper.getSummary(), paper.getDoi(), pdf, keywords, ieees, controls,
+                noncontrols, paper.getCitation(), paper.getReference(), paper.getPublisher(), paper.getDocument_identifier()));
         return responseVO;
+    }
+
+    private String assembleOrdno(Integer ordno) {
+        if (ordno == null) return null;
+        if (ordno == 1 || ordno % 10 == 1) return ordno + "st";
+        if (ordno == 2 || ordno % 10 == 2) return ordno + "nd";
+        if (ordno == 3 || ordno % 10 == 3) return ordno + "rd";
+        return ordno + "th";
     }
 }

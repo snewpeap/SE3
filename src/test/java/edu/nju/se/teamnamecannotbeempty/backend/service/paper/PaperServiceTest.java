@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
-@PowerMockIgnore({ "com.*", "io.*", "org.*", "ch.*", "javax.validation.*" })
+@PowerMockIgnore({"com.*", "io.*", "org.*", "ch.*", "javax.validation.*"})
 @PrepareForTest({ApplicationContextUtil.class, PageRequest.class})
 @SpringBootTest
 public class PaperServiceTest {
@@ -52,7 +52,7 @@ public class PaperServiceTest {
     private Optional<Paper> optionalPaper;
 
     @Before
-    public void setup(){
+    public void setup() {
         SearchMode searchMode = mock(SearchMode.class);
         SortMode sortMode = mock(SortMode.class);
         paperPage = mock(Page.class);
@@ -63,14 +63,14 @@ public class PaperServiceTest {
 
         PowerMockito.when(ApplicationContextUtil.getBean(anyString())).thenReturn(searchMode).thenReturn(sortMode);
 
-        when(searchService.search(anyString(),any(),any(),any())).thenReturn(paperPage);
+        when(searchService.search(anyString(), any(), any(), any())).thenReturn(paperPage);
         when(paperMsg.getMismatchId()).thenReturn("找不到ID所对应的论文");
 
 
     }
 
     @Test
-    public void testSearch(){
+    public void testSearch() {
 
         Paper paper1 = mock(Paper.class);
         Paper paper2 = mock(Paper.class);
@@ -131,41 +131,42 @@ public class PaperServiceTest {
 
         when(paperPage.getContent()).thenReturn(Arrays.asList(paper1, paper2, paper3));
 
-        Author_SimpleAffiliationVO author_simpleAffiliationVO1 = new Author_SimpleAffiliationVO("YangYang","NanJingDaXue");
-        Author_SimpleAffiliationVO author_simpleAffiliationVO2 = new Author_SimpleAffiliationVO("RiRi","BeiJingDaXue");
-        Author_SimpleAffiliationVO author_simpleAffiliationVO3 = new Author_SimpleAffiliationVO("DongDong","TianJinDaXue");
-        List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS1 = Arrays.asList(author_simpleAffiliationVO1,author_simpleAffiliationVO2,author_simpleAffiliationVO3);
-        List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS2 = Arrays.asList(author_simpleAffiliationVO1,author_simpleAffiliationVO3);
-        List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS3 = Arrays.asList(author_simpleAffiliationVO2,author_simpleAffiliationVO3);
-        List<String> key1 = Arrays.asList("Soft","Hard");
+        Author_SimpleAffiliationVO author_simpleAffiliationVO1 = new Author_SimpleAffiliationVO("YangYang", "NanJingDaXue");
+        Author_SimpleAffiliationVO author_simpleAffiliationVO2 = new Author_SimpleAffiliationVO("RiRi", "BeiJingDaXue");
+        Author_SimpleAffiliationVO author_simpleAffiliationVO3 = new Author_SimpleAffiliationVO("DongDong", "TianJinDaXue");
+        List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS1 = Arrays.asList(author_simpleAffiliationVO1, author_simpleAffiliationVO2, author_simpleAffiliationVO3);
+        List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS2 = Arrays.asList(author_simpleAffiliationVO1, author_simpleAffiliationVO3);
+        List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS3 = Arrays.asList(author_simpleAffiliationVO2, author_simpleAffiliationVO3);
+        List<String> key1 = Arrays.asList("Soft", "Hard");
         List<String> key2 = Collections.singletonList("Soft");
 
 
-        SimplePaperVO simplePaperVO1 = new SimplePaperVO(paper1.getId(), paper1.getTitle(),author_simpleAffiliationVOS1, paper1.getConference().getName(),key1);
-        SimplePaperVO simplePaperVO2 = new SimplePaperVO(paper2.getId(), paper2.getTitle(),author_simpleAffiliationVOS2, paper2.getConference().getName(),key2);
-        SimplePaperVO simplePaperVO3 = new SimplePaperVO(paper3.getId(), paper3.getTitle(),author_simpleAffiliationVOS3, paper3.getConference().getName(),new ArrayList<>());
-        List<SimplePaperVO> simplePaperVOList = Arrays.asList(simplePaperVO1,simplePaperVO2,simplePaperVO3);
-        List<SimplePaperVO> result = paperService.search("1","1",1,"!",1);
-        Assert.assertEquals(simplePaperVOList,result);
+        SimplePaperVO simplePaperVO1 = new SimplePaperVO(paper1.getId(), paper1.getTitle(), author_simpleAffiliationVOS1, paper1.getConference().getName(), key1);
+        SimplePaperVO simplePaperVO2 = new SimplePaperVO(paper2.getId(), paper2.getTitle(), author_simpleAffiliationVOS2, paper2.getConference().getName(), key2);
+        SimplePaperVO simplePaperVO3 = new SimplePaperVO(paper3.getId(), paper3.getTitle(), author_simpleAffiliationVOS3, paper3.getConference().getName(), new ArrayList<>());
+        List<SimplePaperVO> simplePaperVOList = Arrays.asList(simplePaperVO1, simplePaperVO2, simplePaperVO3);
+        List<SimplePaperVO> result = paperService.search("1", "1", 1, "!", 1);
+        Assert.assertEquals(simplePaperVOList, result);
 
     }
 
     @Test
-    public void testGetPaperSuccess(){
-        Author author1 = getAuthor((long)0,"ZhenZhen");
-        Author author2 = getAuthor((long)1, "PiaoLiang");
-        Affiliation affiliation1 = getAffiliation((long)0, "NJU","NanJing");
-        Affiliation affiliation2 = getAffiliation((long)1, "ZhengXingYiYuan", "TianTangDao");
-        Author_Affiliation aa1 = getAuthor_Affiliation(author1,affiliation1);
-        Author_Affiliation aa2 = getAuthor_Affiliation(author2,affiliation2);
-        Term term1 = getTerm((long)0,"Beauty"); Term term2 = getTerm((long)1, "Handsome");
-        List<Term> termList = Arrays.asList(term1,term2);
+    public void testGetPaperSuccess() {
+        Author author1 = getAuthor((long) 0, "ZhenZhen");
+        Author author2 = getAuthor((long) 1, "PiaoLiang");
+        Affiliation affiliation1 = getAffiliation((long) 0, "NJU", "NanJing");
+        Affiliation affiliation2 = getAffiliation((long) 1, "ZhengXingYiYuan", "TianTangDao");
+        Author_Affiliation aa1 = getAuthor_Affiliation(author1, affiliation1);
+        Author_Affiliation aa2 = getAuthor_Affiliation(author2, affiliation2);
+        Term term1 = getTerm((long) 0, "Beauty");
+        Term term2 = getTerm((long) 1, "Handsome");
+        List<Term> termList = Arrays.asList(term1, term2);
 
         Paper paper = new Paper();
         paper.setId((long) 0);
         paper.setTitle("Do You Want To Be More Beautiful?");
-        paper.setAa(Arrays.asList(aa1,aa2));
-        paper.setConference(getConference(0,"GKD",2121,99));
+        paper.setAa(Arrays.asList(aa1, aa2));
+        paper.setConference(getConference(0, "GKD", 2121, 99));
         Date date = new Date();
         paper.setDate_added_Xplore(date);
         paper.setVolume(33);
@@ -177,48 +178,51 @@ public class PaperServiceTest {
         paper.setDoi("1001");
         paper.setFunding_info("12138");
         paper.setPdf_link(null);
-        paper.setAuthor_keywords(termList); paper.setMesh_terms(termList);
-        paper.setCitation(1); paper.setReference(100);
+        paper.setAuthor_keywords(termList);
+        paper.setMesh_terms(termList);
+        paper.setCitation(1);
+        paper.setReference(100);
         optionalPaper = Optional.of(paper);
 
         when(paperDao.findById(anyLong())).thenReturn(optionalPaper);
 
-        List<String> keywords = Arrays.asList("Beauty","Handsome");
-        Author_AffiliationVO author_affiliationVO1 = new Author_AffiliationVO("ZhenZhen","NJU","NanJing");
-        Author_AffiliationVO author_affiliationVO2 = new Author_AffiliationVO("PiaoLiang","ZhengXingYiYuan", "TianTangDao");
-        PaperVO paperVO = new PaperVO((long)0,"Do You Want To Be More Beautiful?",Arrays.asList(author_affiliationVO1,author_affiliationVO2),
-                "GKD",2121,12,
-                23,"I do not want to write test case!","1001",null,keywords,new ArrayList<>(),new ArrayList<>(),
-                new ArrayList<>(),1,100,null,null);
-        ResponseVO responseVO = paperService.getPaper((long)0);
+        List<String> keywords = Arrays.asList("Beauty", "Handsome");
+        Author_AffiliationVO author_affiliationVO1 = new Author_AffiliationVO("ZhenZhen", "NJU", "NanJing");
+        Author_AffiliationVO author_affiliationVO2 = new Author_AffiliationVO("PiaoLiang", "ZhengXingYiYuan", "TianTangDao");
+        PaperVO paperVO = new PaperVO((long) 0, "Do You Want To Be More Beautiful?", Arrays.asList(author_affiliationVO1, author_affiliationVO2),
+                "GKD", 2121, "99th", 12,
+                23, "I do not want to write test case!", "1001", null, keywords, new ArrayList<>(), new ArrayList<>(),
+                new ArrayList<>(), 1, 100, null, null);
+        ResponseVO responseVO = paperService.getPaper((long) 0);
         Assert.assertTrue(responseVO.isSuccess());
         Assert.assertEquals(paperVO, responseVO.getContent());
 
     }
 
     @Test
-    public void testGetPaperFail(){
+    public void testGetPaperFail() {
         optionalPaper = Optional.empty();
         when(paperDao.findById(anyLong())).thenReturn(optionalPaper);
-        ResponseVO responseVO = paperService.getPaper((long)0);
+        ResponseVO responseVO = paperService.getPaper((long) 0);
         Assert.assertFalse(responseVO.isSuccess());
-        Assert.assertEquals("找不到ID所对应的论文",responseVO.getMessage());
+        Assert.assertEquals("找不到ID所对应的论文", responseVO.getMessage());
     }
 
-    private Author_Affiliation getAuthor_Affiliation(Author author, Affiliation affiliation){
+    private Author_Affiliation getAuthor_Affiliation(Author author, Affiliation affiliation) {
         Author_Affiliation author_affiliation = new Author_Affiliation();
-        author_affiliation.setAuthor(author); author_affiliation.setAffiliation(affiliation);
+        author_affiliation.setAuthor(author);
+        author_affiliation.setAffiliation(affiliation);
         return author_affiliation;
     }
 
-    private Author getAuthor(long id, String name){
+    private Author getAuthor(long id, String name) {
         Author author = new Author();
         author.setId(id);
         author.setName(name);
         return author;
     }
 
-    private Affiliation getAffiliation(long id, String name, String country){
+    private Affiliation getAffiliation(long id, String name, String country) {
         Affiliation affiliation = new Affiliation();
         affiliation.setId(id);
         affiliation.setName(name);
@@ -226,15 +230,19 @@ public class PaperServiceTest {
         return affiliation;
     }
 
-    private Conference getConference(long id, String name, int year, int ordno){
+    private Conference getConference(long id, String name, int year, int ordno) {
         Conference conference = new Conference();
-        conference.setId(id); conference.setName(name); conference.setYear(year); conference.setOrdno(ordno);
+        conference.setId(id);
+        conference.setName(name);
+        conference.setYear(year);
+        conference.setOrdno(ordno);
         return conference;
     }
 
-    private Term getTerm(long id, String content){
+    private Term getTerm(long id, String content) {
         Term term = new Term();
-        term.setId(id); term.setContent(content);
+        term.setId(id);
+        term.setContent(content);
         return term;
     }
 }
