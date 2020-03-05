@@ -4,11 +4,9 @@ import com.opencsv.bean.AbstractCsvConverter;
 import edu.nju.se.teamnamecannotbeempty.backend.AppContextProvider;
 import edu.nju.se.teamnamecannotbeempty.backend.dao.AuthorDao;
 import edu.nju.se.teamnamecannotbeempty.backend.po.Author;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Component
 public class ToAuthor extends AbstractCsvConverter {
     private final AuthorDao authorDao;
 

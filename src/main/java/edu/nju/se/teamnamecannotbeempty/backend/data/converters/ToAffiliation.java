@@ -4,11 +4,9 @@ import com.opencsv.bean.AbstractCsvConverter;
 import edu.nju.se.teamnamecannotbeempty.backend.AppContextProvider;
 import edu.nju.se.teamnamecannotbeempty.backend.dao.AffiliationDao;
 import edu.nju.se.teamnamecannotbeempty.backend.po.Affiliation;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Component
 public class ToAffiliation extends AbstractCsvConverter {
     private final AffiliationDao affiliationDao;
 

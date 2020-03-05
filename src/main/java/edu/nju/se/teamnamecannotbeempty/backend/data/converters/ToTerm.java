@@ -4,11 +4,9 @@ import com.opencsv.bean.AbstractCsvConverter;
 import edu.nju.se.teamnamecannotbeempty.backend.AppContextProvider;
 import edu.nju.se.teamnamecannotbeempty.backend.dao.TermDao;
 import edu.nju.se.teamnamecannotbeempty.backend.po.Term;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Component
 public class ToTerm extends AbstractCsvConverter {
     private final TermDao termDao;
 
