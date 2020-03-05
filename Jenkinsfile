@@ -20,7 +20,7 @@ node {
     }
     def image
     stage("docker-build") {
-        sh "docker build -f Dockerfile -t se3app:1.$BUILD_NUMBER ."
+        sh "docker build -f Dockerfile -t se3app:1.$BUILD_NUMBER /"
     }
     stage("restart") {
         try {

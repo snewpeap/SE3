@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "papers", schema = "se3")
+@Table(name = "papers")
 @Indexed
 @AnalyzerDef(
         name = "noStopWords",

@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "affiliations", schema = "se3")
+@Table(name = "affiliations")
 public class Affiliation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
