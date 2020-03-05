@@ -7,6 +7,7 @@ import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.mode.*;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.sortmode.*;
 import org.hibernate.search.exception.EmptyQueryException;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +31,15 @@ import static org.junit.Assert.assertNotNull;
 )
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
+//@Sql("classpath:import.sql")
 public class SearchServiceTest {
     @Autowired
     private SearchService searchService;
 
-//    @Before
-//    @Sql("classpath:import.sql")
-//    public void setUp() {
-//        System.out.println("set up");
-//    }
+    @Before
+    public void setUp() {
+        System.out.println("set up");
+    }
 
     @Test
     public void testSearch_searchByTitle_noPage_relevance() {

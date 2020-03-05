@@ -32,7 +32,7 @@ public class FromCSVOpenCSVImpl {
         List<Paper> papers = new ArrayList<>();
         for (PaperDelegation delegation : delegations) {
             Paper paper = delegation.toPaper();
-            if (paper != null)
+            if (paper != null && paper.getAa() != null)
                 papers.add(delegation.toPaper());
         }
         return papers;

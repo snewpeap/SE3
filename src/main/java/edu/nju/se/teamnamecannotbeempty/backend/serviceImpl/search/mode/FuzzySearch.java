@@ -2,6 +2,8 @@ package edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.mode;
 
 import edu.nju.se.teamnamecannotbeempty.backend.po.Paper;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchMode;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.search.highlight.Highlighter;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.search.query.dsl.SimpleQueryStringMatchingContext;
 import org.hibernate.search.query.dsl.TermMatchingContext;
@@ -29,5 +31,10 @@ public class FuzzySearch implements SearchMode {
                 Paper.getFieldName_conference(),
                 Paper.getFieldName_authorKeywords()
         );
+    }
+
+    @Override
+    public Paper highlight(Highlighter highlighter, Analyzer analyzer, Paper paper) {
+        return paper;
     }
 }

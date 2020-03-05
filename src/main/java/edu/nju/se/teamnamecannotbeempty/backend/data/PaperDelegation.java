@@ -143,6 +143,10 @@ public class PaperDelegation {
         }
         ArrayList<Author_Affiliation> aas = new ArrayList<>();
         for (int i = 0; i < Math.min(authors.size(), affiliations.size()); i++) {
+            if (authors.get(i).getName().isEmpty()) {
+                aas = null;
+                break;
+            }
             aas.add(new Author_Affiliation(authors.get(i), affiliations.get(i)));
         }
         paper.setTitle(title);

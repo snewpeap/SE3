@@ -6,7 +6,12 @@ import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchMode;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchService;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SortMode;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.sortmode.Relevance;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.highlight.Highlighter;
+import org.apache.lucene.search.highlight.QueryScorer;
+import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
@@ -69,7 +74,13 @@ public class SearchServiceHibernateImpl implements SearchService {
         int maxResult = pageable.isUnpaged() ? total : pageable.getPageSize();
         fullTextQuery.setFirstResult(firstResultIndex);
         fullTextQuery.setMaxResults(maxResult);
+
+        SimpleHTMLFormatter formatter = new SimpleHTMLFormatter("<b><span style=\"color: #b04c50; \">", "</span></b>");
+        Highlighter highlighter = new Highlighter(formatter, new QueryScorer(luceneQuery));
+
         List<Paper> result = fullTextQuery.getResultList();
+
+        result.forEach(paper -> mode.highlight(highlighter, new StandardAnalyzer(CharArraySet.EMPTY_SET), paper));
 
         return new PageImpl<>(result, pageable, total);
     }
