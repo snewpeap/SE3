@@ -16,11 +16,11 @@ node {
 //    env.PATH = "${mvn}/bin:@{env.PATH}"
     stage("mvn") {
         sh 'sh ./mvnw clean package -Dmaven.test.skip=true'
-        sh "cp {$WORKSPACE}/target/se3.jar /tmp/se3.jar"
+        sh "cp $WORKSPACE/target/se3.jar /tmp/se3.jar"
     }
     def image
     stage("docker-build") {
-        sh "docker build -f Dockerfile -t se3app:1.${BUILD_NUMBER} ."
+        sh "docker build -f Dockerfile -t se3app:1.$BUILD_NUMBER ."
     }
     stage("restart") {
         try {
@@ -28,6 +28,6 @@ node {
         } catch(ignored){
             echo('container\'s not running')
         }
-        sh " docker run -p 9090:9090 -v /etc/localtime:/etc/localtime --link se3mysql:se3mysql --name se3 se3app:1.${BUILD_NUMBER}"
+        sh " docker run -p 9090:9090 -v /etc/localtime:/etc/localtime --link se3mysql:se3mysql --name se3 se3app:1.$BUILD_NUMBER"
     }
 }
