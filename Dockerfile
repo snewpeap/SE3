@@ -1,6 +1,6 @@
 FROM openjdk:8-jre-alpine
 
-ADD /tmp/se3.jar /app.jar
+ADD ./target/se3.jar /app.jar
 
 EXPOSE 9090
 
