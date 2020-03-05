@@ -14,7 +14,7 @@ public class ApplicationContextUtil implements ApplicationContextAware {
         ApplicationContextUtil.applicationContext = applicationContext;
     }
 
-    public static Object getBean(String mode){
+    public static Object getBean(String mode) {
         return applicationContext.getBean(mode);
     }
 }
