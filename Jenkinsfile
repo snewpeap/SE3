@@ -12,8 +12,8 @@ node {
                 ]
         ])
     }
-    def mvn = tool('maven3')
-    env.PATH = "${mvn}/bin:@{env.PATH}"
+//    def mvn = tool('maven3')
+//    env.PATH = "${mvn}/bin:@{env.PATH}"
     stage("mvn") {
         sh 'sh ./mvnw clean package -Dmaven.test.skip=true'
         sh "cp {$WORKSPACE}/target/se3.jar /tmp/se3.jar"
