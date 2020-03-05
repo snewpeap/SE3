@@ -26,7 +26,14 @@ node {
         try {
             sh 'docker rm -f se3'
         } catch(ignored){
-            echo('container\'s not running')
+            echo('Container\'s not running')
+        }
+        try {
+            def toDel = $BUILD_NUMBER - 10
+            sh "docker rmi se3app:1.$toDel"
+            echo("Image No.$toDel deleted")
+        } catch(ignored){
+            echo('No outdated image to delete')
         }
         sh " docker run -d -p 9090:9090 -v /etc/localtime:/etc/localtime --link se3mysql:se3mysql --name se3 se3app:1.$BUILD_NUMBER"
     }
