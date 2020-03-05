@@ -13,15 +13,13 @@ spring:
             directory_provider: "filesystem"
             indexBase: "/var/lucene/indexes"
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://se3mysql:3306/se3?serverTimezone=CTT&characterEncoding=UTF-8
     username: root
     password: root
-    initialization-mode: always
-    schema: classpath:schema.sql
 
 server:
   port: 9090

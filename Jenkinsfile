@@ -28,6 +28,6 @@ node {
         } catch(ignored){
             echo('container\'s not running')
         }
-        sh " docker run -p 9090:9090 -v /etc/localtime:/etc/localtime --link se3mysql:se3mysql --name se3 se3app:1.$BUILD_NUMBER"
+        sh " docker run -d -p 9090:9090 -v /etc/localtime:/etc/localtime --link se3mysql:se3mysql --name se3 se3app:1.$BUILD_NUMBER"
     }
 }
