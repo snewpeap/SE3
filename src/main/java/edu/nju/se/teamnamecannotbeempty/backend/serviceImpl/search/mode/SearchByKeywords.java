@@ -20,20 +20,14 @@ public class SearchByKeywords extends SearchMode {
     @Override
     public TermMatchingContext getFieldsBaseOnKeyword(QueryBuilder queryBuilder) {
         return queryBuilder.keyword().onFields(
-                Paper.getFieldName_authorKeywords(),
-                Paper.getFieldName_ieeeTerms(),
-                Paper.getFieldName_inspecControlled(),
-                Paper.getFieldName_inspecNonControlled()
+                Paper.getFieldName_authorKeywords()
         );
     }
 
     @Override
     public SimpleQueryStringMatchingContext getFieldsBaseOnSQS(QueryBuilder queryBuilder) {
         return queryBuilder.simpleQueryString().onFields(
-                Paper.getFieldName_authorKeywords(),
-                Paper.getFieldName_ieeeTerms(),
-                Paper.getFieldName_inspecControlled(),
-                Paper.getFieldName_inspecNonControlled()
+                Paper.getFieldName_authorKeywords()
         );
     }
 

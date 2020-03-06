@@ -1,5 +1,6 @@
 package edu.nju.se.teamnamecannotbeempty.backend.po;
 
+import org.apache.lucene.analysis.core.WhitespaceTokenizerFactory;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.search.annotations.Index;
@@ -17,12 +18,12 @@ import java.util.List;
 @AnalyzerDef(
         name = "noStopWords",
         tokenizer = @TokenizerDef(
-                factory = org.apache.lucene.analysis.standard.StandardTokenizerFactory.class
+                factory = WhitespaceTokenizerFactory.class
         ),
         filters = {
-                @TokenFilterDef(
-                        factory = org.apache.lucene.analysis.standard.StandardFilterFactory.class
-                ),
+//                @TokenFilterDef(
+//                        factory = org.apache.lucene.analysis.standard.StandardFilterFactory.class
+//                ),
                 @TokenFilterDef(
                         factory = org.apache.lucene.analysis.core.LowerCaseFilterFactory.class
                 )
