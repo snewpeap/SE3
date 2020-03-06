@@ -21,6 +21,8 @@ import java.util.List;
 
 public class PaperDelegation {
     private static Logger logger = LoggerFactory.getLogger(PaperDelegation.class);
+    public static final String DEFAULT_SPLIT_ON = "; ";
+    private static final String TERMS_SPLIT_ON = ";|, ";
 
     @CsvBindByPosition(position = 0)
     private String title;
@@ -28,7 +30,7 @@ public class PaperDelegation {
     @CsvBindAndSplitByPosition(
             position = 1,
             elementType = Author.class,
-            splitOn = "; ",
+            splitOn = DEFAULT_SPLIT_ON,
             converter = ToAuthor.class,
             collectionType = ArrayList.class
     )
@@ -37,7 +39,7 @@ public class PaperDelegation {
     @CsvBindAndSplitByPosition(
             position = 2,
             elementType = Affiliation.class,
-            splitOn = "; ",
+            splitOn = DEFAULT_SPLIT_ON,
             converter = ToAffiliation.class,
             collectionType = ArrayList.class
     )
@@ -74,7 +76,7 @@ public class PaperDelegation {
     @CsvBindAndSplitByPosition(
             position = 16,
             elementType = Term.class,
-            splitOn = ";",
+            splitOn = TERMS_SPLIT_ON,
             converter = ToTerm.class,
             collectionType = ArrayList.class
     )
@@ -83,7 +85,7 @@ public class PaperDelegation {
     @CsvBindAndSplitByPosition(
             position = 17,
             elementType = Term.class,
-            splitOn = ";",
+            splitOn = TERMS_SPLIT_ON,
             converter = ToTerm.class,
             collectionType = ArrayList.class
     )
@@ -91,7 +93,7 @@ public class PaperDelegation {
     @CsvBindAndSplitByPosition(
             position = 18,
             elementType = Term.class,
-            splitOn = ";",
+            splitOn = TERMS_SPLIT_ON,
             converter = ToTerm.class,
             collectionType = ArrayList.class
     )
@@ -99,7 +101,7 @@ public class PaperDelegation {
     @CsvBindAndSplitByPosition(
             position = 19,
             elementType = Term.class,
-            splitOn = ";",
+            splitOn = TERMS_SPLIT_ON,
             converter = ToTerm.class,
             collectionType = ArrayList.class
     )
@@ -107,7 +109,7 @@ public class PaperDelegation {
     @CsvBindAndSplitByPosition(
             position = 20,
             elementType = Term.class,
-            splitOn = ";|, ",
+            splitOn = TERMS_SPLIT_ON,
             converter = ToTerm.class,
             collectionType = ArrayList.class
     )
@@ -163,11 +165,17 @@ public class PaperDelegation {
         paper.setIsbn(isbn);
         paper.setDoi(doi);
         paper.setFunding_info(funding_info);
+        ak.removeIf(term -> term.getContent().isEmpty());
         paper.setAuthor_keywords(ak);
+        ie3t.removeIf(term -> term.getContent().isEmpty());
         paper.setIeee_terms(ie3t);
+        ict.removeIf(term -> term.getContent().isEmpty());
         paper.setInspec_controlled(ict);
+        inct.removeIf((term -> term.getContent().isEmpty()));
         paper.setInspec_non_controlled(inct);
+        mt.removeIf(term -> term.getContent().isEmpty());
         paper.setMesh_terms(mt);
+
         if (citation == null) paper.setCitation(0);
         else paper.setCitation(citation);
         if (reference == null) paper.setReference(0);

@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface TermDao extends JpaRepository<Term, Long> {
     Optional<Term> findByContent(String content);
+
+    Optional<Term> findByContentIgnoreCase(String content);
 }

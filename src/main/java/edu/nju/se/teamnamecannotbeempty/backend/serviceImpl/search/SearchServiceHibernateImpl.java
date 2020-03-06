@@ -6,8 +6,7 @@ import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchMode;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchService;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SortMode;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.sortmode.Relevance;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.analysis.util.CharArraySet;
+import org.apache.lucene.analysis.core.UnicodeWhitespaceAnalyzer;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.QueryScorer;
@@ -82,7 +81,7 @@ public class SearchServiceHibernateImpl implements SearchService {
         List<Paper> result = fullTextQuery.getResultList();
 
         for (Paper paper : result) {
-            mode.highlight(highlighter, new StandardAnalyzer(CharArraySet.EMPTY_SET), paper);
+            mode.highlight(highlighter, new UnicodeWhitespaceAnalyzer(), paper);
             entityManager.unwrap(Session.class).evict(paper);
         }
 

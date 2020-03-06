@@ -17,7 +17,7 @@ public class ToTerm extends AbstractCsvConverter {
     @Override
     public Object convertToRead(String value) {
         synchronized (termDao) {
-            Optional<Term> result = termDao.findByContent(value);
+            Optional<Term> result = termDao.findByContentIgnoreCase(value);
             if (result.isPresent())
                 return result.get();
             Term term = new Term();
