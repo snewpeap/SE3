@@ -29,8 +29,7 @@ node {
             echo('Container\'s not running')
         }
         try {
-            def toDel = $BUILD_NUMBER - 10
-            sh "docker rmi se3app:1.$toDel"
+            sh "docker rmi se3app:1.\$(($BUILD_NUMBER-20))"
             echo("Image No.$toDel deleted")
         } catch(ignored){
             echo('No outdated image to delete')

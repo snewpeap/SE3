@@ -18,7 +18,7 @@ public class FuzzySearch extends SearchMode {
                         Paper.getFieldName_author(),
                         Paper.getFieldName_affiliation(),
                         Paper.getFieldName_conference(),
-                        Paper.getFieldName_authorKeywords()
+                        Paper.getFieldName_authorKeywords(), Paper.getFieldName_searchYear()
                 );
     }
 
@@ -29,11 +29,17 @@ public class FuzzySearch extends SearchMode {
                 Paper.getFieldName_author(),
                 Paper.getFieldName_affiliation(),
                 Paper.getFieldName_conference(),
-                Paper.getFieldName_authorKeywords()
+                Paper.getFieldName_authorKeywords(), Paper.getFieldName_searchYear()
         );
     }
 
     @Override
     public void highlight(Highlighter highlighter, Analyzer analyzer, Paper paper) {
+        highlightTitle(paper, highlighter, analyzer);
+        highlightAuthor(paper, highlighter, analyzer);
+        highlightAffiliation(paper, highlighter, analyzer);
+        highlightConference(paper, highlighter, analyzer);
+        highlightKeyword(paper, highlighter, analyzer);
+        highlightYear(paper, highlighter, analyzer);
     }
 }
