@@ -1,14 +1,16 @@
 package edu.nju.se.teamnamecannotbeempty.backend.vo;
 
 import java.util.List;
+import java.util.Objects;
 
 public class SimplePaperVO {
 
-    public SimplePaperVO(long id, String title, List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS, String publicationTitle, List<String> keywords) {
+    public SimplePaperVO(long id, String title, List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS, String publicationTitle, String publicationYear, List<String> keywords) {
         this.id = id;
         this.title = title;
         this.author_simpleAffiliationVOS = author_simpleAffiliationVOS;
         this.publicationTitle = publicationTitle;
+        this.publicationYear = publicationYear;
         this.keywords = keywords;
     }
 
@@ -20,6 +22,8 @@ public class SimplePaperVO {
 
 
     private String publicationTitle;
+
+    private String publicationYear;
 
     private List<String> keywords;
 
@@ -37,6 +41,14 @@ public class SimplePaperVO {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getPublicationYear() {
+        return publicationYear;
+    }
+
+    public void setPublicationYear(String publicationYear) {
+        this.publicationYear = publicationYear;
     }
 
     public List<Author_SimpleAffiliationVO> getAuthor_simpleAffiliationVOS() {
@@ -63,9 +75,22 @@ public class SimplePaperVO {
         this.keywords = keywords;
     }
 
-    public boolean equals(Object o){
-        if(!(o instanceof SimplePaperVO)) return false;
-        return id==((SimplePaperVO) o).id&&title.equals(((SimplePaperVO) o).title)&&author_simpleAffiliationVOS.equals(((SimplePaperVO) o).author_simpleAffiliationVOS)
-                &&publicationTitle.equals(((SimplePaperVO) o).publicationTitle)&&keywords.equals(((SimplePaperVO) o).keywords);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SimplePaperVO that = (SimplePaperVO) o;
+        return id == that.id &&
+                Objects.equals(title, that.title) &&
+                Objects.equals(author_simpleAffiliationVOS, that.author_simpleAffiliationVOS) &&
+                Objects.equals(publicationTitle, that.publicationTitle) &&
+                Objects.equals(publicationYear, that.publicationYear) &&
+                Objects.equals(keywords, that.keywords);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, title, author_simpleAffiliationVOS, publicationTitle, publicationYear, keywords);
     }
 }

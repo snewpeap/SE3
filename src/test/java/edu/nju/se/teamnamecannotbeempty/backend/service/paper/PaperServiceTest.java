@@ -128,6 +128,9 @@ public class PaperServiceTest {
         when(paper1.getConference().getName()).thenReturn("IEEE");
         when(paper2.getConference().getName()).thenReturn("HEEE");
         when(paper3.getConference().getName()).thenReturn("VEEE");
+        when(paper1.getConference().getYear_highlight()).thenReturn("2121");
+        when(paper2.getConference().getYear_highlight()).thenReturn("2121");
+        when(paper3.getConference().getYear_highlight()).thenReturn("2121");
 
         when(paperPage.getContent()).thenReturn(Arrays.asList(paper1, paper2, paper3));
 
@@ -141,9 +144,9 @@ public class PaperServiceTest {
         List<String> key2 = Collections.singletonList("Soft");
 
 
-        SimplePaperVO simplePaperVO1 = new SimplePaperVO(paper1.getId(), paper1.getTitle(), author_simpleAffiliationVOS1, paper1.getConference().getName(), key1);
-        SimplePaperVO simplePaperVO2 = new SimplePaperVO(paper2.getId(), paper2.getTitle(), author_simpleAffiliationVOS2, paper2.getConference().getName(), key2);
-        SimplePaperVO simplePaperVO3 = new SimplePaperVO(paper3.getId(), paper3.getTitle(), author_simpleAffiliationVOS3, paper3.getConference().getName(), new ArrayList<>());
+        SimplePaperVO simplePaperVO1 = new SimplePaperVO(paper1.getId(), paper1.getTitle(), author_simpleAffiliationVOS1, paper1.getConference().getName(), "2121", key1);
+        SimplePaperVO simplePaperVO2 = new SimplePaperVO(paper2.getId(), paper2.getTitle(), author_simpleAffiliationVOS2, paper2.getConference().getName(), "2121", key2);
+        SimplePaperVO simplePaperVO3 = new SimplePaperVO(paper3.getId(), paper3.getTitle(), author_simpleAffiliationVOS3, paper3.getConference().getName(), "2121", new ArrayList<>());
         List<SimplePaperVO> simplePaperVOList = Arrays.asList(simplePaperVO1, simplePaperVO2, simplePaperVO3);
         List<SimplePaperVO> result = paperService.search("1", "1", 1, "!", 1);
         Assert.assertEquals(simplePaperVOList, result);
@@ -166,7 +169,7 @@ public class PaperServiceTest {
         paper.setId((long) 0);
         paper.setTitle("Do You Want To Be More Beautiful?");
         paper.setAa(Arrays.asList(aa1, aa2));
-        paper.setConference(getConference(0, "GKD", 2121, 99));
+        paper.setConference(getConference());
         Date date = new Date();
         paper.setDate_added_Xplore(date);
         paper.setVolume(33);
@@ -230,12 +233,12 @@ public class PaperServiceTest {
         return affiliation;
     }
 
-    private Conference getConference(long id, String name, int year, int ordno) {
+    private Conference getConference() {
         Conference conference = new Conference();
-        conference.setId(id);
-        conference.setName(name);
-        conference.setYear(year);
-        conference.setOrdno(ordno);
+        conference.setId((long) 0);
+        conference.setName("GKD");
+        conference.setYear(2121);
+        conference.setOrdno(99);
         return conference;
     }
 

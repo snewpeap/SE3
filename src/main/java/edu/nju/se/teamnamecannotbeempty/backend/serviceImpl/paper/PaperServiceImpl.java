@@ -57,7 +57,7 @@ public class PaperServiceImpl implements PaperService {
             for (Term term : termList) {
                 keywords.add(term.getContent());
             }
-            simplePaperVOList.add(new SimplePaperVO(paper.getId(), paper.getTitle(), author_simpleAffiliationVOS, paper.getConference().getName(), keywords));
+            simplePaperVOList.add(new SimplePaperVO(paper.getId(), paper.getTitle(), author_simpleAffiliationVOS, paper.getConference().getName(), paper.getConference().getYear_highlight(), keywords));
         }
         return simplePaperVOList;
     }
