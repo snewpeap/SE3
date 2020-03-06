@@ -18,6 +18,10 @@ spring:
     hibernate:
       ddl-auto: create
 
+server:
+  servlet:
+    context-path: "/api"
+
 
 ################ 消息配置 ################
 global-msg:

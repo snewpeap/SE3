@@ -143,6 +143,10 @@ public class Paper {
         return "conference.name";
     }
 
+    public static String getFieldName_searchYear() {
+        return "conference.search_year";
+    }
+
     public static String getFieldName_authorKeywords() {
         return "author_keywords.content";
     }

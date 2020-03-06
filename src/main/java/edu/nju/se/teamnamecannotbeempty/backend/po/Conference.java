@@ -1,8 +1,10 @@
 package edu.nju.se.teamnamecannotbeempty.backend.po;
 
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.NumericField;
 import org.hibernate.search.annotations.SortableField;
+import org.hibernate.search.bridge.builtin.IntegerBridge;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -17,12 +19,14 @@ public class Conference {
     @Field
     private String name;
     @Column(name = "hold_year")
-    @Field
-    @NumericField
-    @SortableField
+    @Field(name = "year") @NumericField(forField = "year") @SortableField(forField = "year")
+    @Field(name = "search_year", bridge = @FieldBridge(impl = IntegerBridge.class))
     private Integer year;
     // 届数
     private Integer ordno;
+
+    @Transient
+    private String year_highlight;
 
     public Conference() {
     }
@@ -82,6 +86,14 @@ public class Conference {
 
     public void setOrdno(Integer ordno) {
         this.ordno = ordno;
+    }
+
+    public String getYear_highlight() {
+        return year_highlight;
+    }
+
+    public void setYear_highlight(String year_highlight) {
+        this.year_highlight = year_highlight;
     }
 
     public String buildName() {

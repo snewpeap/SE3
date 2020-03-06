@@ -18,28 +18,33 @@ import java.io.IOException;
 public class SearchByConference extends SearchMode {
     @Override
     public TermMatchingContext getFieldsBaseOnKeyword(QueryBuilder queryBuilder) {
-        return queryBuilder.keyword().onField(Paper.getFieldName_conference());
+        return queryBuilder.keyword().onFields(Paper.getFieldName_conference(), Paper.getFieldName_searchYear());
     }
 
     @Override
     public SimpleQueryStringMatchingContext getFieldsBaseOnSQS(QueryBuilder queryBuilder) {
-        return queryBuilder.simpleQueryString().onField(Paper.getFieldName_conference());
+        return queryBuilder.simpleQueryString().onFields(Paper.getFieldName_conference(), Paper.getFieldName_searchYear());
     }
 
     @Override
     public void highlight(Highlighter highlighter, Analyzer analyzer, Paper paper) {
-        String hl = null;
+        String hl = null, hlyear = String.valueOf(paper.getConference().getYear());
         Conference copy = new Conference();
         BeanUtils.copyProperties(paper.getConference(), copy);
+        copy.setYear_highlight(hlyear);
         try {
             hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_conference(), copy.getName());
+            hlyear = highlighter.getBestFragment(analyzer, Paper.getFieldName_searchYear(), hlyear);
         } catch (IOException | InvalidTokenOffsetsException e) {
             e.printStackTrace();
         } finally {
             if (hl != null) {
                 copy.setName(hl);
-                paper.setConference(copy);
             }
+            if (hlyear != null) {
+                copy.setYear_highlight(hlyear);
+            }
+            paper.setConference(copy);
         }
     }
 }

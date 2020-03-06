@@ -114,7 +114,7 @@ public class SearchServiceTest {
     @Test
     public void testSearch_searchByConference_noPage_relevance() {
         Page<Paper> result = searchService.search(
-                "ase",
+                "ase 2000",
                 AppContextProvider.getBean(SearchByConference.class),
                 Pageable.unpaged()
         );

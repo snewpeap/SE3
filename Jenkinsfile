@@ -2,7 +2,7 @@ node {
     stage("checkout") {
         checkout([
                 $class                           : 'GitSCM',
-                branches                         : [[name: '*/dev']],
+                branches                         : [[name: '**']],
                 doGenerateSubmoduleConfigurations: false,
                 extensions                       : [],
                 submoduleCfg                     : [],
