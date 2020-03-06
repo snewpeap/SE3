@@ -166,7 +166,7 @@ public class PaperServiceTest {
         paper.setId((long) 0);
         paper.setTitle("Do You Want To Be More Beautiful?");
         paper.setAa(Arrays.asList(aa1, aa2));
-        paper.setConference(getConference(0, "GKD", 2121, 99));
+        paper.setConference(getConference());
         Date date = new Date();
         paper.setDate_added_Xplore(date);
         paper.setVolume(33);
@@ -190,7 +190,7 @@ public class PaperServiceTest {
         Author_AffiliationVO author_affiliationVO1 = new Author_AffiliationVO("ZhenZhen", "NJU", "NanJing");
         Author_AffiliationVO author_affiliationVO2 = new Author_AffiliationVO("PiaoLiang", "ZhengXingYiYuan", "TianTangDao");
         PaperVO paperVO = new PaperVO((long) 0, "Do You Want To Be More Beautiful?", Arrays.asList(author_affiliationVO1, author_affiliationVO2),
-                "GKD", 2121, "99th", 12,
+                "GKD", "2121", "99th", 12,
                 23, "I do not want to write test case!", "1001", null, keywords, new ArrayList<>(), new ArrayList<>(),
                 new ArrayList<>(), 1, 100, null, null);
         ResponseVO responseVO = paperService.getPaper((long) 0);
@@ -230,12 +230,13 @@ public class PaperServiceTest {
         return affiliation;
     }
 
-    private Conference getConference(long id, String name, int year, int ordno) {
+    private Conference getConference() {
         Conference conference = new Conference();
-        conference.setId(id);
-        conference.setName(name);
-        conference.setYear(year);
-        conference.setOrdno(ordno);
+        conference.setId((long) 0);
+        conference.setName("GKD");
+        conference.setYear(2121);
+        conference.setOrdno(99);
+        conference.setYear_highlight("2121");
         return conference;
     }
 

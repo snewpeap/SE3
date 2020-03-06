@@ -95,7 +95,7 @@ public class PaperServiceImpl implements PaperService {
         String pdf = paper.getPdf_link() == null ? null : paper.getPdf_link().toString();
 
         responseVO = ResponseVO.success();
-        responseVO.setContent(new PaperVO(paper.getId(), paper.getTitle(), author_affiliationVOS, paper.getConference().getName(), paper.getConference().getYear(),
+        responseVO.setContent(new PaperVO(paper.getId(), paper.getTitle(), author_affiliationVOS, paper.getConference().getName(), paper.getConference().getYear_highlight(),
                 assembleOrdno(paper.getConference().getOrdno()), paper.getStart_page(),
                 paper.getEnd_page(), paper.getSummary(), paper.getDoi(), pdf, keywords, ieees, controls,
                 noncontrols, paper.getCitation(), paper.getReference(), paper.getPublisher(), paper.getDocument_identifier()));

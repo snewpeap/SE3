@@ -12,7 +12,7 @@ public class PaperVO {
 
     private String publicationTitle; // 会议
 
-    private int publicationYear;
+    private String publicationYear;
 
     private String ordno;
 
@@ -42,7 +42,7 @@ public class PaperVO {
 
     private String identifier;
 
-    public PaperVO(long id, String title, List<Author_AffiliationVO> author_affiliationVOS, String publicationTitle, int publicationYear, String ordno, int startPage, int endPage, String summary, String DOI, String PDFLink, List<String> authorKeywords, List<String> IEEETerms, List<String> controlledTerms, List<String> nonControlledTerms, int citationCount, int referenceCount, String publisher, String identifier) {
+    public PaperVO(long id, String title, List<Author_AffiliationVO> author_affiliationVOS, String publicationTitle, String publicationYear, String ordno, int startPage, int endPage, String summary, String DOI, String PDFLink, List<String> authorKeywords, List<String> IEEETerms, List<String> controlledTerms, List<String> nonControlledTerms, int citationCount, int referenceCount, String publisher, String identifier) {
         this.id = id;
         this.title = title;
         this.author_affiliationVOS = author_affiliationVOS;
@@ -96,11 +96,11 @@ public class PaperVO {
         this.publicationTitle = publicationTitle;
     }
 
-    public int getPublicationYear() {
+    public String getPublicationYear() {
         return publicationYear;
     }
 
-    public void setPublicationYear(int publicationYear) {
+    public void setPublicationYear(String publicationYear) {
         this.publicationYear = publicationYear;
     }
 
@@ -220,7 +220,7 @@ public class PaperVO {
     public boolean equals(Object o) {
         if (!(o instanceof PaperVO)) return false;
         return id == ((PaperVO) o).getId() && title.equals(((PaperVO) o).getTitle()) && author_affiliationVOS.equals(((PaperVO) o).getAuthor_affiliationVOS())
-                && publicationTitle.equals(((PaperVO) o).getPublicationTitle()) && publicationYear == ((PaperVO) o).getPublicationYear()
+                && publicationTitle.equals(((PaperVO) o).getPublicationTitle()) && publicationYear.equals(((PaperVO) o).getPublicationYear())
                 && startPage == ((PaperVO) o).getStartPage() && endPage == ((PaperVO) o).endPage && summary.equals(((PaperVO) o).getSummary())
                 && DOI.equals(((PaperVO) o).getDOI()) && ((PDFLink == null && ((PaperVO) o).getPDFLink() == null) || PDFLink.equals(((PaperVO) o).getPDFLink())) && authorKeywords.equals(((PaperVO) o).getAuthorKeywords())
                 && IEEETerms.equals(((PaperVO) o).getIEEETerms()) && controlledTerms.equals(((PaperVO) o).getControlledTerms())
