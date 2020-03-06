@@ -1,5 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.po;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.*;
 
@@ -70,23 +72,28 @@ public class Paper {
     private String funding_info;
     // pdf原文链接
     private URL pdf_link;
-    @ManyToMany(cascade = CascadeType.DETACH)
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // 作者给出的关键字
     private List<Term> author_keywords = new ArrayList<>();
-    @ManyToMany(cascade = CascadeType.DETACH)
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // IEEE术语
     private List<Term> ieee_terms = new ArrayList<>();
-    @ManyToMany(cascade = CascadeType.DETACH)
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // INSPEC受控索引，有限集合
     private List<Term> inspec_controlled = new ArrayList<>();
-    @ManyToMany(cascade = CascadeType.DETACH)
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // INSPEC非受控索引，无限集合
     private List<Term> inspec_non_controlled = new ArrayList<>();
-    @ManyToMany(cascade = CascadeType.DETACH)
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     // mesh terms，作用未知
     private List<Term> mesh_terms = new ArrayList<>();
     // 被引数

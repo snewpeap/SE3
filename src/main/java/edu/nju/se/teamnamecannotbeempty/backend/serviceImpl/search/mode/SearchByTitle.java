@@ -28,13 +28,11 @@ public class SearchByTitle extends SearchMode {
     public void highlight(Highlighter highlighter, Analyzer analyzer, Paper paper) {
         String hl = null;
         try {
-            String text = paper.getTitle();
-            hl = highlighter.getBestFragment(analyzer,Paper.getFieldName_title(),text);
+            hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_title(), paper.getTitle());
         } catch (IOException | InvalidTokenOffsetsException e) {
             e.printStackTrace();
         } finally {
             if (hl != null) {
-                evict(paper);
                 paper.setTitle(hl);
             }
         }
