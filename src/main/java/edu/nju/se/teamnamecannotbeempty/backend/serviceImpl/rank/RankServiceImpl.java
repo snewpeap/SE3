@@ -113,7 +113,8 @@ public class RankServiceImpl implements RankService {
     }
 
     private List<RankItem> affiliationPaper(List<Paper> paperList, boolean descend) {
-        List<Affiliation> affiliationList = paperList.stream().flatMap(paper -> paper.getAa().stream().filter(author_affiliation -> !"".equals(author_affiliation.getAffiliation().getName()))
+        List<Affiliation> affiliationList = paperList.stream().flatMap(paper -> paper.getAa().stream().filter(author_affiliation ->
+                (!"".equals(author_affiliation.getAffiliation().getName()) && !"NA".equals(author_affiliation.getAffiliation().getName())))
                 .collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
                         new TreeSet<>(Comparator.comparing(a -> a.getAffiliation().getName() + ";" + a.getAffiliation().getCountry()))), ArrayList::new)).stream()
                 .map(Author_Affiliation::getAffiliation)).collect(Collectors.toList());
@@ -128,11 +129,11 @@ public class RankServiceImpl implements RankService {
     }
 
     private List<RankItem> keywordPaper(List<Paper> paperList, boolean descend) {
-        List<Term> termList = paperList.stream().flatMap(paper -> paper.getAuthor_keywords().stream().filter(a->!"".equals(a.getContent()))).collect(Collectors.toList());
-        termList.addAll(paperList.stream().flatMap(paper -> paper.getIeee_terms().stream().filter(a->!"".equals(a.getContent()))).collect(Collectors.toList()));
-        termList.addAll(paperList.stream().flatMap(paper -> paper.getInspec_controlled().stream().filter(a->!"".equals(a.getContent()))).collect(Collectors.toList()));
-        termList.addAll(paperList.stream().flatMap(paper -> paper.getInspec_non_controlled().stream().filter(a->!"".equals(a.getContent()))).collect(Collectors.toList()));
-        termList.addAll(paperList.stream().flatMap(paper -> paper.getMesh_terms().stream().filter(a->!"".equals(a.getContent()))).collect(Collectors.toList()));
+        List<Term> termList = paperList.stream().flatMap(paper -> paper.getAuthor_keywords().stream().filter(a -> !"".equals(a.getContent()))).collect(Collectors.toList());
+        termList.addAll(paperList.stream().flatMap(paper -> paper.getIeee_terms().stream().filter(a -> !"".equals(a.getContent()))).collect(Collectors.toList()));
+        termList.addAll(paperList.stream().flatMap(paper -> paper.getInspec_controlled().stream().filter(a -> !"".equals(a.getContent()))).collect(Collectors.toList()));
+        termList.addAll(paperList.stream().flatMap(paper -> paper.getInspec_non_controlled().stream().filter(a -> !"".equals(a.getContent()))).collect(Collectors.toList()));
+        termList.addAll(paperList.stream().flatMap(paper -> paper.getMesh_terms().stream().filter(a -> !"".equals(a.getContent()))).collect(Collectors.toList()));
         Map<String, Long> termPaperNums = termList.stream().collect(Collectors.groupingBy(Term::getContent, Collectors.counting()));
         return mapToList(termPaperNums, descend);
     }
