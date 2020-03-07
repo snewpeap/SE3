@@ -16,7 +16,7 @@ spring:
             directory_provider: "filesystem"
             indexBase: "/var/lucene/indexes"
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
