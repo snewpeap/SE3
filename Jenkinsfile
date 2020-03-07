@@ -14,7 +14,7 @@ node {
     }
 
     stage("test") {
-        sh 'sh ./mvnw clean package -Dmaven.test.failure.ignore=true'
+        sh 'sh ./mvnw clean package -Dmaven.test.failure.ignore=true -Dmaven.test.skip=true'
     }
     stage("publish") {
         publishHTML([

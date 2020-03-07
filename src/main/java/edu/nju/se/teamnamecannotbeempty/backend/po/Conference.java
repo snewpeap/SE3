@@ -9,6 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "conferences")
+@Indexed
 public class Conference {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
