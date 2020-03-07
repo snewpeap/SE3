@@ -3,7 +3,7 @@ spring:
     console:
       enabled: false
   jpa:
-    open-in-view: true
+    open-in-view: false
     show-sql: false
     properties:
       hibernate:
@@ -16,7 +16,7 @@ spring:
             directory_provider: "filesystem"
             indexBase: "/var/lucene/indexes"
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
