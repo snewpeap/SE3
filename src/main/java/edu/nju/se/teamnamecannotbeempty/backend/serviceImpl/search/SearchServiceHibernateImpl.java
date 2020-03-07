@@ -6,8 +6,6 @@ import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchMode;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchService;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SortMode;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.sortmode.Relevance;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.core.LetterTokenizer;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.QueryScorer;
@@ -84,22 +82,23 @@ public class SearchServiceHibernateImpl implements SearchService {
         for (Paper paper : result) {
             mode.highlight(
                     highlighter,
-                    new Analyzer() {
-                        @Override
-                        protected TokenStreamComponents createComponents(String fieldName) {
-                            return new TokenStreamComponents(new LetterTokenizer() {
-                                @Override
-                                protected int normalize(int c) {
-                                    return Character.toLowerCase(c);
-                                }
-
-                                @Override
-                                protected boolean isTokenChar(int c) {
-                                    return !Character.isSpaceChar(c);
-                                }
-                            });
-                        }
-                    },
+//                    new Analyzer() {
+//                        @Override
+//                        protected TokenStreamComponents createComponents(String fieldName) {
+//                            return new TokenStreamComponents(new LetterTokenizer() {
+//                                @Override
+//                                protected int normalize(int c) {
+//                                    return Character.toLowerCase(c);
+//                                }
+//
+//                                @Override
+//                                protected boolean isTokenChar(int c) {
+//                                    return !Character.isSpaceChar(c);
+//                                }
+//                            });
+//                        }
+//                    },
+                    Search.getFullTextEntityManager(entityManager).getSearchFactory().getAnalyzer("noStopWords"),
                     paper
             );
             entityManager.unwrap(Session.class).evict(paper);

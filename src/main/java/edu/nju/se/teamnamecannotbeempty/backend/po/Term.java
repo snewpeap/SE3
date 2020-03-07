@@ -1,5 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.po;
 
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
+import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
@@ -12,7 +14,7 @@ public class Term {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    @Field
+    @Field(analyzer = @Analyzer(impl = WhitespaceAnalyzer.class))
     private String content;
 
     public Term() {

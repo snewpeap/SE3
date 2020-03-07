@@ -1,9 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.po;
 
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.NumericField;
-import org.hibernate.search.annotations.SortableField;
+import org.apache.lucene.analysis.core.KeywordAnalyzer;
+import org.hibernate.search.annotations.*;
 import org.hibernate.search.bridge.builtin.IntegerBridge;
 
 import javax.persistence.*;
@@ -16,11 +14,17 @@ public class Conference {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "c_name")
-    @Field
+    @Field(analyzer = @Analyzer(impl = KeywordAnalyzer.class))
     private String name;
     @Column(name = "hold_year")
-    @Field(name = "year") @NumericField(forField = "year") @SortableField(forField = "year")
-    @Field(name = "search_year", bridge = @FieldBridge(impl = IntegerBridge.class))
+    @Field(name = "year", analyze = Analyze.NO)
+    @NumericField(forField = "year")
+    @SortableField(forField = "year")
+    @Field(
+            name = "search_year",
+            bridge = @FieldBridge(impl = IntegerBridge.class),
+            analyzer = @Analyzer(impl = KeywordAnalyzer.class)
+    )
     private Integer year;
     // 届数
     private Integer ordno;

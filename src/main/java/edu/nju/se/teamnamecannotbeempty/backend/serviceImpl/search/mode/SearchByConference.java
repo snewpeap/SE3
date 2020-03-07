@@ -13,7 +13,9 @@ import org.springframework.stereotype.Component;
 public class SearchByConference extends SearchMode {
     @Override
     public TermMatchingContext getFieldsBaseOnKeyword(QueryBuilder queryBuilder) {
-        return queryBuilder.keyword().onFields(Paper.getFieldName_conference(), Paper.getFieldName_searchYear());
+        return queryBuilder.keyword()
+                .onField(Paper.getFieldName_searchYear()).boostedTo(2f)
+                .andField(Paper.getFieldName_conference());
     }
 
     @Override

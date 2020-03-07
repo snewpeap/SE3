@@ -1,5 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.po;
 
+import org.apache.lucene.analysis.core.KeywordAnalyzer;
+import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
@@ -12,7 +14,7 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "au_name", nullable = false)
-    @Field
+    @Field(analyzer = @Analyzer(impl = KeywordAnalyzer.class))
     private String name;
 
     @Override

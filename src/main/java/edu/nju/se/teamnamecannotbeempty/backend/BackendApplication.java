@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 public class BackendApplication {
     @Bean
     public Boolean useCSVDataSource() {
-        return false;
+        return true;
     }
 
     public static void main(String[] args) {

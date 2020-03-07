@@ -1,9 +1,15 @@
 package edu.nju.se.teamnamecannotbeempty.backend.po;
 
-import org.apache.lucene.analysis.core.WhitespaceTokenizerFactory;
+import org.apache.lucene.analysis.charfilter.MappingCharFilterFactory;
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilterFactory;
+import org.apache.lucene.analysis.snowball.SnowballPorterFilterFactory;
+import org.apache.lucene.analysis.standard.StandardFilterFactory;
+import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Parameter;
 import org.hibernate.search.annotations.*;
 
 import javax.persistence.*;
@@ -18,16 +24,27 @@ import java.util.List;
 @AnalyzerDef(
         name = "noStopWords",
         tokenizer = @TokenizerDef(
-                factory = WhitespaceTokenizerFactory.class
+                factory = StandardTokenizerFactory.class
         ),
         filters = {
-//                @TokenFilterDef(
-//                        factory = org.apache.lucene.analysis.standard.StandardFilterFactory.class
-//                ),
                 @TokenFilterDef(
-                        factory = org.apache.lucene.analysis.core.LowerCaseFilterFactory.class
+                        factory = StandardFilterFactory.class
+                ),
+                @TokenFilterDef(
+                        factory = LowerCaseFilterFactory.class
+                ),
+                @TokenFilterDef(
+                        factory = SnowballPorterFilterFactory.class,
+                        params = @Parameter(name = "language", value = "English")
+                ),
+                @TokenFilterDef(
+                        factory = ASCIIFoldingFilterFactory.class
                 )
-        }
+        },
+        charFilters = @CharFilterDef(
+                factory = MappingCharFilterFactory.class,
+                params = @Parameter(name = "mapping", value = "classpath:mapping.txt")
+        )
 )
 public class Paper {
     @Id

@@ -13,13 +13,13 @@ import org.springframework.stereotype.Component;
 public class FuzzySearch extends SearchMode {
     @Override
     public TermMatchingContext getFieldsBaseOnKeyword(QueryBuilder queryBuilder) {
-        return queryBuilder.keyword().onFields(
-                        Paper.getFieldName_title(),
-                        Paper.getFieldName_author(),
-                        Paper.getFieldName_affiliation(),
-                        Paper.getFieldName_conference(),
-                        Paper.getFieldName_authorKeywords(), Paper.getFieldName_searchYear()
-                );
+        return queryBuilder.keyword()
+                .onField(Paper.getFieldName_searchYear()).boostedTo(4f)
+                .andField(Paper.getFieldName_title())
+                .andField(Paper.getFieldName_author())
+                .andField(Paper.getFieldName_affiliation())
+                .andField(Paper.getFieldName_conference())
+                .andField(Paper.getFieldName_authorKeywords());
     }
 
     @Override
