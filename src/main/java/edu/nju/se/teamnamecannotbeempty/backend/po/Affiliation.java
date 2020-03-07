@@ -1,5 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.po;
 
+import org.apache.lucene.analysis.standard.ClassicAnalyzer;
+import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
@@ -12,7 +14,7 @@ public class Affiliation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "af_name", nullable = false)
-    @Field
+    @Field(analyzer = @Analyzer(impl = ClassicAnalyzer.class))
     // 机构名，包括部门/院系名和组织/单位名（如软件学院of南京大学）
     private String name;
     // 实际上是地理位置，最精确到市
