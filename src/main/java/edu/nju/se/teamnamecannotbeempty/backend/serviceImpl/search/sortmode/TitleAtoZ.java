@@ -11,8 +11,7 @@ public class TitleAtoZ implements SortMode {
 
     public TitleAtoZ() {
         sort = new Sort(
-                new SortField("sortTitle", SortField.Type.STRING),
-                SortField.FIELD_SCORE
+                new SortField("sortTitle", SortField.Type.STRING)
         );
     }
 

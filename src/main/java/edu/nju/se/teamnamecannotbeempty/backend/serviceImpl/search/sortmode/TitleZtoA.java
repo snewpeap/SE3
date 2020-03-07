@@ -11,8 +11,7 @@ public class TitleZtoA implements SortMode {
 
     public TitleZtoA() {
         sort = new Sort(
-                new SortField("sortTitle", SortField.Type.STRING, true),
-                SortField.FIELD_SCORE
+                new SortField("sortTitle", SortField.Type.STRING, true)
         );
     }
 

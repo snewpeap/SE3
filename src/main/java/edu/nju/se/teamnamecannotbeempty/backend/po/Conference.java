@@ -17,7 +17,7 @@ public class Conference {
     @Field
     private String name;
     @Column(name = "hold_year")
-    @Field(name = "year")
+    @Field(name = "year", store = Store.YES)
     @NumericField(forField = "year")
     @SortableField(forField = "year")
     @Field(
