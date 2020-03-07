@@ -18,7 +18,7 @@ node {
     }
     stage("publish") {
         publishHTML([
-                allowMissing: false,
+                allowMissing: true,
                 alwaysLinkToLastBuild: false,
                 keepAll: false,
                 reportDir: 'target/site/jacoco',

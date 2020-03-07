@@ -12,7 +12,7 @@ public class Newest implements SortMode {
     public Newest() {
         sort = new Sort(
                 new SortField("conference.year", SortField.Type.INT, true),
-                SortField.FIELD_SCORE
+                new SortField("sortTitle", SortField.Type.STRING)
         );
     }
 
