@@ -43,7 +43,7 @@ import java.util.List;
         },
         charFilters = @CharFilterDef(
                 factory = MappingCharFilterFactory.class,
-                params = @Parameter(name = "mapping", value = "classpath:mapping.txt")
+                params = @Parameter(name = "mapping", value = "mapping.txt")
         )
 )
 public class Paper {

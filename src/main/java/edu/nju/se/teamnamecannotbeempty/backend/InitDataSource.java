@@ -1,11 +1,11 @@
 package edu.nju.se.teamnamecannotbeempty.backend;
 
+import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.NeedParseCSV;
 import edu.nju.se.teamnamecannotbeempty.backend.dao.PaperDao;
 import edu.nju.se.teamnamecannotbeempty.backend.data.FromCSVOpenCSVImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -18,15 +18,15 @@ public class InitDataSource implements ApplicationListener<ContextRefreshedEvent
     private FromCSVOpenCSVImpl fromCSV;
     @Autowired
     private PaperDao paperDao;
-    @Autowired
-    @Qualifier("useCSVDataSource")
-    private Boolean runMe;
+//    @Autowired
+//    @Qualifier("useCSVDataSource")
+//    private Boolean runMe;
 
     private static Logger logger = LoggerFactory.getLogger(InitDataSource.class);
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        if (event.getApplicationContext().getParent() == null && runMe) {
+        if (event.getApplicationContext().getParent() == null && AppContextProvider.getBean(NeedParseCSV.class).isNeed()) {
             String name = "/datasource/ase13_15_16_17_19.csv";
             InputStream ase_csv = getClass().getResourceAsStream(name);
             paperDao.saveAll(fromCSV.convert(ase_csv));
