@@ -1,6 +1,5 @@
 package edu.nju.se.teamnamecannotbeempty.backend.dao;
 
-import edu.nju.se.teamnamecannotbeempty.backend.BackendApplication;
 import edu.nju.se.teamnamecannotbeempty.backend.po.Author_Affiliation;
 import edu.nju.se.teamnamecannotbeempty.backend.po.Conference;
 import edu.nju.se.teamnamecannotbeempty.backend.po.Paper;
@@ -9,27 +8,25 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-@SpringBootTest(classes = BackendApplication.class)
-@ActiveProfiles("test")
+@DataJpaTest
 @RunWith(SpringJUnit4ClassRunner.class)
+@ActiveProfiles("test")
 public class PaperDaoTest {
     @Autowired
     private PaperDao paperDao;
 
     @Test
-    @Transactional
     public void findById_normal() {
         Optional<Paper> result = paperDao.findById(3L);
         assertTrue(result.isPresent());
@@ -72,10 +69,9 @@ public class PaperDaoTest {
 
     @Test
     @Sql(statements = {
-            "insert into papers(id,title,conference_id) value (4,'test',2)",
-            "insert into paper_aa value (4,2,3)"
+            "insert into papers(id,title,conference_id) values (4,'test',2)",
+            "insert into paper_aa values (4,2,3)"
     })
-    @Transactional
     public void findById_noKeyword() {
         Optional<Paper> result = paperDao.findById(4L);
         assertTrue(result.isPresent());
