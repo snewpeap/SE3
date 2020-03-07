@@ -16,7 +16,7 @@ spring:
             directory_provider: "filesystem"
             indexBase: "/var/lucene/indexes"
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -28,4 +28,4 @@ server:
   port: 9090
 
 parse-csv:
-  need: true
+  need: false

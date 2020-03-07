@@ -14,7 +14,7 @@ public class Conference {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "c_name")
-    @Field(analyzer = @Analyzer(impl = KeywordAnalyzer.class))
+    @Field
     private String name;
     @Column(name = "hold_year")
     @Field(name = "year", analyze = Analyze.NO)
