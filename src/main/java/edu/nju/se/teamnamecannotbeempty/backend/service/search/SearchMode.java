@@ -113,6 +113,7 @@ public abstract class SearchMode {
         Conference copy = new Conference();
         BeanUtils.copyProperties(paper.getConference(), copy);
         copy.setYear_highlight(hlyear);
+        paper.setConference(copy);
         try {
             hlyear = highlighter.getBestFragment(analyzer, Paper.getFieldName_searchYear(), hlyear);
         } catch (IOException | InvalidTokenOffsetsException e) {
