@@ -6,6 +6,7 @@ import edu.nju.se.teamnamecannotbeempty.backend.data.FromCSVOpenCSVImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,7 @@ public class InitDataSource implements ApplicationListener<ContextRefreshedEvent
     private static Logger logger = LoggerFactory.getLogger(InitDataSource.class);
 
     @Override
+    @CacheEvict(value = "getRank")
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (event.getApplicationContext().getParent() == null && AppContextProvider.getBean(NeedParseCSV.class).isNeed()) {
             String name = "/datasource/ase13_15_16_17_19.csv";
