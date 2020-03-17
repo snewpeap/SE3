@@ -6,6 +6,7 @@ import edu.nju.se.teamnamecannotbeempty.backend.vo.RankItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -44,8 +45,9 @@ public class RankFecth {
     }
 
 
-    @Cacheable(value = "getRank", key = "#mode+'_'+#startYear+'_'+#endYear+'_'+#descend")
-    public List<RankItem> getAllResult(String mode, int startYear, int endYear, boolean descend) {
+    @Cacheable(value = "getRank", key = "#mode+'_'+#startYear+'_'+#endYear", unless = "#result=null")
+    @Transactional
+    public List<RankItem> getAllResult(String mode, int startYear, int endYear) {
         List<Paper> paperList = paperDao.findAllByConference_YearBetween(startYear, endYear);
         List<RankItem> rankItemList = new ArrayList<>();
 
@@ -72,7 +74,6 @@ public class RankFecth {
             default:
                 break;
         }
-        if (descend) Collections.reverse(rankItemList);
         return rankItemList;
     }
 

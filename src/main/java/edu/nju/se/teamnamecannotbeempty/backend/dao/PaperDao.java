@@ -1,6 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.dao;
 
 import edu.nju.se.teamnamecannotbeempty.backend.po.Paper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
@@ -38,5 +39,6 @@ public interface PaperDao extends CrudRepository<Paper, Long> {
      * @throws org.springframework.dao.InvalidDataAccessApiUsageException，如果任意参数为null
      * @apiNote 如果from大于true，不会抛出异常，会返回空列表
      */
+    @Cacheable(value = "papersByYear", key = "#root.args[0]+'_'+#root.args[1]", unless = "#result = null")
     List<Paper> findAllByConference_YearBetween(Integer from, Integer to);
 }

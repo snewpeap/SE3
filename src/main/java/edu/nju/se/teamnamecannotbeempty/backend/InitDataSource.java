@@ -26,7 +26,7 @@ public class InitDataSource implements ApplicationListener<ContextRefreshedEvent
     private static Logger logger = LoggerFactory.getLogger(InitDataSource.class);
 
     @Override
-    @CacheEvict(value = "getRank")
+    @CacheEvict(value = {"getRank", "papersByYear"})
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (event.getApplicationContext().getParent() == null && AppContextProvider.getBean(NeedParseCSV.class).isNeed()) {
             String name = "/datasource/ase13_15_16_17_19.csv";
