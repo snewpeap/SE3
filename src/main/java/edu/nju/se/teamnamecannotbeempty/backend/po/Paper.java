@@ -130,6 +130,9 @@ public class Paper {
     private String publisher;
     // 文档标识符？
     private String document_identifier;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "referer", orphanRemoval = true, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<Ref> refs = new ArrayList<>();
 
     public Paper() {
     }
@@ -178,6 +181,24 @@ public class Paper {
 
     public static String getFieldName_inspecNonControlled() {
         return "inspec_non_controlled.content";
+    }
+
+    /**
+     * 向引用列表中添加引用对象，务必使用这个方法
+     * @param ref 引用对象
+     */
+    public void addRef(Ref ref) {
+        refs.add(ref);
+        ref.setReferer(this);
+    }
+
+    /**
+     * 从引用列表中删除引用，务必使用这个方法
+     * @param ref 引用对象
+     */
+    public void removeRef(Ref ref) {
+        refs.remove(ref);
+        ref.setReferer(null);
     }
 
     public Long getId() {
@@ -394,5 +415,13 @@ public class Paper {
 
     public void setDocument_identifier(String document_identifier) {
         this.document_identifier = document_identifier;
+    }
+
+    public List<Ref> getRefs() {
+        return refs;
+    }
+
+    public void setRefs(List<Ref> refs) {
+        this.refs = refs;
     }
 }

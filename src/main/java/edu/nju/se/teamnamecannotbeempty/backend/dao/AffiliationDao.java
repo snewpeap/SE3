@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface AffiliationDao extends JpaRepository<Affiliation, Long> {
     Optional<Affiliation> findByName(String name);
+
+    Optional<Affiliation> findById(Long id);
 }

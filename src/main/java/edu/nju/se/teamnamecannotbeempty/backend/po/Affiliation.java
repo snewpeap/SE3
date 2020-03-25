@@ -17,6 +17,9 @@ public class Affiliation {
     private String name;
     // 实际上是地理位置，最精确到市
     private String country;
+    @ManyToOne
+    //别名，在需要去重的时候为空；去重后，如果没有重复为this，否则为重复对象
+    private Affiliation alias;
 
     @Override
     public boolean equals(Object o) {
@@ -33,6 +36,14 @@ public class Affiliation {
     }
 
     public Affiliation() {
+    }
+
+    public Affiliation getAlias() {
+        return alias;
+    }
+
+    public void setAlias(Affiliation alias) {
+        this.alias = alias;
     }
 
     @Override

@@ -186,6 +186,7 @@ public class PaperDelegation {
         paper.setMeeting_date(meeting_date);
         paper.setPublisher(publisher);
         paper.setDocument_identifier(document_identifier);
+        paper.setId(Long.parseLong(pdf_link.split("=")[1]));
         return paper;
     }
 

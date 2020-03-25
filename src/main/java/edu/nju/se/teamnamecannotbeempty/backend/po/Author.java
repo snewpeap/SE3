@@ -14,6 +14,9 @@ public class Author {
     @Column(name = "au_name", nullable = false)
     @Field
     private String name;
+    @ManyToOne
+    //别名，在需要去重的时候为空；去重后，如果没有重复为this，否则为重复对象
+    private Author alias;
 
     @Override
     public boolean equals(Object o) {
@@ -55,4 +58,11 @@ public class Author {
         this.name = name;
     }
 
+    public Author getAlias() {
+        return alias;
+    }
+
+    public void setAlias(Author alias) {
+        this.alias = alias;
+    }
 }

@@ -13,15 +13,13 @@ import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
 
+//TODO 转用Batch方式
 @Component
 public class InitDataSource implements ApplicationListener<ContextRefreshedEvent> {
     @Autowired
     private FromCSVOpenCSVImpl fromCSV;
     @Autowired
     private PaperDao paperDao;
-//    @Autowired
-//    @Qualifier("useCSVDataSource")
-//    private Boolean runMe;
 
     private static Logger logger = LoggerFactory.getLogger(InitDataSource.class);
 
@@ -31,12 +29,12 @@ public class InitDataSource implements ApplicationListener<ContextRefreshedEvent
         if (event.getApplicationContext().getParent() == null && AppContextProvider.getBean(NeedParseCSV.class).isNeed()) {
             String name = "/datasource/ase13_15_16_17_19.csv";
             InputStream ase_csv = getClass().getResourceAsStream(name);
-            paperDao.saveAll(fromCSV.convert(ase_csv));
+            paperDao.saveAll(fromCSV.convert(ase_csv));//TODO 处理json
             logger.info("Done Saving data from " + name);
 
             name = "/datasource/icse15_16_17_18_19.csv";
             InputStream icse_csv = getClass().getResourceAsStream(name);
-            paperDao.saveAll(fromCSV.convert(icse_csv));
+            paperDao.saveAll(fromCSV.convert(icse_csv));//TODO 处理json
             logger.info("Done Saving data from " + name);
         }
     }
