@@ -3,13 +3,12 @@ package edu.nju.se.teamnamecannotbeempty.backend.po;
 import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
-@Entity
-@Table(name = "affiliations")
-public class Affiliation {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Entity @Table(name = "affiliations")
+public class Affiliation implements Serializable {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "af_name", nullable = false)
     @Field
@@ -26,16 +25,59 @@ public class Affiliation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Affiliation that = (Affiliation) o;
-        return name.equals(that.name) &&
-                Objects.equals(country, that.country);
+        return id.equals(that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, country);
+        return Objects.hash(id);
     }
 
     public Affiliation() {
+    }
+
+    @Entity @Table(name = "affi_popularity")
+    public static class Popularity implements Serializable{
+        @Id @OneToOne(optional = false)
+        private Affiliation affiliation;
+        private Double popularity;
+
+        public Popularity(Affiliation affiliation, Double popularity) {
+            this.affiliation = affiliation;
+            this.popularity = popularity;
+        }
+
+        public Popularity() {
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Popularity that = (Popularity) o;
+            return affiliation.equals(that.affiliation);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(affiliation);
+        }
+
+        public Affiliation getAffiliation() {
+            return affiliation;
+        }
+
+        public void setAffiliation(Affiliation affiliation) {
+            this.affiliation = affiliation;
+        }
+
+        public Double getPopularity() {
+            return popularity;
+        }
+
+        public void setPopularity(Double popularity) {
+            this.popularity = popularity;
+        }
     }
 
     public Affiliation getAlias() {

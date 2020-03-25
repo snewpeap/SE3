@@ -3,13 +3,12 @@ package edu.nju.se.teamnamecannotbeempty.backend.po;
 import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
-@Entity
-@Table(name = "authors")
-public class Author {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Entity @Table(name = "authors")
+public class Author implements Serializable {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "au_name", nullable = false)
     @Field
@@ -23,12 +22,12 @@ public class Author {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Author author = (Author) o;
-        return name.equals(author.name);
+        return id.equals(author.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(id);
     }
 
     public Author() {
@@ -40,6 +39,50 @@ public class Author {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    @Entity @Table(name = "author_popularity")
+    public static class Popularity implements Serializable{
+        @Id @OneToOne(optional = false)
+        private Author author;
+        private Double popularity;
+
+        public Popularity(Author author, Double popularity) {
+            this.author = author;
+            this.popularity = popularity;
+        }
+
+        public Popularity() {
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Popularity that = (Popularity) o;
+            return author.equals(that.author);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(author);
+        }
+
+        public Author getAuthor() {
+            return author;
+        }
+
+        public void setAuthor(Author author) {
+            this.author = author;
+        }
+
+        public Double getPopularity() {
+            return popularity;
+        }
+
+        public void setPopularity(Double popularity) {
+            this.popularity = popularity;
+        }
     }
 
     public Long getId() {

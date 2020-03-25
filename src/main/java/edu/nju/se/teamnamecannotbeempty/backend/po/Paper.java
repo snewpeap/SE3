@@ -13,13 +13,14 @@ import org.hibernate.search.annotations.Parameter;
 import org.hibernate.search.annotations.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
-@Entity
-@Table(name = "papers")
+@Entity @Table(name = "papers")
 @Indexed
 @AnalyzerDef(
         name = "noStopWords",
@@ -46,9 +47,8 @@ import java.util.List;
                 params = @Parameter(name = "mapping", value = "mapping.txt")
         )
 )
-public class Paper {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class Paper implements Serializable {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     // 论文的id
     private Long id;
     @Column(nullable = false)
@@ -63,8 +63,7 @@ public class Paper {
     @IndexedEmbedded
     // 发表论文的每个作者-机构构成的对象的列表
     private List<Author_Affiliation> aa = new ArrayList<>();
-    @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "conference_id", foreignKey = @ForeignKey(name = "FK_PAPER_CONFERENCE"))
+    @ManyToOne(cascade = CascadeType.DETACH) @JoinColumn(name = "conference_id", foreignKey = @ForeignKey(name = "FK_PAPER_CONFERENCE"))
     @IndexedEmbedded
     // 会议对象。对应数据中的出版物
     private Conference conference;
@@ -90,28 +89,23 @@ public class Paper {
     private String funding_info;
     // pdf原文链接
     private URL pdf_link;
-    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SUBSELECT)
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER) @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // 作者给出的关键字
     private List<Term> author_keywords = new ArrayList<>();
-    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SUBSELECT)
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER) @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // IEEE术语
     private List<Term> ieee_terms = new ArrayList<>();
-    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SUBSELECT)
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER) @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // INSPEC受控索引，有限集合
     private List<Term> inspec_controlled = new ArrayList<>();
-    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SUBSELECT)
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER) @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // INSPEC非受控索引，无限集合
     private List<Term> inspec_non_controlled = new ArrayList<>();
-    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SUBSELECT)
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER) @Fetch(FetchMode.SUBSELECT)
     // mesh terms，作用未知
     private List<Term> mesh_terms = new ArrayList<>();
     // 被引数
@@ -130,8 +124,7 @@ public class Paper {
     private String publisher;
     // 文档标识符？
     private String document_identifier;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "referer", orphanRemoval = true, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "referer", orphanRemoval = true, fetch = FetchType.EAGER) @Fetch(FetchMode.SUBSELECT)
     private List<Ref> refs = new ArrayList<>();
 
     public Paper() {
@@ -145,6 +138,63 @@ public class Paper {
                 ", aa=" + aa +
                 ", conference=" + conference +
                 '}';
+    }
+
+    @Entity @Table(name = "paper_popularity")
+    public static class Popularity implements Serializable{
+        @Id @OneToOne(optional = false)
+        private Paper paper;
+        private Double popularity;
+
+        public Popularity(Paper paper, Double popularity) {
+            this.paper = paper;
+            this.popularity = popularity;
+        }
+
+        public Popularity() {
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Popularity that = (Popularity) o;
+            return paper.equals(that.paper);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(paper);
+        }
+
+        public Paper getPaper() {
+            return paper;
+        }
+
+        public void setPaper(Paper paper) {
+            this.paper = paper;
+        }
+
+        public Double getPopularity() {
+            return popularity;
+        }
+
+        public void setPopularity(Double popularity) {
+            this.popularity = popularity;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Paper paper = (Paper) o;
+        return id.equals(paper.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     public static String getFieldName_title() {

@@ -27,15 +27,15 @@ node {
                 reportTitles: 'Coverage✨'
         ])
     }
-    stage("docker-build") {
-        sh "docker build -f Dockerfile -t se3app:latest ."
-    }
-    stage("restart") {
-        try {
-            sh 'docker rm -f se3'
-        } catch(ignored){
-            echo('Container\'s not running')
-        }
-        sh " docker run -d -p 9090:9090 -v /etc/localtime:/etc/localtime -v /etc/lucene/indexes:/etc/lucene/indexes --link se3mysql:se3mysql --name se3 se3app:latest"
-    }
+//    stage("docker-build") {
+//        sh "docker build -f Dockerfile -t se3app:latest ."
+//    }
+//    stage("restart") {
+//        try {
+//            sh 'docker rm -f se3'
+//        } catch(ignored){
+//            echo('Container\'s not running')
+//        }
+//        sh " docker run -d -p 9090:9090 -v /etc/localtime:/etc/localtime -v /etc/lucene/indexes:/etc/lucene/indexes --link se3mysql:se3mysql --name se3 se3app:latest"
+//    }
 }
