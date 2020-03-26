@@ -8,6 +8,7 @@ import org.apache.lucene.analysis.standard.StandardFilterFactory;
 import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Parameter;
 import org.hibernate.search.annotations.*;
@@ -50,7 +51,8 @@ import java.util.Objects;
 )
 public class Paper {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "assigned")
+    @GenericGenerator(name = "assigned", strategy = "org.hibernate.id.Assigned")
     // 论文的id
     private Long id;
     @Column(nullable = false)
