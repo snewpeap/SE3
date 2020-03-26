@@ -6,9 +6,11 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
-@Entity @Table(name = "authors")
-public class Author implements Serializable {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Entity
+@Table(name = "authors")
+public class Author {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "au_name", nullable = false)
     @Field
@@ -41,9 +43,11 @@ public class Author implements Serializable {
                 '}';
     }
 
-    @Entity @Table(name = "author_popularity")
+    @Entity(name = "author_popularity")
     public static class Popularity implements Serializable{
-        @Id @OneToOne(optional = false)
+        @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+        @OneToOne(optional = false)
         private Author author;
         private Double popularity;
 
@@ -66,6 +70,14 @@ public class Author implements Serializable {
         @Override
         public int hashCode() {
             return Objects.hash(author);
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
         }
 
         public Author getAuthor() {

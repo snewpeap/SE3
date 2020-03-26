@@ -6,11 +6,14 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
-@Entity @Table(name = "terms")
-public class Term implements Serializable {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Entity
+@Table(name = "terms")
+public class Term {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false) @Field
+    @Column(nullable = false)
+    @Field
     private String content;
 
     public Term() {
@@ -37,9 +40,11 @@ public class Term implements Serializable {
                 '}';
     }
 
-    @Entity @Table(name = "term_popularity")
-    public static class Popularity implements Serializable {
-        @Id @OneToOne(optional = false)
+    @Entity(name = "term_popularity")
+    public static class Popularity implements Serializable{
+        @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+        @OneToOne(optional = false)
         private Term term;
         private Double popularity;
 
@@ -62,6 +67,14 @@ public class Term implements Serializable {
         @Override
         public int hashCode() {
             return Objects.hash(term);
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
         }
 
         public Term getTerm() {

@@ -1,10 +1,14 @@
 package edu.nju.se.teamnamecannotbeempty.backend.po;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class DuplicateAffiliation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +22,9 @@ public class DuplicateAffiliation {
     @ColumnDefault("false")
     //是否已经处理
     private Boolean clear;
+    @Column(nullable = false)
+    @LastModifiedDate
+    private Date updatedAt;
 
     public DuplicateAffiliation() {
         clear = false;
@@ -53,5 +60,13 @@ public class DuplicateAffiliation {
 
     public void setClear(Boolean clear) {
         this.clear = clear;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

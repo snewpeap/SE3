@@ -17,13 +17,6 @@ public class FromCSVOpenCSVImpl {
     private static Logger logger = LoggerFactory.getLogger(FromCSVOpenCSVImpl.class);
 
     public List<Paper> convert(InputStream in) {
-//        InputStream in;
-////        try {
-////            in = new FileInputStream(file);
-////        } catch (FileNotFoundException e) {
-////            logger.error(e.getMessage());
-////            return Collections.emptyList();
-////        }
         logger.info("Start Parsing");
         List<PaperDelegation> delegations = new CsvToBeanBuilder<PaperDelegation>(
                 new InputStreamReader(in, StandardCharsets.UTF_8)

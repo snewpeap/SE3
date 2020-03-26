@@ -1,10 +1,14 @@
 package edu.nju.se.teamnamecannotbeempty.backend.po;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class DuplicateAuthor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +22,8 @@ public class DuplicateAuthor {
     //标识是否已经处理了这条
     @ColumnDefault("false")
     private Boolean clear;
+    @LastModifiedDate
+    private Date updatedAt;
 
     public DuplicateAuthor() {
         clear = false;
@@ -53,5 +59,13 @@ public class DuplicateAuthor {
 
     public void setTarget(Author target) {
         this.target = target;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

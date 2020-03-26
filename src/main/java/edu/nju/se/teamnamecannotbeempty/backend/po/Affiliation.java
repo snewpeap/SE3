@@ -6,9 +6,11 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
-@Entity @Table(name = "affiliations")
-public class Affiliation implements Serializable {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Entity
+@Table(name = "affiliations")
+public class Affiliation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "af_name", nullable = false)
     @Field
@@ -36,9 +38,11 @@ public class Affiliation implements Serializable {
     public Affiliation() {
     }
 
-    @Entity @Table(name = "affi_popularity")
+    @Entity(name = "affi_popularity")
     public static class Popularity implements Serializable{
-        @Id @OneToOne(optional = false)
+        @Id @GeneratedValue
+        private Long id;
+        @OneToOne(optional = false)
         private Affiliation affiliation;
         private Double popularity;
 
@@ -61,6 +65,14 @@ public class Affiliation implements Serializable {
         @Override
         public int hashCode() {
             return Objects.hash(affiliation);
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
         }
 
         public Affiliation getAffiliation() {

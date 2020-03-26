@@ -17,7 +17,7 @@ public class ToAffiliation extends AbstractCsvConverter {
     @Override
     public Object convertToRead(String value) {
         synchronized (affiliationDao) {
-            Optional<Affiliation> result = affiliationDao.findByName(value);
+            Optional<Affiliation> result = affiliationDao.findByName(value); //TODO 先存在map里，在map里面找
             if (result.isPresent())
                 return result.get();
             Affiliation affiliation = new Affiliation();
