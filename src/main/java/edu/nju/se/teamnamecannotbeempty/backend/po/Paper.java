@@ -6,6 +6,7 @@ import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilterFactory;
 import org.apache.lucene.analysis.snowball.SnowballPorterFilterFactory;
 import org.apache.lucene.analysis.standard.StandardFilterFactory;
 import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
@@ -157,6 +158,7 @@ public class Paper {
         private Long id;
         @OneToOne(optional = false)
         private Paper paper;
+        @ColumnDefault("0.0")
         private Double popularity;
 
         public Popularity(Paper paper, Double popularity) {

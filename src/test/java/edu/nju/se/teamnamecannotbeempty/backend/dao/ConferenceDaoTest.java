@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -31,5 +32,25 @@ public class ConferenceDaoTest {
     public void findByNameButWrongYear() {
         Optional<Conference> result = conferenceDao.findByNameAndYear("ase",2010);
         assertFalse(result.isPresent());
+    }
+
+    @Test
+    public void getConferencesByAuthor() {
+        List<Conference> conferences = conferenceDao.getConferencesByAuthor(1L);
+        assertNotNull(conferences);
+        assertEquals(1,conferences.size());
+        assertEquals(1L, conferences.get(0).getId().longValue());
+
+        conferences = conferenceDao.getConferencesByAuthor(2L);
+        assertNotNull(conferences);
+        assertEquals(1, conferences.size());
+        assertEquals(2L, conferences.get(0).getId().longValue());
+    }
+
+    @Test
+    public void getConferencesByAffiliation() {
+        List<Conference> conferences = conferenceDao.getConferencesByAffiliation(2L);
+        assertNotNull(conferences);
+        assertEquals(2, conferences.size());
     }
 }

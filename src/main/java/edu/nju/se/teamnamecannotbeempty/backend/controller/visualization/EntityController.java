@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController()
 @Service
 public class EntityController {
-    @Autowired
+    @Autowired(required = false)
     EntityService entityService;
 
     @RequestMapping(value = "/academic/{id}?type=", method = RequestMethod.GET)

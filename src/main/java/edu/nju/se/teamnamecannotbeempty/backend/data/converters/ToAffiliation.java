@@ -29,8 +29,6 @@ public class ToAffiliation extends AbstractCsvConverter {
     }
 
     public static List<Affiliation> getSaveList() {
-        List<Affiliation> saveList = new ArrayList<>(saveMap.values());
-        saveMap.clear();
-        return saveList;
+        return new ArrayList<>(saveMap.values());
     }
 }

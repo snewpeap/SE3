@@ -17,7 +17,7 @@ import java.util.List;
 @RestController()
 @Service
 public class AdminController {
-    @Autowired
+    @Autowired(required = false)
     AdminService adminService;
 
     @GetMapping(value = "/admin/getConfusedAlias")

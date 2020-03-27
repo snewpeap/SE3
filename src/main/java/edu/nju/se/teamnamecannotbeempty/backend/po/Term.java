@@ -1,5 +1,6 @@
 package edu.nju.se.teamnamecannotbeempty.backend.po;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
@@ -24,7 +25,7 @@ public class Term {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Term term = (Term) o;
-        return id.equals(term.id);
+        return Objects.equals(id, term.id);
     }
 
     @Override
@@ -46,6 +47,7 @@ public class Term {
         private Long id;
         @OneToOne(optional = false)
         private Term term;
+        @ColumnDefault("0.0")
         private Double popularity;
 
         public Popularity(Term term, Double popularity) {

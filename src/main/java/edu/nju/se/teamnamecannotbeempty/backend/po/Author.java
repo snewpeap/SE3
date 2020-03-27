@@ -1,5 +1,6 @@
 package edu.nju.se.teamnamecannotbeempty.backend.po;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
@@ -8,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "authors")
-public class Author {
+public class Author implements Aliasable<Author> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,16 +21,22 @@ public class Author {
     private Author alias;
 
     @Override
+    public Author getSelf() {
+        return this;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Author author = (Author) o;
-        return id.equals(author.id);
+        return Objects.equals(id, author.id) &&
+                Objects.equals(alias, author.alias);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, alias);
     }
 
     public Author() {
@@ -49,6 +56,7 @@ public class Author {
         private Long id;
         @OneToOne(optional = false)
         private Author author;
+        @ColumnDefault("0.0")
         private Double popularity;
 
         public Popularity(Author author, Double popularity) {

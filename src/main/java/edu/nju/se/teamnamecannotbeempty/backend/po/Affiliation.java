@@ -1,5 +1,6 @@
 package edu.nju.se.teamnamecannotbeempty.backend.po;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
@@ -8,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "affiliations")
-public class Affiliation {
+public class Affiliation implements Aliasable<Affiliation> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,16 +24,8 @@ public class Affiliation {
     private Affiliation alias;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Affiliation that = (Affiliation) o;
-        return id.equals(that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public Affiliation getSelf() {
+        return this;
     }
 
     public Affiliation() {
@@ -44,6 +37,7 @@ public class Affiliation {
         private Long id;
         @OneToOne(optional = false)
         private Affiliation affiliation;
+        @ColumnDefault("0.0")
         private Double popularity;
 
         public Popularity(Affiliation affiliation, Double popularity) {
@@ -92,10 +86,26 @@ public class Affiliation {
         }
     }
 
+    @Override
     public Affiliation getAlias() {
         return alias;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Affiliation that = (Affiliation) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(alias, that.alias);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, alias);
+    }
+
+    @Override
     public void setAlias(Affiliation alias) {
         this.alias = alias;
     }
