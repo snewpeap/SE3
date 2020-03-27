@@ -7,7 +7,7 @@ import edu.nju.se.teamnamecannotbeempty.backend.po.Conference;
 
 import java.util.Optional;
 
-public class ToConference extends AbstractBeanField {
+public class ToConference extends AbstractBeanField<Conference, Object> {
     private final ConferenceDao conferenceDao;
 
     public ToConference() {

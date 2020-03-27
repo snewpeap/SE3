@@ -1,28 +1,39 @@
 package edu.nju.se.teamnamecannotbeempty.backend.data.converters;
 
 import com.opencsv.bean.AbstractCsvConverter;
-import edu.nju.se.teamnamecannotbeempty.backend.AppContextProvider;
-import edu.nju.se.teamnamecannotbeempty.backend.dao.TermDao;
 import edu.nju.se.teamnamecannotbeempty.backend.po.Term;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ToTerm extends AbstractCsvConverter {
-    private final TermDao termDao;
-
-    public ToTerm() {
-        termDao = AppContextProvider.getBean(TermDao.class);
-    }
+//    private final TermDao termDao;
+    private static ConcurrentHashMap<String, Term> saveMap = new ConcurrentHashMap<>();
 
     @Override
     public Object convertToRead(String value) {
-        synchronized (termDao) {
-            Optional<Term> result = termDao.findByContentIgnoreCase(value);
-            if (result.isPresent())
-                return result.get();
-            Term term = new Term();
-            term.setContent(value);
-            return termDao.saveAndFlush(term);
-        }
+//        synchronized (termDao) {
+//            Optional<Term> result = termDao.findByContentIgnoreCase(value);
+//            if (result.isPresent())
+//                return result.get();
+//            Term term = new Term();
+//            term.setContent(value);
+//            return termDao.saveAndFlush(term);
+//        }
+        value = value.toLowerCase();
+        Term result = saveMap.get(value);
+        if (result != null)
+            return result;
+        Term term = new Term();
+        term.setContent(value);
+        saveMap.put(value, term);
+        return term;
+    }
+
+    public static List<Term> getSaveList() {
+        List<Term> saveList = new ArrayList<>(saveMap.values());
+        saveMap.clear();
+        return saveList;
     }
 }

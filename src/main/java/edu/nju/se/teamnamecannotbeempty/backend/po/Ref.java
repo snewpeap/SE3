@@ -12,12 +12,12 @@ public class Ref {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST})
     //引用者
     private Paper referer;
     @Column(nullable = false)
     private String refTitle;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "referee_id", foreignKey = @ForeignKey(name = "FK_REFEREE"))
     //被引用者，可能为空
     private Paper referee;
@@ -28,6 +28,7 @@ public class Ref {
                 .add("id=" + id)
                 .add("referer=" + referer)
                 .add("refTitle='" + refTitle + "'")
+                .add("referee=" + referee)
                 .toString();
     }
 
