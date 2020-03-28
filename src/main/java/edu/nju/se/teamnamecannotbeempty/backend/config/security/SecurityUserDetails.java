@@ -14,6 +14,14 @@ public class SecurityUserDetails implements UserDetails, Serializable {
     private String password;
     private Set<? extends GrantedAuthority> authorities;
 
+    public SecurityUserDetails(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public SecurityUserDetails() {
+    }
+
     @Override
     public String getUsername() {
         return username;

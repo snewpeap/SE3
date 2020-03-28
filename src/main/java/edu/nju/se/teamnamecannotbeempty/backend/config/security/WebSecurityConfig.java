@@ -1,6 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -49,16 +50,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .access("@rbacauthorityservice.hasPermission(request,authentication)")
                 .and()
                 .formLogin()
-                .successHandler(authenticationSuccessHandler)
-                .failureHandler(authenticationFailureHandler)
+//                .successHandler(authenticationSuccessHandler)
+//                .failureHandler(authenticationFailureHandler)
                 .permitAll()
                 .and()
                 .logout()
                 .logoutSuccessHandler(logoutSuccessHandler)
                 .permitAll();
+        http.addFilterAt(customAuthenticationFilter(),UsernamePasswordAuthenticationFilter.class);
         http.rememberMe().rememberMeParameter("remember-me")
                 .userDetailsService(userDetailService).tokenValiditySeconds(300);
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
-        http.addFilterBefore(jwtAuthenticationTokenFilter,UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationTokenFilter,MyUsernamePasswordAuthenticationFilter.class);
+    }
+
+    @Bean
+    MyUsernamePasswordAuthenticationFilter customAuthenticationFilter() throws Exception {
+        MyUsernamePasswordAuthenticationFilter filter = new MyUsernamePasswordAuthenticationFilter();
+        filter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+        filter.setAuthenticationFailureHandler(authenticationFailureHandler);
+        //这句很关键，重用WebSecurityConfigurerAdapter配置的AuthenticationManager，不然要自己组装AuthenticationManager
+        filter.setAuthenticationManager(authenticationManagerBean());
+        return filter;
     }
 }
