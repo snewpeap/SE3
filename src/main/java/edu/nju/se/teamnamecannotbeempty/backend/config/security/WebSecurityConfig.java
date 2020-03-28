@@ -8,7 +8,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsUtils;
 
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
@@ -40,18 +42,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.cors().and()
+                .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .httpBasic().authenticationEntryPoint(authenticationEntryPoint)
                 .and()
                 .authorizeRequests()
+                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .antMatchers("/admin/**")
                 .access("@rbacauthorityservice.hasPermission(request,authentication)")
                 .and()
                 .formLogin()
-//                .successHandler(authenticationSuccessHandler)
-//                .failureHandler(authenticationFailureHandler)
                 .permitAll()
                 .and()
                 .logout()
@@ -59,8 +61,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .permitAll();
         http.addFilterAt(customAuthenticationFilter(),UsernamePasswordAuthenticationFilter.class);
         http.rememberMe().rememberMeParameter("remember-me")
-                .userDetailsService(userDetailService).tokenValiditySeconds(300);
+                .userDetailsService(userDetailService).tokenValiditySeconds(600);
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
+        http.addFilterBefore(new SecurityCorsFilter(),ChannelProcessingFilter.class);
         http.addFilterBefore(jwtAuthenticationTokenFilter,MyUsernamePasswordAuthenticationFilter.class);
     }
 

@@ -5,12 +5,14 @@ import edu.nju.se.teamnamecannotbeempty.backend.vo.AcademicEntityVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.GraphVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 实体和展示相关的controller层
  */
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController()
 @Service
 public class EntityController {

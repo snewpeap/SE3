@@ -32,7 +32,7 @@ public class SecurityAuthenticationSuccessHandler implements AuthenticationSucce
         securityResponseBody.setMsg(securityMsg.getLoginSuccess());
 
         SecurityUserDetails userDetails = (SecurityUserDetails)authentication.getPrincipal();
-        String jwtToken = JwtTokenUtil.generateToken(userDetails.getUsername(), 300, "_secret");
+        String jwtToken = JwtTokenUtil.generateToken(userDetails.getUsername(), 600, "_secret");
         securityResponseBody.setJwtToken(jwtToken);
 
         httpServletResponse.getWriter().write(JSON.toJSONString(securityResponseBody));

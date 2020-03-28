@@ -14,7 +14,6 @@ import java.util.List;
  *
  * @author ava_xu
  */
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController()
 @Service
 public class PaperController {

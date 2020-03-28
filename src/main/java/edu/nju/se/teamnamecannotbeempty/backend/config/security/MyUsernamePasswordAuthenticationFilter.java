@@ -18,7 +18,8 @@ public class MyUsernamePasswordAuthenticationFilter extends UsernamePasswordAuth
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         if(request.getContentType().equals(MediaType.APPLICATION_JSON_VALUE)
-                || request.getContentType().equals(MediaType.APPLICATION_FORM_URLENCODED_VALUE) ){
+                || request.getContentType().equals(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                || request.getContentType().equals(MediaType.APPLICATION_JSON_UTF8_VALUE)){
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
             UsernamePasswordAuthenticationToken authRequest = null;

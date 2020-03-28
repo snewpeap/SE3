@@ -5,7 +5,10 @@ import edu.nju.se.teamnamecannotbeempty.backend.vo.AliasVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -13,7 +16,6 @@ import java.util.List;
  * 管理员的controller层
  *
  */
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController()
 @Service
 public class AdminController {
