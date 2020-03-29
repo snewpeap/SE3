@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
-@PowerMockIgnore({"com.*", "io.*", "org.*", "ch.*", "javax.validation.*"})
+@PowerMockIgnore({"com.*", "io.*", "org.*", "ch.*","javax.*"})
 @PrepareForTest({ApplicationContextUtil.class, PageRequest.class})
 @SpringBootTest
 public class PaperServiceTest {

@@ -31,7 +31,8 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <powermock.version>2.0.2</powermock.version>
+        <powermock.version>2.0.0</powermock.version>
+        <mockito.version>2.10.0</mockito.version>
     </properties>
 
     <dependencies>
@@ -95,6 +96,12 @@
             <artifactId>powermock-module-junit4</artifactId>
             <version>${powermock.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>objenesis</artifactId>
+                    <groupId>org.objenesis</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -132,7 +139,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.36</version>
+            <version>1.2.67</version>
         </dependency>
         <!--JWT-->
         <dependency>
