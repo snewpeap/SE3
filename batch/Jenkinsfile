@@ -14,9 +14,8 @@ node {
     }
 
     stage("test") {
-        sh 'cd batch'
-        sh 'sh ./mvnw clean'
-        sh 'sh ../mvnw package -pl batch -am -Dmaven.test.skip=true'
+        sh 'sh batch/mvnw clean'
+        sh 'sh ./mvnw package -pl batch -am -Dmaven.test.skip=true'
     }
 //    stage("publish") {
 //        publishHTML([
