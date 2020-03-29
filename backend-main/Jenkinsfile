@@ -22,7 +22,7 @@ node {
                 allowMissing         : true,
                 alwaysLinkToLastBuild: false,
                 keepAll              : false,
-                reportDir            : 'target/site/jacoco',
+                reportDir            : 'backend-main/target/site/jacoco',
                 reportFiles          : 'index.html',
                 reportName           : 'HTML Report',
                 reportTitles         : 'Coverage✨'

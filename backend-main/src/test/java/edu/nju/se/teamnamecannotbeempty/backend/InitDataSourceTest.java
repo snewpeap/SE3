@@ -22,7 +22,7 @@ public class InitDataSourceTest {
     InitDataSource initDataSource;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         initDataSource = new InitDataSource(new FromCSVOpenCSVImpl(), Mockito.mock(PaperDao.class));
     }
 
@@ -32,7 +32,8 @@ public class InitDataSourceTest {
         InputStream json = getClass().getResourceAsStream("/ok.json");
         Method attachJsonInfo = initDataSource.getClass().getDeclaredMethod("attachJsonInfo", List.class, InputStream.class);
         attachJsonInfo.setAccessible(true);
-        papers = (List<Paper>) attachJsonInfo.invoke(papers, json);
+        //noinspection unchecked
+        papers = (List<Paper>) attachJsonInfo.invoke(initDataSource, papers, json);
         Paper p1 = null, p10 = null, p100 = null;
         for (Paper paper : papers) {
             switch (paper.getId().intValue()) {
