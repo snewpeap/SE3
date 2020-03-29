@@ -24,6 +24,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
@@ -34,9 +35,10 @@ import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
-@PowerMockIgnore({"com.*", "io.*", "org.*", "ch.*","javax.*"})
+@PowerMockIgnore({"com.*", "io.*", "org.*", "ch.*", "javax.*"})
 @PrepareForTest({ApplicationContextUtil.class, PageRequest.class})
 @SpringBootTest
+@ActiveProfiles("test")
 public class PaperServiceTest {
 
     @MockBean

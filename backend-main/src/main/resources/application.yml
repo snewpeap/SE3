@@ -40,3 +40,5 @@ security-msg:
   login-success: "Login Success!"
   logout-success: "Logout Success!"
   no-such-user: "Account Not Exist!"
+parse-csv:
+  need: true
