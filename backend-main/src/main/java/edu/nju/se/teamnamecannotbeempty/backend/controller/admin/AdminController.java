@@ -23,7 +23,7 @@ public class AdminController {
 
     @GetMapping(value = "/admin/getConfusedAlias")
     public List<AliasVO> getConfusedAlias() {
-        return adminService.getDataOperated();
+        return adminService.getDataError();
     }
 
     @PostMapping(value = "/admin/modifyAlias")
@@ -33,7 +33,7 @@ public class AdminController {
 
     @GetMapping(value = "/admin/getEffectiveAlias")
     public List<AliasVO> getEffectiveAlias() {
-        return adminService.getDataError();
+        return adminService.getDataOperated();
     }
 
     @PostMapping("/admin/cancelAlias")
