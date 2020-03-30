@@ -23,11 +23,6 @@ public class Affiliation implements Aliasable<Affiliation> {
     //别名，在需要去重的时候为空；去重后，如果没有重复为this，否则为重复对象
     private Affiliation alias;
 
-    @Override
-    public Affiliation getSelf() {
-        return this;
-    }
-
     public Affiliation() {
     }
 
@@ -88,6 +83,10 @@ public class Affiliation implements Aliasable<Affiliation> {
     }
 
     @Override
+    public Aliasable<Affiliation> getActual() {
+        return (alias == null || this.equals(alias)) ? this : alias.getActual();
+    }
+
     public Affiliation getAlias() {
         return alias;
     }
@@ -106,7 +105,6 @@ public class Affiliation implements Aliasable<Affiliation> {
         return Objects.hash(id, alias);
     }
 
-    @Override
     public void setAlias(Affiliation alias) {
         this.alias = alias;
     }

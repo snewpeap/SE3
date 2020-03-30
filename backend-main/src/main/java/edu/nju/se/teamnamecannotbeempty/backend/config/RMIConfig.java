@@ -1,6 +1,6 @@
 package edu.nju.se.teamnamecannotbeempty.backend.config;
 
-import edu.nju.teannamecannotbeempty.api.TestService;
+import edu.nju.se.teamnamecannotbeempty.api.TestService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

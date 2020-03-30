@@ -21,8 +21,8 @@ public class Author implements Aliasable<Author> {
     private Author alias;
 
     @Override
-    public Author getSelf() {
-        return this;
+    public Aliasable<Author> getActual() {
+        return (alias == null || this.equals(alias)) ? this : alias.getActual();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package edu.nju.teannamecannotbeempty.api;
+package edu.nju.se.teamnamecannotbeempty.api;
 
 import javax.jws.WebService;
 
