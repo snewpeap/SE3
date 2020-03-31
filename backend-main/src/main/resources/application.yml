@@ -29,5 +29,13 @@ security-msg:
   login-success: "Login Success!"
   logout-success: "Logout Success!"
   no-such-user: "Account Not Exist!"
+
+entity-msg:
+  author-type: 1
+  affiliation-type: 2
+  conference-type: 3
+  term-type: 4
+  paper-type: 5
+
 parse-csv:
   need: true
