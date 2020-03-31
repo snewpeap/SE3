@@ -13,19 +13,17 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
 
@@ -34,20 +32,19 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(SpringRunner.class)
 @PowerMockIgnore({"com.*", "io.*", "org.*", "ch.*", "javax.*"})
 @PrepareForTest({ApplicationContextUtil.class, PageRequest.class})
 @SpringBootTest
 @ActiveProfiles("test")
 public class PaperServiceTest {
 
-    @MockBean
+    @Mock
     private PaperDao paperDao;
-    @MockBean
+    @Mock
     private PaperMsg paperMsg;
-    @MockBean
+    @Mock
     private SearchService searchService;
-    @Autowired
+    @InjectMocks
     private PaperServiceImpl paperService;
 
     private Page paperPage;
