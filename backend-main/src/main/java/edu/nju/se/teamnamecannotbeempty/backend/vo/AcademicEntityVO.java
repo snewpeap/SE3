@@ -6,15 +6,19 @@ import java.util.Objects;
 public class AcademicEntityVO {
     private int type;
     private long id;
+
+
+    private String name;
     private List<AcademicEntityItem> authors;
     private List<AcademicEntityItem> affiliations;
     private List<AcademicEntityItem> conferences;
     private List<TermItem> terms;
     private List<SimplePaperVO> significantPapers;
 
-    public AcademicEntityVO(int type, long id, List<AcademicEntityItem> authors, List<AcademicEntityItem> affiliations, List<AcademicEntityItem> conferences, List<TermItem> terms, List<SimplePaperVO> significantPapers) {
+    public AcademicEntityVO(int type, long id, String name,List<AcademicEntityItem> authors, List<AcademicEntityItem> affiliations, List<AcademicEntityItem> conferences, List<TermItem> terms, List<SimplePaperVO> significantPapers) {
         this.type = type;
         this.id = id;
+        this.name = name;
         this.authors = authors;
         this.affiliations = affiliations;
         this.conferences = conferences;
@@ -36,6 +40,14 @@ public class AcademicEntityVO {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<AcademicEntityItem> getAuthors() {
