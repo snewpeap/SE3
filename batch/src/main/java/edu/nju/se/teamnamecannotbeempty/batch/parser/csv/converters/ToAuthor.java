@@ -13,14 +13,6 @@ public class ToAuthor extends AbstractCsvConverter {
 
     @Override
     public Object convertToRead(String value) {
-//        synchronized (authorDao) {
-//            Optional<Author> result = authorDao.findByName(value);
-//            if (result.isPresent())
-//                return result.get();
-//            Author author = new Author();
-//            author.setName(value);
-//            return authorDao.saveAndFlush(author);
-//        }
         Author result = saveMap.get(value);
         if (result != null)
             return result;

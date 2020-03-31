@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Repository
 public interface PaperDao extends JpaRepository<Paper, Long> {
@@ -44,4 +45,6 @@ public interface PaperDao extends JpaRepository<Paper, Long> {
      */
     @Cacheable(value = "papersByYear", key = "#root.args[0]+'_'+#root.args[1]", unless = "#result = null")
     List<Paper> findAllByConference_YearBetween(Integer from, Integer to);
+
+    Stream<Paper> streamAll();
 }

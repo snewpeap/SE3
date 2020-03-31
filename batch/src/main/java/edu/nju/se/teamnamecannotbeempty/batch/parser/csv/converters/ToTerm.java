@@ -13,14 +13,6 @@ public class ToTerm extends AbstractCsvConverter {
 
     @Override
     public Object convertToRead(String value) {
-//        synchronized (termDao) {
-//            Optional<Term> result = termDao.findByContentIgnoreCase(value);
-//            if (result.isPresent())
-//                return result.get();
-//            Term term = new Term();
-//            term.setContent(value);
-//            return termDao.saveAndFlush(term);
-//        }
         value = value.toLowerCase();
         Term result = saveMap.get(value);
         if (result != null)

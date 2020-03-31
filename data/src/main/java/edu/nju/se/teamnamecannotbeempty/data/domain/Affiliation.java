@@ -83,7 +83,7 @@ public class Affiliation implements Aliasable<Affiliation> {
     }
 
     @Override
-    public Aliasable<Affiliation> getActual() {
+    public Affiliation getActual() {
         return (alias == null || this.equals(alias)) ? this : alias.getActual();
     }
 

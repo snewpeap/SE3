@@ -4,6 +4,7 @@ import edu.nju.se.teamnamecannotbeempty.data.domain.Author;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AuthorPopDao extends CrudRepository<Author.Popularity, Long> {
     /**
@@ -14,4 +15,6 @@ public interface AuthorPopDao extends CrudRepository<Author.Popularity, Long> {
      * @后置条件 无
      */
     List<Author.Popularity> findTop20ByOrderByPopularityDesc();
+
+    Optional<Author.Popularity> findByAuthor_Id(Long AuthorId);
 }
