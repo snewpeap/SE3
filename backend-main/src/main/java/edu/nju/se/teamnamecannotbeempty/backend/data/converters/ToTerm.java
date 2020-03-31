@@ -1,7 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.data.converters;
 
 import com.opencsv.bean.AbstractCsvConverter;
-import edu.nju.se.teamnamecannotbeempty.backend.po.Term;
+import edu.nju.se.teamnamecannotbeempty.data.domain.Term;
 
 import java.util.ArrayList;
 import java.util.List;

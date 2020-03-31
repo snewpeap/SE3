@@ -2,13 +2,13 @@ package edu.nju.se.teamnamecannotbeempty.backend.data;
 
 import com.opencsv.bean.CsvToBeanBuilder;
 import edu.nju.se.teamnamecannotbeempty.backend.AppContextProvider;
-import edu.nju.se.teamnamecannotbeempty.backend.dao.AffiliationDao;
-import edu.nju.se.teamnamecannotbeempty.backend.dao.AuthorDao;
-import edu.nju.se.teamnamecannotbeempty.backend.dao.TermDao;
 import edu.nju.se.teamnamecannotbeempty.backend.data.converters.ToAffiliation;
 import edu.nju.se.teamnamecannotbeempty.backend.data.converters.ToAuthor;
 import edu.nju.se.teamnamecannotbeempty.backend.data.converters.ToTerm;
-import edu.nju.se.teamnamecannotbeempty.backend.po.Paper;
+import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
+import edu.nju.se.teamnamecannotbeempty.data.repository.AffiliationDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.AuthorDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.TermDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

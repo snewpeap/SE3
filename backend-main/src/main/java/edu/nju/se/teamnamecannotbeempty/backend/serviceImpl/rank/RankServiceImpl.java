@@ -40,7 +40,7 @@ public class RankServiceImpl implements RankService {
 
         int totalPage = len % rankMsg.getEachNum() == 0 ? len / rankMsg.getEachNum() : len / rankMsg.getEachNum() + 1;
         int resultStart = (pageNumber - 1) * rankMsg.getEachNum();
-        int resultLen = len - resultStart >= rankMsg.getEachNum() ? rankMsg.getEachNum() : len - resultStart;
+        int resultLen = Math.min(len - resultStart, rankMsg.getEachNum());
         List<RankItem> result;
         if (descend) {
             List<RankItem> reverseItems = new ArrayList<>(rankItemList);

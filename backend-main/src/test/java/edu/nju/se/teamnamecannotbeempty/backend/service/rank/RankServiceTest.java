@@ -1,12 +1,12 @@
 package edu.nju.se.teamnamecannotbeempty.backend.service.rank;
 
 import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.RankMsg;
-import edu.nju.se.teamnamecannotbeempty.backend.dao.PaperDao;
-import edu.nju.se.teamnamecannotbeempty.backend.po.*;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.rank.RankServiceImpl;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.RankItem;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.RankVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
+import edu.nju.se.teamnamecannotbeempty.data.domain.*;
+import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

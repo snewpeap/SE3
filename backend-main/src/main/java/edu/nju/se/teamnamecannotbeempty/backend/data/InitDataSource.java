@@ -5,9 +5,9 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import edu.nju.se.teamnamecannotbeempty.backend.AppContextProvider;
 import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.NeedParseCSV;
-import edu.nju.se.teamnamecannotbeempty.backend.dao.PaperDao;
-import edu.nju.se.teamnamecannotbeempty.backend.po.Paper;
-import edu.nju.se.teamnamecannotbeempty.backend.po.Ref;
+import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
+import edu.nju.se.teamnamecannotbeempty.data.domain.Ref;
+import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,25 +99,6 @@ public class InitDataSource implements ApplicationListener<ContextRefreshedEvent
                                 Ref ref = future.get();
                                 if (ref != null) paper.addRef(ref);
                             }
-//                            refs.jsonIter().forEach(
-//                                    jsonObject -> {
-//                                        String title = jsonObject.getStr("title");
-//                                        if (!StringUtils.isBlank(title)) {
-//                                            String link = jsonObject.getStr("link");
-//                                            Ref ref = new Ref();
-//                                            ref.setRefTitle(title);
-//                                            if (!StringUtils.isEmpty(link)) {
-//                                                Long refereeId = Long.parseLong(
-//                                                        link.substring(link.lastIndexOf('/') + 1));
-//                                                Paper referee = paperHashMap.get(refereeId);
-//                                                ref.setReferee(referee);
-//                                                if (referee != null)
-//                                                    paperDao.save(referee);
-//                                            }
-//                                            paper.addRef(ref);
-//                                        }
-//                                    }
-//                            );
                         }
                     }
                     continue;

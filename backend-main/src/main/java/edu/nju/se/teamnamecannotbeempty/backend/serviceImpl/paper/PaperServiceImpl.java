@@ -1,15 +1,15 @@
 package edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.paper;
 
 import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.PaperMsg;
-import edu.nju.se.teamnamecannotbeempty.backend.dao.PaperDao;
-import edu.nju.se.teamnamecannotbeempty.backend.po.Author_Affiliation;
-import edu.nju.se.teamnamecannotbeempty.backend.po.Paper;
-import edu.nju.se.teamnamecannotbeempty.backend.po.Term;
 import edu.nju.se.teamnamecannotbeempty.backend.service.paper.PaperService;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchMode;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchService;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SortMode;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.*;
+import edu.nju.se.teamnamecannotbeempty.data.domain.Author_Affiliation;
+import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
+import edu.nju.se.teamnamecannotbeempty.data.domain.Term;
+import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

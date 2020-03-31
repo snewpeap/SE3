@@ -32,8 +32,8 @@
 
     <modules>
         <module>backend-main</module>
-        <module>backend-api</module>
         <module>batch</module>
+        <module>data</module>
     </modules>
 
     <properties>
@@ -43,10 +43,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

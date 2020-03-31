@@ -1,6 +1,6 @@
 package edu.nju.se.teamnamecannotbeempty.backend.service.search;
 
-import edu.nju.se.teamnamecannotbeempty.backend.po.*;
+import edu.nju.se.teamnamecannotbeempty.data.domain.*;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;

@@ -2,7 +2,7 @@ package edu.nju.se.teamnamecannotbeempty.backend.data;
 
 import edu.nju.se.teamnamecannotbeempty.backend.AppContextProvider;
 import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.NeedParseCSV;
-import edu.nju.se.teamnamecannotbeempty.backend.po.Paper;
+import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,12 +26,15 @@ import static org.junit.Assert.*;
         includeFilters = {
                 @Filter(
                         type = FilterType.REGEX,
-                        pattern = "edu.nju.se.teamnamecannotbeempty.backend.data.*"
+                        pattern = {
+                                "edu.nju.se.teamnamecannotbeempty.backend.data.*",
+                                "edu.nju.se.teamnamecannotbeempty.data.*"
+                        }
                 ),
                 @Filter(
                         type = FilterType.ASSIGNABLE_TYPE,
                         classes = {AppContextProvider.class, NeedParseCSV.class}
-                )
+                ),
         })
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)

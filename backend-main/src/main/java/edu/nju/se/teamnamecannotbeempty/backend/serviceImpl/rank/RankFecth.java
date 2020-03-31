@@ -1,8 +1,8 @@
 package edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.rank;
 
-import edu.nju.se.teamnamecannotbeempty.backend.dao.PaperDao;
-import edu.nju.se.teamnamecannotbeempty.backend.po.*;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.RankItem;
+import edu.nju.se.teamnamecannotbeempty.data.domain.*;
+import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class RankFecth {
         this.paperDao = paperDao;
     }
 
-    class AuthorPaperCitationNum {
+    static class AuthorPaperCitationNum {
 
         private String author;
         private int paperCitation;
