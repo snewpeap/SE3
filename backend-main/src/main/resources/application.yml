@@ -3,7 +3,9 @@ spring:
     hibernate:
       ddl-auto: create
     properties:
+      hibernate:
         search:
+          lucene_version: "5.5.5"
           default:
             directory_provider: "local-heap"
 

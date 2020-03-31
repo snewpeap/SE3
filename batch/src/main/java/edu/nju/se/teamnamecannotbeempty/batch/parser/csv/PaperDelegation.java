@@ -1,13 +1,13 @@
-package edu.nju.se.teamnamecannotbeempty.backend.data;
+package edu.nju.se.teamnamecannotbeempty.batch.parser.csv;
 
 import com.opencsv.bean.CsvBindAndSplitByPosition;
 import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvCustomBindByPosition;
 import com.opencsv.bean.CsvDate;
-import edu.nju.se.teamnamecannotbeempty.backend.data.converters.ToAffiliation;
-import edu.nju.se.teamnamecannotbeempty.backend.data.converters.ToAuthor;
-import edu.nju.se.teamnamecannotbeempty.backend.data.converters.ToConference;
-import edu.nju.se.teamnamecannotbeempty.backend.data.converters.ToTerm;
+import edu.nju.se.teamnamecannotbeempty.batch.parser.csv.converters.ToAffiliation;
+import edu.nju.se.teamnamecannotbeempty.batch.parser.csv.converters.ToAuthor;
+import edu.nju.se.teamnamecannotbeempty.batch.parser.csv.converters.ToConference;
+import edu.nju.se.teamnamecannotbeempty.batch.parser.csv.converters.ToTerm;
 import edu.nju.se.teamnamecannotbeempty.data.domain.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Paper PO 在数据转换中的代理对象
+ */
 public class PaperDelegation {
     private static Logger logger = LoggerFactory.getLogger(PaperDelegation.class);
     public static final String DEFAULT_SPLIT_ON = "; ";

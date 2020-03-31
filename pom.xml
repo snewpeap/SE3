@@ -34,6 +34,7 @@
         <module>backend-main</module>
         <module>batch</module>
         <module>data</module>
+        <module>api</module>
     </modules>
 
     <properties>
