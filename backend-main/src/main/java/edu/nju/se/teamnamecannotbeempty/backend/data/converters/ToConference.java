@@ -2,8 +2,8 @@ package edu.nju.se.teamnamecannotbeempty.backend.data.converters;
 
 import com.opencsv.bean.AbstractBeanField;
 import edu.nju.se.teamnamecannotbeempty.backend.AppContextProvider;
-import edu.nju.se.teamnamecannotbeempty.backend.dao.ConferenceDao;
-import edu.nju.se.teamnamecannotbeempty.backend.po.Conference;
+import edu.nju.se.teamnamecannotbeempty.data.domain.Conference;
+import edu.nju.se.teamnamecannotbeempty.data.repository.ConferenceDao;
 
 import java.util.Optional;
 

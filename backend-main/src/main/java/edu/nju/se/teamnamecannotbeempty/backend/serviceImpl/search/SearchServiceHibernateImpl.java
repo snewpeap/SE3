@@ -1,11 +1,11 @@
 package edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search;
 
 import edu.nju.se.teamnamecannotbeempty.backend.AppContextProvider;
-import edu.nju.se.teamnamecannotbeempty.backend.po.Paper;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchMode;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchService;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SortMode;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.sortmode.Relevance;
+import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.QueryScorer;
@@ -19,17 +19,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 
+@Service
 public class SearchServiceHibernateImpl implements SearchService {
     private final EntityManager entityManager;
 
     @Autowired
     public SearchServiceHibernateImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
+        hibernateSearchInit();
     }
 
     public void hibernateSearchInit() {

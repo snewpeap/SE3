@@ -8,7 +8,7 @@ import edu.nju.se.teamnamecannotbeempty.backend.data.converters.ToAffiliation;
 import edu.nju.se.teamnamecannotbeempty.backend.data.converters.ToAuthor;
 import edu.nju.se.teamnamecannotbeempty.backend.data.converters.ToConference;
 import edu.nju.se.teamnamecannotbeempty.backend.data.converters.ToTerm;
-import edu.nju.se.teamnamecannotbeempty.backend.po.*;
+import edu.nju.se.teamnamecannotbeempty.data.domain.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

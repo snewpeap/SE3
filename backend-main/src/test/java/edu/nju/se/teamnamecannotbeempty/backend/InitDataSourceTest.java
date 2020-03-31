@@ -1,9 +1,9 @@
 package edu.nju.se.teamnamecannotbeempty.backend;
 
-import edu.nju.se.teamnamecannotbeempty.backend.dao.PaperDao;
 import edu.nju.se.teamnamecannotbeempty.backend.data.FromCSVOpenCSVImpl;
 import edu.nju.se.teamnamecannotbeempty.backend.data.InitDataSource;
-import edu.nju.se.teamnamecannotbeempty.backend.po.Paper;
+import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
+import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;

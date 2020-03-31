@@ -1,9 +1,9 @@
 package edu.nju.se.teamnamecannotbeempty.backend.controller.paper;
 
-import edu.nju.se.teamnamecannotbeempty.backend.po.Paper;
 import edu.nju.se.teamnamecannotbeempty.backend.service.paper.PaperService;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.SimplePaperVO;
+import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

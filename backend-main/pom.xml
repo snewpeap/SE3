@@ -38,30 +38,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.hibernate</groupId>
-                    <artifactId>hibernate-core</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>5.4.12.Final</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-search-orm</artifactId>
-            <version>5.11.5.Final</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>hibernate-core</artifactId>
-                    <groupId>org.hibernate</groupId>
-                </exclusion>
-            </exclusions>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <dependency>
@@ -115,12 +92,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>5.1</version>
@@ -131,11 +102,11 @@
             <artifactId>hutool-json</artifactId>
             <version>5.2.4</version>
         </dependency>
+
         <dependency>
             <groupId>edu.nju.se.teamnamecannotbeempty</groupId>
-            <artifactId>backend-api</artifactId>
+            <artifactId>data</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 

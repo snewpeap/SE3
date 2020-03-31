@@ -1,14 +1,14 @@
 package edu.nju.se.teamnamecannotbeempty.backend.service.paper;
 
 import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.PaperMsg;
-import edu.nju.se.teamnamecannotbeempty.backend.dao.PaperDao;
-import edu.nju.se.teamnamecannotbeempty.backend.po.*;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchMode;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchService;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SortMode;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.paper.ApplicationContextUtil;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.paper.PaperServiceImpl;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.*;
+import edu.nju.se.teamnamecannotbeempty.data.domain.*;
+import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

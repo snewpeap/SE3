@@ -1,6 +1,6 @@
 package edu.nju.se.teamnamecannotbeempty.backend.service.search;
 
-import edu.nju.se.teamnamecannotbeempty.backend.po.Paper;
+import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

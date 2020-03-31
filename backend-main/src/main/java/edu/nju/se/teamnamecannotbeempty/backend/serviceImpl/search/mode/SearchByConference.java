@@ -1,7 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.mode;
 
-import edu.nju.se.teamnamecannotbeempty.backend.po.Paper;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchMode;
+import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.hibernate.search.query.dsl.QueryBuilder;

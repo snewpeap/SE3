@@ -1,0 +1,5 @@
+"++" => "pp"
+"#" => "sharp"
+".net" => "dotnet"
+".NET" => "dotNET"
+"Ctrl+" => "CtrlPlus"
