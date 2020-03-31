@@ -2,9 +2,10 @@
 
 ## 项目结构
 
-- backend-api: 定义了web服务的接口模块，被其他两个模块依赖
+- data: 包含了领域模型和访问数据库的模块
+- api: 定义了服务的接口模块，被下面两个模块依赖
 - backend-main: 即之前一直开发的后端模块
-- batch: 未来用来进行批处理的模块
+- batch: 用来进行批处理的模块
 
 ## 开发规范
 
@@ -23,3 +24,4 @@
 2. 与测试有关的配置写在application-test.yml里面，并且在测试类上加上@ActiveProfiles("test")注解
 3. 使用idea的Git工具进行Commit时，建议勾上窗口右边的"Optimize imports"选框
 4. 鉴于目前使用了多模块，在运行应用前需要在运行配置中将Working Directory改为$MODULE_WORKING_DIR$
+5. 如果需要启动调试，先启动BatchApplication，再启动BackendApplication

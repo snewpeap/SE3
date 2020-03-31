@@ -1,7 +1,7 @@
-package edu.nju.se.teamnamecannotbeempty.backend.data.converters;
+package edu.nju.se.teamnamecannotbeempty.batch.parser.csv.converters;
 
 import com.opencsv.bean.AbstractBeanField;
-import edu.nju.se.teamnamecannotbeempty.backend.AppContextProvider;
+import edu.nju.se.teamnamecannotbeempty.batch.AppContextProvider;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Conference;
 import edu.nju.se.teamnamecannotbeempty.data.repository.ConferenceDao;
 

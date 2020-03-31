@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("test")
 @ContextConfiguration(classes = DataConfig.class)
-public class AffiliationDaoTest {
+public class    AffiliationDaoTest {
     @Autowired
     private AffiliationDao affiliationDao;
 

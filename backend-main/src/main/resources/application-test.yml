@@ -3,8 +3,9 @@ spring:
     hibernate:
       ddl-auto: create
     properties:
-      search:
-        default:
-          directory_provider: "local-heap"
+      hibernate:
+        search:
+          default:
+            directory_provider: "local-heap"
 parse-csv:
   need: false

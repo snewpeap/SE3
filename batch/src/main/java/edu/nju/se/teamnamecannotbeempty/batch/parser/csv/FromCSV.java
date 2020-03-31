@@ -1,16 +1,16 @@
-package edu.nju.se.teamnamecannotbeempty.backend.data;
+package edu.nju.se.teamnamecannotbeempty.batch.parser.csv;
 
 import com.opencsv.bean.CsvToBeanBuilder;
-import edu.nju.se.teamnamecannotbeempty.backend.AppContextProvider;
-import edu.nju.se.teamnamecannotbeempty.backend.data.converters.ToAffiliation;
-import edu.nju.se.teamnamecannotbeempty.backend.data.converters.ToAuthor;
-import edu.nju.se.teamnamecannotbeempty.backend.data.converters.ToTerm;
+import edu.nju.se.teamnamecannotbeempty.batch.parser.csv.converters.ToAffiliation;
+import edu.nju.se.teamnamecannotbeempty.batch.parser.csv.converters.ToAuthor;
+import edu.nju.se.teamnamecannotbeempty.batch.parser.csv.converters.ToTerm;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
 import edu.nju.se.teamnamecannotbeempty.data.repository.AffiliationDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.AuthorDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.TermDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
@@ -20,19 +20,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class FromCSVOpenCSVImpl {
-    private static Logger logger = LoggerFactory.getLogger(FromCSVOpenCSVImpl.class);
+public class FromCSV {
+    private final AuthorDao authorDao;
+    private final AffiliationDao affiliationDao;
+    private final TermDao termDao;
+
+    private static Logger logger = LoggerFactory.getLogger(FromCSV.class);
+
+    @Autowired
+    public FromCSV(AuthorDao authorDao, AffiliationDao affiliationDao, TermDao termDao) {
+        this.authorDao = authorDao;
+        this.affiliationDao = affiliationDao;
+        this.termDao = termDao;
+    }
 
     public List<Paper> convert(InputStream in) {
-        logger.info("Start parsing");
         List<PaperDelegation> delegations = new CsvToBeanBuilder<PaperDelegation>(
                 new InputStreamReader(in, StandardCharsets.UTF_8)
         ).withType(PaperDelegation.class).withSkipLines(1).build().parse();
 
         logger.info("Start saving non-paper");
-        AppContextProvider.getBean(AuthorDao.class).saveAll(ToAuthor.getSaveList());
-        AppContextProvider.getBean(AffiliationDao.class).saveAll(ToAffiliation.getSaveList());
-        AppContextProvider.getBean(TermDao.class).saveAll(ToTerm.getSaveList());
+        authorDao.saveAll(ToAuthor.getSaveList());
+        affiliationDao.saveAll(ToAffiliation.getSaveList());
+        termDao.saveAll(ToTerm.getSaveList());
 
         logger.info("Start convert to paper POs");
         List<Paper> papers = new ArrayList<>(delegations.size());
@@ -43,5 +53,4 @@ public class FromCSVOpenCSVImpl {
         }
         return papers;
     }
-
 }
