@@ -39,5 +39,3 @@ entity-msg:
   term-type: 4
   paper-type: 5
 
-parse-csv:
-  need: true

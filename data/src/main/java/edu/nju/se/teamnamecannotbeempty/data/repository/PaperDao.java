@@ -6,11 +6,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Repository
 public interface PaperDao extends JpaRepository<Paper, Long> {
@@ -48,7 +48,7 @@ public interface PaperDao extends JpaRepository<Paper, Long> {
     List<Paper> findAllByConference_YearBetween(Integer from, Integer to);
 
     @Query("select p from Paper p")
-    Stream<Paper> streamAll();
+    Streamable<Paper> streamAll();
 
     /**
      * 获得作者的被引总数

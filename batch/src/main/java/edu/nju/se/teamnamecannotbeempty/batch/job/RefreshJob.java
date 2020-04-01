@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service
 public class RefreshJob {
@@ -57,19 +56,17 @@ public class RefreshJob {
             }
         }
         logger.info("Done import papers. Start generating paper popularity...");
-//        generatePaperPop();
+        generatePaperPop();
         logger.info("Done generate paper popularity");
-//        trigger();
+        trigger();
     }
 
-    private void generatePaperPop() {
+    void generatePaperPop() {
         //TODO PageRank implemented by Spark
-        Stream<Paper> stream = paperDao.streamAll();
-        stream.forEach(paper -> {
+        paperDao.streamAll().forEach(paper -> {
             Paper.Popularity pop = new Paper.Popularity(paper, paper.getCitation().doubleValue());
             paperPopDao.save(pop);
         });
-        stream.close();
     }
 
     @Component
@@ -91,9 +88,12 @@ public class RefreshJob {
                 Author actual = author.getActual();
                 Optional<Author.Popularity> result = authorPopDao.findByAuthor_Id(actual.getId());
                 Author.Popularity pop = result.orElse(new Author.Popularity(actual, 0.0));
-                pop.setPopularity(pop.getPopularity() + paperPopDao.getPopSumByAuthorId(actual.getId()));
+                Double sum = paperPopDao.getPopSumByAuthorId(actual.getId());
+                sum = sum == null ? 0.0 : sum;
+                pop.setPopularity(pop.getPopularity() + sum);
                 authorPopDao.save(pop);
             });
+            LoggerFactory.getLogger(getClass()).info("Done generate author popularity");
         }
     }
 
@@ -116,9 +116,12 @@ public class RefreshJob {
                 Affiliation actual = affi.getActual();
                 Optional<Affiliation.Popularity> result = affiPopDao.findByAffiliation_Id(actual.getId());
                 Affiliation.Popularity pop = result.orElse(new Affiliation.Popularity(actual, 0.0));
-                pop.setPopularity(pop.getPopularity() + paperPopDao.getPopSumByAffiId(actual.getId()));
+                Double sum = paperPopDao.getPopSumByAffiId(actual.getId());
+                sum = sum == null ? 0.0 : sum;
+                pop.setPopularity(pop.getPopularity() + sum);
                 affiPopDao.save(pop);
             });
+            LoggerFactory.getLogger(getClass()).info("Done generate affiliation popularity");
         }
     }
 
@@ -140,9 +143,12 @@ public class RefreshJob {
             termDao.findAllAuthorKeywords().forEach(term -> {
                 Long id = term.getId();
                 Term.Popularity pop = termPopDao.getDistinctByTerm_Id(id).orElse(new Term.Popularity(term, 0.0));
-                pop.setPopularity(pop.getPopularity() + paperPopDao.getPopSumByAuthorKeywordId(id));
+                Double sum = paperPopDao.getPopSumByAuthorKeywordId(id);
+                sum = sum == null ? 0.0 : sum;
+                pop.setPopularity(pop.getPopularity() + sum);
                 termPopDao.save(pop);
             });
+            LoggerFactory.getLogger(getClass()).info("Done generate term popularity");
         }
     }
 

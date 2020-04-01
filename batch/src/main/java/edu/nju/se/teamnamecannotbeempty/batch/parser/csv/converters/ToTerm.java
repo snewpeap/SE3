@@ -13,6 +13,7 @@ public class ToTerm extends AbstractCsvConverter {
 
     @Override
     public Object convertToRead(String value) {
+        if (value.isEmpty()) return null;
         value = value.toLowerCase();
         Term result = saveMap.get(value);
         if (result != null)

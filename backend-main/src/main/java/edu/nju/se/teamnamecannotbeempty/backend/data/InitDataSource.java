@@ -2,10 +2,10 @@ package edu.nju.se.teamnamecannotbeempty.backend.data;
 
 import edu.nju.se.teamnamecannotbeempty.api.IDataImportJob;
 import edu.nju.se.teamnamecannotbeempty.backend.AppContextProvider;
-import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.NeedParseCSV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -24,11 +24,12 @@ public class InitDataSource implements ApplicationListener<ContextRefreshedEvent
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        if (event.getApplicationContext().getParent() == null && AppContextProvider.getBean(NeedParseCSV.class).isNeed()) {
+        if (event.getApplicationContext().getParent() == null &&
+                AppContextProvider.getBean(HibernateProperties.class).getDdlAuto().startsWith("create")) {
             logger.info("Import data...");
             long total = dataImportJob.trigger();
             AppContextProvider.getBean(Searchable.class).setNum(total);
-            System.out.printf("%d papers to import. 从数据库获取count(Paper)来确认导入完成", total);
+            logger.info(total + " papers to import. 从数据库获取count(Paper)来确认导入完成");
         }
     }
 }
