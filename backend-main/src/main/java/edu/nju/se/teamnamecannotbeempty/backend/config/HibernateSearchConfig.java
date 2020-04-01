@@ -1,4 +1,4 @@
-package edu.nju.se.teamnamecannotbeempty.data;
+package edu.nju.se.teamnamecannotbeempty.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

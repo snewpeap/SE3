@@ -1,7 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend;
 
+import edu.nju.se.teamnamecannotbeempty.backend.config.HibernateSearchConfig;
 import edu.nju.se.teamnamecannotbeempty.data.DataConfig;
-import edu.nju.se.teamnamecannotbeempty.data.HibernateSearchConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;

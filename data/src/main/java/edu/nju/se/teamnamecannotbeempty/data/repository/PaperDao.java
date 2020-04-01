@@ -49,4 +49,26 @@ public interface PaperDao extends JpaRepository<Paper, Long> {
 
     @Query("select p from Paper p")
     Stream<Paper> streamAll();
+
+    /**
+     * 获得作者的被引总数
+     *
+     * @param id 作者id
+     * @return 作者的论文的被引总数
+     * @前置条件 id不为null
+     * @后置条件 无
+     */
+    @Query("select sum(p.citation) from Paper p inner join p.aa aa where aa.author.id = ?1")
+    long getCitationByAuthorId(Long id);
+
+    /**
+     * 获得机构的被引总数
+     *
+     * @param id 机构id
+     * @return 机构的论文的被引总数
+     * @前置条件 id不为null
+     * @后置条件 无
+     */
+    @Query("select sum(p.citation) from Paper p inner join p.aa aa where aa.affiliation.id = ?1")
+    long getCitationByAffiId(Long id);
 }

@@ -1,9 +1,9 @@
 package edu.nju.se.teamnamecannotbeempty.backend.service.search;
 
 import edu.nju.se.teamnamecannotbeempty.backend.AppContextProvider;
+import edu.nju.se.teamnamecannotbeempty.backend.config.HibernateSearchConfig;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.mode.*;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.sortmode.*;
-import edu.nju.se.teamnamecannotbeempty.data.HibernateSearchConfig;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
 import org.hibernate.search.exception.EmptyQueryException;
 import org.junit.Assert;

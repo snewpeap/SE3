@@ -26,7 +26,9 @@ public class InitDataSource implements ApplicationListener<ContextRefreshedEvent
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (event.getApplicationContext().getParent() == null && AppContextProvider.getBean(NeedParseCSV.class).isNeed()) {
             logger.info("Import data...");
-            System.out.printf("%d papers to import. 从数据库获取count(Paper)来确认导入完成", dataImportJob.trigger());
+            long total = dataImportJob.trigger();
+            AppContextProvider.getBean(Searchable.class).setNum(total);
+            System.out.printf("%d papers to import. 从数据库获取count(Paper)来确认导入完成", total);
         }
     }
 }

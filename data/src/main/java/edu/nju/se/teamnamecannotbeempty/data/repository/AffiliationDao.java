@@ -3,6 +3,7 @@ package edu.nju.se.teamnamecannotbeempty.data.repository;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Affiliation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -55,4 +56,7 @@ public interface AffiliationDao extends JpaRepository<Affiliation, Long> {
      */
     @Query("select distinct aa.affiliation from Paper p inner join p.aa aa where p.conference.id = ?1")
     List<Affiliation> getAffiliationsByConference(Long id);
+
+    @Query("select a from Affiliation a")
+    Streamable<Affiliation> getAll();
 }
