@@ -1,5 +1,10 @@
 package edu.nju.se.teamnamecannotbeempty.backend.vo;
 
+import edu.nju.se.teamnamecannotbeempty.data.domain.Author_Affiliation;
+import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
+import edu.nju.se.teamnamecannotbeempty.data.domain.Term;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,6 +16,26 @@ public class SimplePaperVO {
         this.author_simpleAffiliationVOS = author_simpleAffiliationVOS;
         this.publicationTitle = publicationTitle;
         this.publicationYear = publicationYear;
+        this.keywords = keywords;
+    }
+
+    public SimplePaperVO(Paper paper){
+        List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS = new ArrayList<>();
+        List<Author_Affiliation> author_affiliations = paper.getAa();
+        for (Author_Affiliation author_affiliation : author_affiliations) {
+            author_simpleAffiliationVOS.add(new Author_SimpleAffiliationVO(author_affiliation.getAuthor().getName(),
+                    author_affiliation.getAffiliation().getName()));
+        }
+        List<String> keywords = new ArrayList<>();
+        List<Term> termList = paper.getAuthor_keywords();
+        for (Term term : termList) {
+            keywords.add(term.getContent());
+        }
+        this.id = paper.getId();
+        this.title = paper.getTitle();
+        this.author_simpleAffiliationVOS = author_simpleAffiliationVOS;
+        this.publicationTitle = paper.getConference().getName();
+        this.publicationYear = paper.getConference().getYear_highlight();
         this.keywords = keywords;
     }
 

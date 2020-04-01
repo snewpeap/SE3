@@ -1,6 +1,8 @@
 package edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.paper;
 
+import edu.nju.se.teamnamecannotbeempty.backend.AppContextProvider;
 import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.PaperMsg;
+import edu.nju.se.teamnamecannotbeempty.backend.data.Searchable;
 import edu.nju.se.teamnamecannotbeempty.backend.service.paper.PaperService;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchMode;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchService;
@@ -38,28 +40,17 @@ public class PaperServiceImpl implements PaperService {
 
     @Override
     public List<SimplePaperVO> search(String text, String mode, Integer pageNumber, String sortMode, int perPage) {
-        if (pageNumber == null || pageNumber <= 0) pageNumber = 1;
-        SearchMode searchMode = (SearchMode) ApplicationContextUtil.getBean(mode);
-        Pageable pageable = PageRequest.of(pageNumber - 1, perPage);
-        SortMode sort = (SortMode) ApplicationContextUtil.getBean(sortMode);
-        Page<Paper> paperPage = searchService.search(text, searchMode, pageable, sort);
-        List<Paper> paperList = paperPage.getContent();
-        List<SimplePaperVO> simplePaperVOList = new ArrayList<>();
-        for (Paper paper : paperList) {
-            List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS = new ArrayList<>();
-            List<Author_Affiliation> author_affiliations = paper.getAa();
-            for (Author_Affiliation author_affiliation : author_affiliations) {
-                author_simpleAffiliationVOS.add(new Author_SimpleAffiliationVO(author_affiliation.getAuthor().getName(),
-                        author_affiliation.getAffiliation().getName()));
+            if (pageNumber == null || pageNumber <= 0) pageNumber = 1;
+            SearchMode searchMode = (SearchMode) AppContextProvider.getBean(mode);
+            Pageable pageable = PageRequest.of(pageNumber - 1, perPage);
+            SortMode sort = (SortMode) AppContextProvider.getBean(sortMode);
+            Page<Paper> paperPage = searchService.search(text, searchMode, pageable, sort);
+            List<Paper> paperList = paperPage.getContent();
+            List<SimplePaperVO> simplePaperVOList = new ArrayList<>();
+            for (Paper paper : paperList) {
+                simplePaperVOList.add(new SimplePaperVO(paper));
             }
-            List<String> keywords = new ArrayList<>();
-            List<Term> termList = paper.getAuthor_keywords();
-            for (Term term : termList) {
-                keywords.add(term.getContent());
-            }
-            simplePaperVOList.add(new SimplePaperVO(paper.getId(), paper.getTitle(), author_simpleAffiliationVOS, paper.getConference().getName(), paper.getConference().getYear_highlight(), keywords));
-        }
-        return simplePaperVOList;
+            return simplePaperVOList;
     }
 
 

@@ -1,5 +1,6 @@
 package edu.nju.se.teamnamecannotbeempty.backend.controller.paper;
 
+import edu.nju.se.teamnamecannotbeempty.backend.data.Searchable;
 import edu.nju.se.teamnamecannotbeempty.backend.service.paper.PaperService;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.SimplePaperVO;
@@ -19,6 +20,8 @@ import java.util.List;
 public class PaperController {
     @Autowired
     PaperService paperService;
+    @Autowired
+    Searchable searchable;
 
     public void setPaperService(PaperService paperService) {
         this.paperService = paperService;
@@ -49,6 +52,14 @@ public class PaperController {
     @RequestMapping(value = "/paperDetail/{id}", method = RequestMethod.GET)
     public ResponseVO getPaper(@PathVariable long id) {
         return paperService.getPaper(id);
+    }
+
+
+    public ResponseVO getSearchable() throws InterruptedException {
+        while (!searchable.isOk()){
+            Thread.sleep(3000);
+        }
+        return ResponseVO.success();
     }
 
 }
