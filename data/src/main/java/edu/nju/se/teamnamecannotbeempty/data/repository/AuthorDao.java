@@ -3,11 +3,11 @@ package edu.nju.se.teamnamecannotbeempty.data.repository;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Author;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Repository
 public interface AuthorDao extends JpaRepository<Author, Long> {
@@ -57,5 +57,6 @@ public interface AuthorDao extends JpaRepository<Author, Long> {
     @Query("select distinct aa.author from Paper p inner join p.aa aa where p.conference.id = ?1")
     List<Author> getAuthorsByConference(Long id);
 
-    Stream<Author> streamAll();
+    @Query("select a from Author a")
+    Streamable<Author> getAll();
 }

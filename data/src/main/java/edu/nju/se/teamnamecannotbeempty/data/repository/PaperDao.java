@@ -5,6 +5,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -46,5 +47,6 @@ public interface PaperDao extends JpaRepository<Paper, Long> {
     @Cacheable(value = "papersByYear", key = "#root.args[0]+'_'+#root.args[1]", unless = "#result = null")
     List<Paper> findAllByConference_YearBetween(Integer from, Integer to);
 
+    @Query("select p from Paper p")
     Stream<Paper> streamAll();
 }

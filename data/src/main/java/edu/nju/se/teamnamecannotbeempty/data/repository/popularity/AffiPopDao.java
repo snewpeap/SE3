@@ -4,6 +4,7 @@ import edu.nju.se.teamnamecannotbeempty.data.domain.Affiliation;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AffiPopDao extends CrudRepository<Affiliation.Popularity, Long> {
     /**
@@ -14,4 +15,6 @@ public interface AffiPopDao extends CrudRepository<Affiliation.Popularity, Long>
      * @后置条件 无
      */
     List<Affiliation.Popularity> findTop20ByOrderByPopularityDesc();
+
+    Optional<Affiliation.Popularity> findByAffiliation_Id(Long id);
 }

@@ -29,13 +29,15 @@ import java.util.List;
 public class DataImportJob implements IDataImportJob {
     private final FromCSV fromCSV;
     private final Attacher attacher;
+    private final RefreshJob refreshJob;
 
     private static Logger logger = LoggerFactory.getLogger(DataImportJob.class);
 
     @Autowired
-    public DataImportJob(FromCSV fromCSV, Attacher attacher) {
+    public DataImportJob(FromCSV fromCSV, Attacher attacher, RefreshJob refreshJob) {
         this.fromCSV = fromCSV;
         this.attacher = attacher;
+        this.refreshJob = refreshJob;
     }
 
     @Override
@@ -51,6 +53,8 @@ public class DataImportJob implements IDataImportJob {
         InputStream icse_csv = getClass().getResourceAsStream(name);
         InputStream icse_json = getClass().getResourceAsStream("/datasource/icse_res.json");
         total += readFile(name, icse_csv, icse_json);
+
+        refreshJob.trigger_init(total);
         return total;
     }
 
@@ -78,7 +82,7 @@ public class DataImportJob implements IDataImportJob {
         }
 
         /*
-        小知识：标记了@Async的方法需要在别的类内调用才能生效
+        小知识：标记了@Async的方法需要在别的类内调用才能生效，猜想是给类做了个代理
          */
         @Async
         void attachAndSave(List<Paper> papers, InputStream jsonFile, String name) {

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TermPopDao extends CrudRepository<Term.Popularity, Long> {
     /**
@@ -56,4 +57,27 @@ public interface TermPopDao extends CrudRepository<Term.Popularity, Long> {
             "select p from Paper p inner join p.author_keywords pas " +
             "where tp.term.id = pas.id and p.id = ?1)")
     List<Term.Popularity> getTermPopByPaperID(Long id);
+
+    /**
+     * 查询会议的研究方向及其热度
+     *
+     * @param id 会议id
+     * @return 会议的研究方向热度对象列表
+     * @前置条件 id不为null
+     * @后置条件 无
+     */
+    @Query("select distinct tp from term_popularity tp where exists (" +
+            "select p from Paper p inner join p.author_keywords pas " +
+            "where tp.term.id = pas.id and p.conference.id = ?1)")
+    List<Term.Popularity> getTermPopByConferenceID(Long id);
+
+    /**
+     * 获取一个研究方向的热度
+     *
+     * @param id 研究方向id
+     * @return 通过Optional包装的热度对象
+     * @前置条件 id不为null
+     * @后置条件 如果有与参数所给的id对应的数据，则Optional.get可获得该对象；否则Optional.isPresent==false
+     */
+    Optional<Term.Popularity> getDistinctByTerm_Id(Long id);
 }
