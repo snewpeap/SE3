@@ -1,10 +1,10 @@
 package edu.nju.se.teamnamecannotbeempty.backend.service.paper;
 
+import edu.nju.se.teamnamecannotbeempty.backend.AppContextProvider;
 import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.PaperMsg;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchMode;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchService;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SortMode;
-import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.paper.ApplicationContextUtil;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.paper.PaperServiceImpl;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.*;
 import edu.nju.se.teamnamecannotbeempty.data.domain.*;
@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({"com.*", "io.*", "org.*", "ch.*", "javax.*"})
-@PrepareForTest({ApplicationContextUtil.class, PageRequest.class})
+@PrepareForTest({AppContextProvider.class, PageRequest.class})
 @SpringBootTest
 @ActiveProfiles("test")
 public class PaperServiceTest {
@@ -57,10 +57,10 @@ public class PaperServiceTest {
         paperPage = mock(Page.class);
         Pageable pageable = mock(Pageable.class);
 
-        PowerMockito.mockStatic(ApplicationContextUtil.class);
+        PowerMockito.mockStatic(AppContextProvider.class);
         PowerMockito.mockStatic(PageRequest.class);
 
-        PowerMockito.when(ApplicationContextUtil.getBean(anyString())).thenReturn(searchMode).thenReturn(sortMode);
+        PowerMockito.when(AppContextProvider.getBean(anyString())).thenReturn(searchMode).thenReturn(sortMode);
 
         when(searchService.search(anyString(), any(), any(), any())).thenReturn(paperPage);
         when(paperMsg.getMismatchId()).thenReturn("找不到ID所对应的论文");
