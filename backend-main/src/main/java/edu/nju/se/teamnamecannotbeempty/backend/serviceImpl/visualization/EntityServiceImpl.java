@@ -55,7 +55,13 @@ public class EntityServiceImpl implements EntityService {
     }
 
     private GraphVO AuthorBasicGraph(long id, int type){
+        List<Node> nodes = generateTermNode(termPopDao.getTermPopByAuthorID(id));
+
         //TODO
+        return null;
+    }
+
+    private List<Link> generateLinks(int sourceId, int sourceType, List<Node> targeNodes, double value){
         return null;
     }
 
@@ -65,9 +71,9 @@ public class EntityServiceImpl implements EntityService {
                 .collect(Collectors.toList());
     }
 
-    private List<Node> generateTermNode(List<Term> terms){
+    private List<Node> generateTermNode(List<Term.Popularity> terms){
         return terms.stream().map(
-                term -> new Node(term.getId(), term.getContent(), entityMsg.getTermType()))
+                term -> new Node(term.getTerm().getId(), term.getTerm().getContent(), entityMsg.getTermType()))
                 .collect(Collectors.toList());
     }
 
