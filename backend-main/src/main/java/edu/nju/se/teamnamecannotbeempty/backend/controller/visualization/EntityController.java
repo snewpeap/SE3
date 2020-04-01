@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController()
 @Service
 public class EntityController {
+    public void setEntityService(EntityService entityService) {
+        this.entityService = entityService;
+    }
+
     @Autowired(required = false)
     EntityService entityService;
 
