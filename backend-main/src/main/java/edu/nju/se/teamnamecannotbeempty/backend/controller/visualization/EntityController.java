@@ -20,17 +20,17 @@ public class EntityController {
     @Autowired(required = false)
     EntityService entityService;
 
-    @RequestMapping(value = "/academic/{id}?type=", method = RequestMethod.GET)
+    @RequestMapping(value = "/academic/{id}", method = RequestMethod.GET)
     public AcademicEntityVO getAcademicEntity(@PathVariable long id, @RequestParam int type) {
         return entityService.getAcedemicEntity(id,type);
     }
 
-    @RequestMapping(value = "/graph/basic/{id}?type=", method = RequestMethod.GET)
+    @RequestMapping(value = "/graph/basic/{id}", method = RequestMethod.GET)
     public GraphVO getGraph(@PathVariable long id, @RequestParam int type) {
         return entityService.getBasicGraph(id,type);
     }
 
-    @RequestMapping(value = "/graph/more/{id}?type=", method = RequestMethod.GET)
+    @RequestMapping(value = "/graph/more/{id}", method = RequestMethod.GET)
     public GraphVO getMoreGraph(@PathVariable long id, @RequestParam int type) {
         return entityService.getCompleteGraph(id, type);
     }
