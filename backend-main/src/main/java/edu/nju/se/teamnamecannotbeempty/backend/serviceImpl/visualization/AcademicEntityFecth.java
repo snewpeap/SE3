@@ -15,6 +15,7 @@ import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,6 +45,7 @@ public class AcademicEntityFecth {
     }
 
     @Cacheable(value = "getAcedemicEntity", key = "#p0+'_'+#p1")
+    @Transactional
     public AcademicEntityVO getAcedemicEntity(long id, int type) {
         AcademicEntityVO academicEntityVO=null;
         if(type==entityMsg.getAuthorType()) academicEntityVO=authorsEntity(id);

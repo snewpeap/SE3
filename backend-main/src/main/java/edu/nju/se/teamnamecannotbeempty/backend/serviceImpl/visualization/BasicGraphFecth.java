@@ -14,6 +14,7 @@ import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,6 +46,7 @@ public class BasicGraphFecth {
     }
 
     @Cacheable(value = "getBasicGraph", key = "#p0+'_'+#p1", unless = "#result=null")
+    @Transactional
     public GraphVO getBasicGraph(long id, int type) {
         if (type == entityMsg.getAuthorType()) return AuthorBasicGraph(id);
         else if (type == entityMsg.getAffiliationType()) return AffiliationBasicGraph(id);

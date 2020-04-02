@@ -13,6 +13,7 @@ import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,6 +42,7 @@ public class CompleteGraphFecth {
     }
 
     @Cacheable(value = "getCompleteGraph", key = "#p0+'_'+#p1", unless = "#result=null")
+    @Transactional
     public GraphVO getCompleteGraph(long id, int type) {
         if(type==entityMsg.getAuthorType()) return AuthorCompleteGraph(id);
         else if(type == entityMsg.getAffiliationType()) return AffiliationCompleteGraph(id);
