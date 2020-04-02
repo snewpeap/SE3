@@ -155,8 +155,8 @@ public class PaperDelegation {
             }
             aas.add(new Author_Affiliation(authors.get(i), affiliations.get(i)));
         }
-        paper.setTitle(title);
         paper.setAa(aas);
+        paper.setTitle(title);
         paper.setConference(conference);
         paper.setDate_added_Xplore(date_added_Xplore);
         paper.setVolume(volume);

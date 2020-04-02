@@ -48,11 +48,17 @@ public class RefreshJob {
 
     @Async
     void trigger_init(long total) {
+        long startTime = System.currentTimeMillis();
+        final long DEADLINE = 1000 * 60 * 3;
         while (paperDao.count() != total) {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 logger.warn(e.getMessage());
+            }
+            if (System.currentTimeMillis() - startTime > DEADLINE) {
+                logger.warn("Data Import time exceed " + DEADLINE + " millis, and current count is " + paperDao.count() + ". Abort it");
+                return;
             }
         }
         logger.info("Done import papers. Start generating paper popularity...");

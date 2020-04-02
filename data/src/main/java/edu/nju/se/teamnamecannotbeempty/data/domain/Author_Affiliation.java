@@ -8,10 +8,10 @@ import javax.persistence.ManyToOne;
 
 @Embeddable
 public class Author_Affiliation {
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     @IndexedEmbedded(depth = 1)
     private Author author;
-    @ManyToOne(cascade = CascadeType.DETACH)
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     @IndexedEmbedded(depth = 1)
     private Affiliation affiliation;
 

@@ -88,6 +88,11 @@ public class DataImportJob implements IDataImportJob {
         void attachAndSave(List<Paper> papers, InputStream jsonFile, String name) {
             paperDao.saveAll(attachJsonInfo(papers, jsonFile));
             logger.info("Done Saving data from " + name);
+            try {
+                jsonFile.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         private List<Paper> attachJsonInfo(List<Paper> papers, InputStream jsonFile) {
@@ -116,10 +121,7 @@ public class DataImportJob implements IDataImportJob {
                                                 if (!StringUtils.isEmpty(link)) {
                                                     Long refereeId = Long.parseLong(
                                                             link.substring(link.lastIndexOf('/') + 1));
-                                                    Paper referee = paperHashMap.get(refereeId);
-                                                    ref.setReferee(referee);
-                                                    if (referee != null)
-                                                        paperDao.save(referee);
+                                                    ref.setReferee(paperHashMap.get(refereeId));
                                                 }
                                                 paper.addRef(ref);
                                             }

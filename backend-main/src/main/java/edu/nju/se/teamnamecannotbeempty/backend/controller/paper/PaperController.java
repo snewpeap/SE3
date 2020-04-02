@@ -1,7 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.controller.paper;
 
-import edu.nju.se.teamnamecannotbeempty.backend.data.Searchable;
 import edu.nju.se.teamnamecannotbeempty.backend.service.paper.PaperService;
+import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.Searchable;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.SimplePaperVO;
 import org.springframework.beans.factory.annotation.Autowired;
