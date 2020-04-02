@@ -1,4 +1,4 @@
-package edu.nju.se.teamnamecannotbeempty.backend.data;
+package edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search;
 
 import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class Searchable {
     private final PaperDao paperDao;
     private static boolean ok = false;
+    private static boolean indexing = false;
     private static Long num = null;
 
     @Autowired
@@ -22,8 +23,8 @@ public class Searchable {
      */
     public boolean isOk() {
         if (!ok)
-            ok = (num != null) && (num == paperDao.count());
-        return ok;
+            ok = importOK();
+        return ok && !indexing;
     }
 
     /**
@@ -33,5 +34,19 @@ public class Searchable {
      */
     public void setNum(long l) {
         if (num == null) num = l;
+    }
+
+    boolean importOK() {
+        return (num != null) && (num == paperDao.count());
+    }
+
+    void startIndexing() {
+        indexing = true;
+        ok = false;
+    }
+
+    void endIndexing() {
+        indexing = false;
+        ok = true;
     }
 }

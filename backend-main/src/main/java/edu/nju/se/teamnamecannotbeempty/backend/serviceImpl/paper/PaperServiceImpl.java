@@ -2,12 +2,14 @@ package edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.paper;
 
 import edu.nju.se.teamnamecannotbeempty.backend.AppContextProvider;
 import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.PaperMsg;
-import edu.nju.se.teamnamecannotbeempty.backend.data.Searchable;
 import edu.nju.se.teamnamecannotbeempty.backend.service.paper.PaperService;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchMode;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchService;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SortMode;
-import edu.nju.se.teamnamecannotbeempty.backend.vo.*;
+import edu.nju.se.teamnamecannotbeempty.backend.vo.Author_AffiliationVO;
+import edu.nju.se.teamnamecannotbeempty.backend.vo.PaperVO;
+import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
+import edu.nju.se.teamnamecannotbeempty.backend.vo.SimplePaperVO;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Author_Affiliation;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Term;

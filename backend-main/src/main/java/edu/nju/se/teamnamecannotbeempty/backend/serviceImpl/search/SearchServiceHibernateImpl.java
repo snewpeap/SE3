@@ -15,10 +15,13 @@ import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -28,11 +31,13 @@ import java.util.List;
 @Service
 public class SearchServiceHibernateImpl implements SearchService {
     private final EntityManager entityManager;
+    private final Indexer indexer;
 
     @Autowired
-    public SearchServiceHibernateImpl(EntityManager entityManager) {
+    public SearchServiceHibernateImpl(EntityManager entityManager, Indexer indexer) {
         this.entityManager = entityManager;
         hibernateSearchInit();
+        this.indexer = indexer;
     }
 
     public void hibernateSearchInit() {
@@ -108,5 +113,38 @@ public class SearchServiceHibernateImpl implements SearchService {
         }
 
         return new PageImpl<>(result, pageable, total);
+    }
+
+    public void flushIndexes() {
+        indexer.flushIndexes();
+    }
+
+    @Component
+    public static class Indexer {
+        private final Searchable searchable;
+        private final EntityManager entityManager;
+
+        public Indexer(Searchable searchable, EntityManager entityManager) {
+            this.searchable = searchable;
+            this.entityManager = entityManager;
+        }
+
+        @Async
+        public void flushIndexes() {
+            searchable.startIndexing();
+            while (!searchable.importOK()) {
+                try {
+                    Thread.sleep(4000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                Search.getFullTextEntityManager(entityManager).createIndexer().startAndWait();
+                searchable.endIndexing();
+            } catch (InterruptedException e) {
+                LoggerFactory.getLogger(SearchServiceHibernateImpl.class).error("Index procedure failed!");
+            }
+        }
     }
 }

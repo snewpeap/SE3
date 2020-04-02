@@ -49,7 +49,7 @@ public class FromCSV {
         for (PaperDelegation delegation : delegations) {
             Paper paper = delegation.toPaper();
             if (paper != null && paper.getAa() != null)
-                papers.add(delegation.toPaper());
+                papers.add(paper);
         }
         return papers;
     }
