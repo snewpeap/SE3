@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
     /**
@@ -15,6 +16,16 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
      * @后置条件 无
      */
     List<Paper.Popularity> findTop20ByOrderByPopularityDesc();
+
+    /**
+     * 通过论文id获得论文的热度
+     *
+     * @param id 论文id
+     * @return 论文热度对象
+     * @前置条件 id不为null
+     * @后置条件 无
+     */
+    Optional<Paper.Popularity> getByPaper_Id(Long id);
 
     /**
      * 查找某作者的代表作（即按论文热度排序）
@@ -83,7 +94,35 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select sum(pp.popularity) from paper_popularity pp inner join pp.paper p inner join p.author_keywords ak " +
-            "where ak.id = ?1")
+    @Query("select sum(pp.popularity) from paper_popularity pp inner join pp.paper p " +
+            "where exists (select 1 from p.author_keywords ak where ak.id = ?1)")
     Double getPopSumByAuthorKeywordId(Long id);
+
+    /**
+     * 获得作者在某个研究方向上的论文热度之和（权重）
+     *
+     * @param authorId 作者id
+     * @param keywordId 研究方向id
+     * @return 作者在研究方向上的权重
+     * @前置条件 参数都不为null
+     * @后置条件 无
+     */
+    @Query("select sum(pp.popularity) from paper_popularity pp inner join pp.paper p " +
+            "where exists (select 1 from p.aa aa where aa.author.id = ?1) and " +
+            "exists (select 1 from p.author_keywords ak where ak.id = ?2)")
+    Double getWeightByAuthorOnKeyword(Long authorId, Long keywordId);
+
+    /**
+     * 获得机构在某个研究方向上的论文热度之和
+     *
+     * @param affiId 机构id
+     * @param keywordId 研究方向id
+     * @return 机构在研究方向上的权重
+     * @前置条件 参数都不为null
+     * @后置条件 无
+     */
+    @Query("select sum(pp.popularity) from paper_popularity pp inner join pp.paper p " +
+            "where exists (select 1 from p.aa aa where aa.affiliation.id = ?1) and " +
+            "exists (select 1 from p.author_keywords ak where ak.id = ?2)")
+    Double getWeightByAffiOnKeyword(Long affiId, Long keywordId);
 }
