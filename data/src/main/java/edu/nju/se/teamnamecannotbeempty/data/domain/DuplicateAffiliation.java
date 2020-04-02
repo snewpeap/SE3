@@ -13,10 +13,10 @@ public class DuplicateAffiliation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     //被怀疑有重复的
     private Affiliation source;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     //发生重复的对象
     private Affiliation target;
     @ColumnDefault("false")

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ToAffiliation extends AbstractCsvConverter {
-    //    private final AffiliationDao affiliationDao;
     private static ConcurrentHashMap<String, Affiliation> saveMap = new ConcurrentHashMap<>();
 
     @Override

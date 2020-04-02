@@ -15,6 +15,7 @@ import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -131,6 +132,8 @@ public class SearchServiceHibernateImpl implements SearchService {
 
         @Async
         public void flushIndexes() {
+            long startTime = System.currentTimeMillis();
+            final long DEADLINE = 1000 * 60 * 3;
             searchable.startIndexing();
             while (!searchable.importOK()) {
                 try {
@@ -138,13 +141,20 @@ public class SearchServiceHibernateImpl implements SearchService {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                if (System.currentTimeMillis() - startTime > DEADLINE) {
+                    logger.error("Data import job seen to be failed. Abort indexes flushing.");
+                    searchable.endIndexing();
+                    return;
+                }
             }
             try {
                 Search.getFullTextEntityManager(entityManager).createIndexer().startAndWait();
-                searchable.endIndexing();
             } catch (InterruptedException e) {
-                LoggerFactory.getLogger(SearchServiceHibernateImpl.class).error("Index procedure failed!");
+                logger.error("Index procedure failed!");
+            } finally {
+                searchable.endIndexing();
             }
         }
+        private Logger logger = LoggerFactory.getLogger(SearchServiceHibernateImpl.class);
     }
 }

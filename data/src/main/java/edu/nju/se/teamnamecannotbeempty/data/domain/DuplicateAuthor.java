@@ -13,10 +13,10 @@ public class DuplicateAuthor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     //被怀疑有重复的
     private Author source;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     //发生重复的对象
     private Author target;
     //标识是否已经处理了这条

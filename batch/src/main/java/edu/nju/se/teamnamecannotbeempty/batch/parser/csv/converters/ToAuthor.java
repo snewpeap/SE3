@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ToAuthor extends AbstractCsvConverter {
-    //    private final AuthorDao authorDao;
     private static ConcurrentHashMap<String, Author> saveMap = new ConcurrentHashMap<>();
 
     @Override
@@ -19,6 +18,7 @@ public class ToAuthor extends AbstractCsvConverter {
             return result;
         Author author = new Author();
         author.setName(value);
+        author.setLowerCaseName(value.toLowerCase().replace(".", ""));
         saveMap.put(value, author);
         return author;
     }

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ToTerm extends AbstractCsvConverter {
-    //    private final TermDao termDao;
     private static ConcurrentHashMap<String, Term> saveMap = new ConcurrentHashMap<>();
 
     @Override
