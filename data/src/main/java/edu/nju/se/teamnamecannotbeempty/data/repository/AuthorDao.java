@@ -57,6 +57,20 @@ public interface AuthorDao extends JpaRepository<Author, Long> {
     @Query("select distinct aa.author from Paper p inner join p.aa aa where p.conference.id = ?1")
     List<Author> getAuthorsByConference(Long id);
 
+    /**
+     * 查询在某研究方向发表过论文的作者
+     *
+     * @param id 研究方向id
+     * @return 在研究方向上发表过论文的作者
+     * @前置条件 id不为null
+     * @后置条件 无
+     */
+    @Query("select distinct aa.author from Paper p inner join p.aa aa " +
+            "where exists (select 1 from p.author_keywords ak where ak.id = ?1)")
+    List<Author> getAuthorsByKeyword(Long id);
+
+    List<Author> findByLowerCaseNameIsLikeAndIdIsNot(String like, Long id);
+
     @Query("select a from Author a")
     Streamable<Author> getAll();
 }

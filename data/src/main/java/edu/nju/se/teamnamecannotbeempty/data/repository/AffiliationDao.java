@@ -57,6 +57,18 @@ public interface AffiliationDao extends JpaRepository<Affiliation, Long> {
     @Query("select distinct aa.affiliation from Paper p inner join p.aa aa where p.conference.id = ?1")
     List<Affiliation> getAffiliationsByConference(Long id);
 
+    /**
+     * 在某研究方向上发表过论文的机构
+     *
+     * @param id 研究方向id
+     * @return 在该方向上发表过论文的机构
+     * @前置条件 id不为null
+     * @后置条件 无
+     */
+    @Query("select distinct aa.affiliation from Paper p inner join p.aa aa " +
+            "where exists (select 1 from p.author_keywords ak where ak.id = ?1)")
+    List<Affiliation> getAffiliationsByKeyword(Long id);
+
     @Query("select a from Affiliation a")
     Streamable<Affiliation> getAll();
 }

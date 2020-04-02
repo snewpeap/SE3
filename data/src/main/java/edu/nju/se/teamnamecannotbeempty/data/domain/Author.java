@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "authors")
+@Table(name = "authors", indexes = {@Index(name = "author_lowercase_name", columnList = "lowerCaseName")})
 public class Author implements Aliasable<Author> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +16,7 @@ public class Author implements Aliasable<Author> {
     @Column(name = "au_name", nullable = false)
     @Field
     private String name;
+    private String lowerCaseName;
     @ManyToOne
     //别名，在需要去重的时候为空；去重后，如果没有重复为this，否则为重复对象
     private Author alias;
@@ -128,5 +129,13 @@ public class Author implements Aliasable<Author> {
 
     public void setAlias(Author alias) {
         this.alias = alias;
+    }
+
+    public String getLowerCaseName() {
+        return lowerCaseName;
+    }
+
+    public void setLowerCaseName(String lowerCaseName) {
+        this.lowerCaseName = lowerCaseName;
     }
 }
