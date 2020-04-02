@@ -12,14 +12,15 @@ public class ToAuthor extends AbstractCsvConverter {
 
     @Override
     public Object convertToRead(String value) {
-        if (value.isEmpty()) return null;
-        Author result = saveMap.get(value);
+        String lowercase = value.toLowerCase();
+        if (lowercase.isEmpty()) return null;
+        Author result = saveMap.get(lowercase);
         if (result != null)
             return result;
         Author author = new Author();
         author.setName(value);
-        author.setLowerCaseName(value.toLowerCase().replace(".", ""));
-        saveMap.put(value, author);
+        author.setLowerCaseName(lowercase);
+        saveMap.put(lowercase, author);
         return author;
     }
 
