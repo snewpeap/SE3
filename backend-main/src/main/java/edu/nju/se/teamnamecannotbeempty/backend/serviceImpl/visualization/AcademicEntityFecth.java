@@ -6,7 +6,10 @@ import edu.nju.se.teamnamecannotbeempty.backend.vo.AcademicEntityVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.SimplePaperVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.TermItem;
 import edu.nju.se.teamnamecannotbeempty.data.domain.*;
-import edu.nju.se.teamnamecannotbeempty.data.repository.*;
+import edu.nju.se.teamnamecannotbeempty.data.repository.AffiliationDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.AuthorDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.ConferenceDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.PaperPopDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,5 +117,4 @@ public class AcademicEntityFecth {
                 .collect(Collectors.toList());
         return simplePaperVOS.size()>5? simplePaperVOS.subList(0,5):simplePaperVOS;
     }
-
 }

@@ -5,13 +5,33 @@ import java.util.Objects;
 
 public class GraphVO {
     private long centerId;
+    private int centerType;
+    private String centerName;
     private List<Node> nodes;
     private List<Link> links;
 
-    public GraphVO(long centerId, List<Node> nodes, List<Link> links) {
+    public GraphVO(long centerId, int centerType, String centerName, List<Node> nodes, List<Link> links) {
         this.centerId = centerId;
+        this.centerType = centerType;
+        this.centerName = centerName;
         this.nodes = nodes;
         this.links = links;
+    }
+
+    public int getCenterType() {
+        return centerType;
+    }
+
+    public void setCenterType(int centerType) {
+        this.centerType = centerType;
+    }
+
+    public String getCenterName() {
+        return centerName;
+    }
+
+    public void setCenterName(String centerName) {
+        this.centerName = centerName;
     }
 
     public long getCenterId() {
@@ -44,6 +64,8 @@ public class GraphVO {
         if (o == null || getClass() != o.getClass()) return false;
         GraphVO graphVO = (GraphVO) o;
         return centerId == graphVO.centerId &&
+                centerType == graphVO.centerType &&
+                Objects.equals(centerName, graphVO.centerName) &&
                 Objects.equals(nodes, graphVO.nodes) &&
                 Objects.equals(links, graphVO.links);
     }
@@ -51,6 +73,6 @@ public class GraphVO {
     @Override
     public int hashCode() {
 
-        return Objects.hash(centerId, nodes, links);
+        return Objects.hash(centerId, centerType, centerName, nodes, links);
     }
 }
