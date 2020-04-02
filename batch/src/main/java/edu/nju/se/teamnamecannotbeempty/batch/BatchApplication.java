@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication(scanBasePackageClasses = {BatchApplication.class, DataConfig.class})
-@EnableAsync(proxyTargetClass = true)
+@EnableAsync
 @Import({DataConfig.class})
 public class BatchApplication {
 

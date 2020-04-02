@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Paper PO 在数据转换中的代理对象
@@ -148,7 +149,7 @@ public class PaperDelegation {
         }
         ArrayList<Author_Affiliation> aas = new ArrayList<>();
         for (int i = 0; i < Math.min(authors.size(), affiliations.size()); i++) {
-            if (authors.get(i).getName().isEmpty()) {
+            if (authors.get(i) == null || affiliations.get(i) == null) {
                 aas = null;
                 break;
             }
@@ -168,15 +169,15 @@ public class PaperDelegation {
         paper.setIsbn(isbn);
         paper.setDoi(doi);
         paper.setFunding_info(funding_info);
-        ak.removeIf(term -> term.getContent().isEmpty());
+        ak.removeIf(Objects::isNull);
         paper.setAuthor_keywords(ak);
-        ie3t.removeIf(term -> term.getContent().isEmpty());
+        ie3t.removeIf(Objects::isNull);
         paper.setIeee_terms(ie3t);
-        ict.removeIf(term -> term.getContent().isEmpty());
+        ict.removeIf(Objects::isNull);
         paper.setInspec_controlled(ict);
-        inct.removeIf((term -> term.getContent().isEmpty()));
+        inct.removeIf(Objects::isNull);
         paper.setInspec_non_controlled(inct);
-        mt.removeIf(term -> term.getContent().isEmpty());
+        mt.removeIf(Objects::isNull);
         paper.setMesh_terms(mt);
 
         if (citation == null) paper.setCitation(0);

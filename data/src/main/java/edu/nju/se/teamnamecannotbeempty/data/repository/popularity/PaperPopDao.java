@@ -61,7 +61,7 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
      */
     @Query("select sum(pp.popularity) from paper_popularity pp inner join pp.paper p inner join p.aa aa " +
             "where aa.author.id = ?1")
-    double getPopSumByAuthorId(Long id);
+    Double getPopSumByAuthorId(Long id);
 
     /**
      * 获得机构的论文热度之和
@@ -73,7 +73,7 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
      */
     @Query("select sum(pp.popularity) from paper_popularity pp inner join pp.paper p inner join p.aa aa " +
             "where aa.affiliation.id = ?1")
-    double getPopSumByAffiId(Long id);
+    Double getPopSumByAffiId(Long id);
 
     /**
      * 获得研究方向的论文热度之和
@@ -85,5 +85,5 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
      */
     @Query("select sum(pp.popularity) from paper_popularity pp inner join pp.paper p inner join p.author_keywords ak " +
             "where ak.id = ?1")
-    double getPopSumByAuthorKeywordId(Long id);
+    Double getPopSumByAuthorKeywordId(Long id);
 }

@@ -1,6 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.data.domain;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 /**
@@ -12,15 +13,31 @@ public class Ref {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(cascade = {CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     //引用者
     private Paper referer;
     @Column(nullable = false)
     private String refTitle;
-    @ManyToOne(cascade = {CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "referee_id", foreignKey = @ForeignKey(name = "FK_REFEREE"))
     //被引用者，可能为空
     private Paper referee;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ref ref = (Ref) o;
+        return Objects.equals(id, ref.id) &&
+                referer.equals(ref.referer) &&
+                refTitle.equals(ref.refTitle) &&
+                Objects.equals(referee, ref.referee);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, referer, refTitle, referee);
+    }
 
     @Override
     public String toString() {

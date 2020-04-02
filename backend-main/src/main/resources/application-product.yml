@@ -12,5 +12,3 @@ spring:
 server:
   port: 9090
 
-parse-csv:
-  need: false

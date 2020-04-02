@@ -13,6 +13,7 @@ public class ToAuthor extends AbstractCsvConverter {
 
     @Override
     public Object convertToRead(String value) {
+        if (value.isEmpty()) return null;
         Author result = saveMap.get(value);
         if (result != null)
             return result;
