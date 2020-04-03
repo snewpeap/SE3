@@ -10,43 +10,15 @@ import java.util.Objects;
 
 public class SimplePaperVO {
 
-    public SimplePaperVO(long id, String title, List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS, String publicationTitle, String publicationYear, List<String> keywords) {
-        this.id = id;
-        this.title = title;
-        this.author_simpleAffiliationVOS = author_simpleAffiliationVOS;
-        this.publicationTitle = publicationTitle;
-        this.publicationYear = publicationYear;
-        this.keywords = keywords;
-    }
-
-    public SimplePaperVO(Paper paper){
-        List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS = new ArrayList<>();
-        List<Author_Affiliation> author_affiliations = paper.getAa();
-        for (Author_Affiliation author_affiliation : author_affiliations) {
-            author_simpleAffiliationVOS.add(new Author_SimpleAffiliationVO(author_affiliation.getAuthor().getName(),
-                    author_affiliation.getAffiliation().getName()));
-        }
-        List<String> keywords = new ArrayList<>();
-        List<Term> termList = paper.getAuthor_keywords();
-        for (Term term : termList) {
-            keywords.add(term.getContent());
-        }
-        this.id = paper.getId();
-        this.title = paper.getTitle();
-        this.author_simpleAffiliationVOS = author_simpleAffiliationVOS;
-        this.publicationTitle = paper.getConference().getName();
-        this.publicationYear = paper.getConference().getYear_highlight();
-        this.keywords = keywords;
-    }
-
     private long id;
 
     private String title;
 
     private List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS;
 
-
     private String publicationTitle;
+
+    private long conferenceId;
 
     private String publicationYear;
 
@@ -80,10 +52,6 @@ public class SimplePaperVO {
         return author_simpleAffiliationVOS;
     }
 
-    public void setAuthor_simpleAffiliationVOS(List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS) {
-        this.author_simpleAffiliationVOS = author_simpleAffiliationVOS;
-    }
-
     public String getIssue() {
         return publicationTitle;
     }
@@ -100,12 +68,65 @@ public class SimplePaperVO {
         this.keywords = keywords;
     }
 
+    public String getPublicationTitle() {
+        return publicationTitle;
+    }
+
+    public void setPublicationTitle(String publicationTitle) {
+        this.publicationTitle = publicationTitle;
+    }
+
+    public long getConferenceId() {
+        return conferenceId;
+    }
+
+    public void setConferenceId(long conferenceId) {
+        this.conferenceId = conferenceId;
+    }
+
+    public void setAuthor_simpleAffiliationVOS(List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS) {
+        this.author_simpleAffiliationVOS = author_simpleAffiliationVOS;
+    }
+
+    public SimplePaperVO(long id, String title, List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS, String publicationTitle,long conferenceId, String publicationYear, List<String> keywords) {
+        this.id = id;
+        this.title = title;
+        this.author_simpleAffiliationVOS = author_simpleAffiliationVOS;
+        this.publicationTitle = publicationTitle;
+        this.conferenceId = conferenceId;
+        this.publicationYear = publicationYear;
+        this.keywords = keywords;
+    }
+
+    public SimplePaperVO(Paper paper){
+        List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS = new ArrayList<>();
+        List<Author_Affiliation> author_affiliations = paper.getAa();
+        for (Author_Affiliation author_affiliation : author_affiliations) {
+            author_simpleAffiliationVOS.add(new Author_SimpleAffiliationVO(author_affiliation.getAuthor().getName(),
+                    author_affiliation.getAuthor().getActual().getId(),author_affiliation.getAffiliation().getName(),
+                    author_affiliation.getAffiliation().getActual().getId()));
+        }
+        List<String> keywords = new ArrayList<>();
+        List<Term> termList = paper.getAuthor_keywords();
+        for (Term term : termList) {
+            keywords.add(term.getContent());
+        }
+        this.id = paper.getId();
+        this.title = paper.getTitle();
+        this.author_simpleAffiliationVOS = author_simpleAffiliationVOS;
+        this.publicationTitle = paper.getConference().getName();
+        this.conferenceId = paper.getConference().getId();
+        this.publicationYear = paper.getConference().getYear_highlight();
+        this.keywords = keywords;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SimplePaperVO that = (SimplePaperVO) o;
         return id == that.id &&
+                conferenceId == that.conferenceId &&
                 Objects.equals(title, that.title) &&
                 Objects.equals(author_simpleAffiliationVOS, that.author_simpleAffiliationVOS) &&
                 Objects.equals(publicationTitle, that.publicationTitle) &&
@@ -116,6 +137,6 @@ public class SimplePaperVO {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, title, author_simpleAffiliationVOS, publicationTitle, publicationYear, keywords);
+        return Objects.hash(id, title, author_simpleAffiliationVOS, publicationTitle, conferenceId, publicationYear, keywords);
     }
 }
