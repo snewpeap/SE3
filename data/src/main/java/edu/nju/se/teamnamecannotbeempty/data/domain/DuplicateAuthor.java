@@ -1,6 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.data.domain;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -9,7 +10,7 @@ import java.util.Date;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class DuplicateAuthor {
+public class DuplicateAuthor implements IDuplication<Author> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,7 +23,9 @@ public class DuplicateAuthor {
     //标识是否已经处理了这条
     @ColumnDefault("false")
     private Boolean clear;
+    @CreatedDate
     @LastModifiedDate
+    @Temporal(TemporalType.DATE)
     private Date updatedAt;
 
     public DuplicateAuthor() {
@@ -39,10 +42,12 @@ public class DuplicateAuthor {
         return clear;
     }
 
+    @Override
     public void setClear(Boolean clear) {
         this.clear = clear;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
@@ -51,6 +56,7 @@ public class DuplicateAuthor {
         this.id = id;
     }
 
+    @Override
     public Author getFather() {
         return father;
     }
@@ -59,6 +65,7 @@ public class DuplicateAuthor {
         this.father = source;
     }
 
+    @Override
     public Author getSon() {
         return son;
     }

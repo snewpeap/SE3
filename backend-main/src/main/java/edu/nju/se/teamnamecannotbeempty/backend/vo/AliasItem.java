@@ -4,11 +4,21 @@ import java.util.Objects;
 
 public class AliasItem {
     private long recordId;
+    private long targetId;
     private String aliasName;
 
-    public AliasItem(long recordId, String aliasName) {
+    public AliasItem(long recordId, long targetId, String aliasName) {
         this.recordId = recordId;
+        this.targetId = targetId;
         this.aliasName = aliasName;
+    }
+
+    public long getTargetId() {
+        return targetId;
+    }
+
+    public void setTargetId(long targetId) {
+        this.targetId = targetId;
     }
 
     public long getRecordId() {
@@ -32,12 +42,11 @@ public class AliasItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AliasItem aliasItem = (AliasItem) o;
-        return recordId == aliasItem.recordId &&
-                Objects.equals(aliasName, aliasItem.aliasName);
+        return recordId == aliasItem.recordId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(recordId, aliasName);
+        return Objects.hash(recordId);
     }
 }

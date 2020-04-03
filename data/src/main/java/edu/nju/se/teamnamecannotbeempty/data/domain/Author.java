@@ -107,6 +107,7 @@ public class Author implements Aliasable<Author> {
         }
     }
 
+    @Override
     public Long getId() {
         return id;
     }
@@ -115,6 +116,7 @@ public class Author implements Aliasable<Author> {
         this.id = id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -127,6 +129,7 @@ public class Author implements Aliasable<Author> {
         return alias;
     }
 
+    @Override
     public void setAlias(Author alias) {
         this.alias = alias;
     }

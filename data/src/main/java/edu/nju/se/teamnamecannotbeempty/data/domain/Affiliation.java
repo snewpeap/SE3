@@ -19,7 +19,7 @@ public class Affiliation implements Aliasable<Affiliation> {
     private String name;
     // 实际上是地理位置，最精确到市
     private String country;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     //别名，在需要去重的时候为空；去重后，如果没有重复为this，否则为重复对象
     private Affiliation alias;
 
@@ -105,6 +105,7 @@ public class Affiliation implements Aliasable<Affiliation> {
         return Objects.hash(id, alias);
     }
 
+    @Override
     public void setAlias(Affiliation alias) {
         this.alias = alias;
     }
@@ -118,6 +119,7 @@ public class Affiliation implements Aliasable<Affiliation> {
                 '}';
     }
 
+    @Override
     public Long getId() {
         return id;
     }
@@ -126,6 +128,7 @@ public class Affiliation implements Aliasable<Affiliation> {
         this.id = id;
     }
 
+    @Override
     public String getName() {
         return name;
     }

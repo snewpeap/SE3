@@ -5,13 +5,22 @@ import java.util.Objects;
 
 public class AliasVO {
     private String origin;
+    private long originId;
+    /*
+    1=作者
+    2=机构
+     */
     private int type;
     private List<AliasItem> alias;
 
-    public AliasVO(String origin, int type, List<AliasItem> alias) {
+    public AliasVO(String origin, long originId, int type, List<AliasItem> alias) {
         this.origin = origin;
+        this.originId = originId;
         this.type = type;
         this.alias = alias;
+    }
+
+    public AliasVO() {
     }
 
     public String getOrigin() {
@@ -38,19 +47,25 @@ public class AliasVO {
         this.alias = alias;
     }
 
+    public long getOriginId() {
+        return originId;
+    }
+
+    public void setOriginId(long originId) {
+        this.originId = originId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AliasVO aliasVO = (AliasVO) o;
-        return type == aliasVO.type &&
-                Objects.equals(origin, aliasVO.origin) &&
-                Objects.equals(alias, aliasVO.alias);
+        return originId == aliasVO.originId &&
+                type == aliasVO.type;
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(origin, type, alias);
+        return Objects.hash(originId, type);
     }
 }

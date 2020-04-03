@@ -5,6 +5,7 @@ import edu.nju.se.teamnamecannotbeempty.data.repository.AffiliationDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.AuthorDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.TermDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.duplication.DuplicateAffiliationDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.duplication.DuplicateAuthorDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.AffiPopDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.AuthorPopDao;
@@ -31,16 +32,18 @@ public class RefreshJob {
     private final PaperDao paperDao;
     private final PaperPopDao paperPopDao;
     private final AuthorDupGenerator authorDupGenerator;
+    private final AffiDupGenerator affiDupGenerator;
 
     @Autowired
     public RefreshJob(AuthorPopGenerator authorPopGenerator, AffiPopGenerator affiPopGenerator, TermPopGenerator termPopGenerator,
-                      PaperDao paperDao, PaperPopDao paperPopDao, AuthorDupGenerator authorDupGenerator) {
+                      PaperDao paperDao, PaperPopDao paperPopDao, AuthorDupGenerator authorDupGenerator, AffiDupGenerator affiDupGenerator) {
         this.authorPopGenerator = authorPopGenerator;
         this.affiPopGenerator = affiPopGenerator;
         this.termPopGenerator = termPopGenerator;
         this.paperDao = paperDao;
         this.paperPopDao = paperPopDao;
         this.authorDupGenerator = authorDupGenerator;
+        this.affiDupGenerator = affiDupGenerator;
     }
 
     @Async
@@ -68,7 +71,7 @@ public class RefreshJob {
         Future<?> authorFuture = authorPopGenerator.generateAuthorPop();
         Future<?> affiFuture = affiPopGenerator.generateAffiPop();
         termPopGenerator.generateTermPop();
-
+        affiDupGenerator.generateAffiDup(affiFuture);
         authorDupGenerator.generateAuthorDup(authorFuture);
     }
 
@@ -143,6 +146,32 @@ public class RefreshJob {
         }
 
         private static Logger logger = LoggerFactory.getLogger(AuthorDupGenerator.class);
+    }
+
+    @Component
+    public static class AffiDupGenerator {
+        private final DuplicateAffiliationDao duplicateAffiliationDao;
+        private final AffiliationDao affiliationDao;
+
+        @Autowired
+        public AffiDupGenerator(DuplicateAffiliationDao duplicateAffiliationDao, AffiliationDao affiliationDao) {
+            this.duplicateAffiliationDao = duplicateAffiliationDao;
+            this.affiliationDao = affiliationDao;
+        }
+
+        void generateAffiDup(Future<?> waitForImport) {
+            while (waitForImport.isDone()) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    logger.error("Generate duplicate authors aborted due to " + e.getMessage());
+                    return;
+                }
+            }
+            logger.info("Done generate duplicate affiliations");
+        }
+
+        private static Logger logger = LoggerFactory.getLogger(AffiDupGenerator.class);
     }
 
     @Component

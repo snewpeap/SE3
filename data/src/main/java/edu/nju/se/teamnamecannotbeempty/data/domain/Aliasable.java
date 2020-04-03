@@ -9,4 +9,10 @@ public interface Aliasable<T> {
      * @前置条件 无
      */
     T getActual();
+
+    void setAlias(T alias);
+
+    Long getId();
+
+    String getName();
 }

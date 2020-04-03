@@ -9,16 +9,16 @@ import java.util.Date;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class DuplicateAffiliation {
+public class DuplicateAffiliation implements IDuplication<Affiliation> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(cascade = CascadeType.MERGE)
     //被怀疑有重复的
-    private Affiliation source;
+    private Affiliation father;
     @ManyToOne(cascade = CascadeType.MERGE)
     //发生重复的对象
-    private Affiliation target;
+    private Affiliation son;
     @ColumnDefault("false")
     //是否已经处理
     private Boolean clear;
@@ -30,6 +30,7 @@ public class DuplicateAffiliation {
         clear = false;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
@@ -38,26 +39,29 @@ public class DuplicateAffiliation {
         this.id = id;
     }
 
-    public Affiliation getSource() {
-        return source;
+    @Override
+    public Affiliation getFather() {
+        return father;
     }
 
-    public void setSource(Affiliation source) {
-        this.source = source;
+    public void setFather(Affiliation source) {
+        this.father = source;
     }
 
-    public Affiliation getTarget() {
-        return target;
+    @Override
+    public Affiliation getSon() {
+        return son;
     }
 
-    public void setTarget(Affiliation target) {
-        this.target = target;
+    public void setSon(Affiliation target) {
+        this.son = target;
     }
 
     public Boolean getClear() {
         return clear;
     }
 
+    @Override
     public void setClear(Boolean clear) {
         this.clear = clear;
     }
