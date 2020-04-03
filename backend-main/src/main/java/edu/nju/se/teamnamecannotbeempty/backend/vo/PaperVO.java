@@ -95,6 +95,14 @@ public class PaperVO {
         this.author_affiliationVOS = author_affiliationVOS;
     }
 
+    public long getConferenceId() {
+        return conferenceId;
+    }
+
+    public void setConferenceId(long conferenceId) {
+        this.conferenceId = conferenceId;
+    }
+
     public String getPublicationTitle() {
         return publicationTitle;
     }
