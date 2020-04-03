@@ -30,6 +30,13 @@ public class adminTest {
         mockMvc = MockMvcBuilders.standaloneSetup(adminController).build();
     }
 
+
+    /**
+     * 获得别名的测试
+     * controller返回的结果和预设相同
+     *
+     * @throws Exception
+     */
     @Test
     public void getConfusedAliasTest1() throws Exception{
         List<AliasVO> aliasVOS1 = new ArrayList<>();
@@ -41,6 +48,12 @@ public class adminTest {
         assertEquals(aliasVOS,aliasVOS1);
     }
 
+    /**
+     * 修改别名的测试
+     * controller返回的结果和预设相同
+     *
+     * @throws Exception
+     */
     @Test
     public void modifyAliasTest1() throws Exception{
         ResponseVO responseVO = new ResponseVO();
@@ -48,6 +61,12 @@ public class adminTest {
         assertEquals(adminController.modifyAlias(0,true,1),responseVO);
     }
 
+    /**
+     * 获得有效别名的测试
+     * controller返回的结果和预设相同
+     *
+     * @throws Exception
+     */
     @Test
     public void getEffectiveAliasTest1() throws Exception{
         List<AliasVO> aliasVOS1 = new ArrayList<>();
@@ -55,6 +74,12 @@ public class adminTest {
         assertEquals(adminController.getEffectiveAlias(),aliasVOS1);
     }
 
+    /**
+     * 取消别名的测试
+     * controller返回的结果和预设相同
+     *
+     * @throws Exception
+     */
     @Test
     public void cancelAliasTest1() throws Exception{
         ResponseVO responseVO = new ResponseVO();
