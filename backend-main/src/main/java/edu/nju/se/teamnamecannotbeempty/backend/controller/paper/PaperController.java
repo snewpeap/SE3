@@ -55,6 +55,7 @@ public class PaperController {
     }
 
 
+    @RequestMapping(value = "/searchable", method = RequestMethod.GET)
     public ResponseVO getSearchable() throws InterruptedException {
         while (!searchable.isOk()){
             Thread.sleep(3000);

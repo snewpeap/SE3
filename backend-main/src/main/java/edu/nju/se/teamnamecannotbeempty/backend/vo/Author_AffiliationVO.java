@@ -1,12 +1,16 @@
 package edu.nju.se.teamnamecannotbeempty.backend.vo;
 
+import java.util.Objects;
+
 public class Author_AffiliationVO {
     private String author;
+    private long authorId;
     private AffiliationVO affiliation;
 
-    public Author_AffiliationVO(String author, String name, String country) {
+    public Author_AffiliationVO(String author, long authorId, AffiliationVO affiliation) {
         this.author = author;
-        this.affiliation = new AffiliationVO(name, country);
+        this.authorId = authorId;
+        this.affiliation = affiliation;
     }
 
     public String getAuthor() {
@@ -17,6 +21,14 @@ public class Author_AffiliationVO {
         this.author = author;
     }
 
+    public long getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(long authorId) {
+        this.authorId = authorId;
+    }
+
     public AffiliationVO getAffiliation() {
         return affiliation;
     }
@@ -25,8 +37,19 @@ public class Author_AffiliationVO {
         this.affiliation = affiliation;
     }
 
+    @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Author_AffiliationVO)) return false;
-        return author.equals(((Author_AffiliationVO) o).author) && affiliation.equals(((Author_AffiliationVO) o).affiliation);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Author_AffiliationVO that = (Author_AffiliationVO) o;
+        return authorId == that.authorId &&
+                Objects.equals(author, that.author) &&
+                Objects.equals(affiliation, that.affiliation);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(author, authorId, affiliation);
     }
 }

@@ -15,10 +15,10 @@ public class DuplicateAuthor {
     private Long id;
     @ManyToOne(cascade = CascadeType.MERGE)
     //被怀疑有重复的
-    private Author source;
+    private Author father;
     @ManyToOne(cascade = CascadeType.MERGE)
     //发生重复的对象
-    private Author target;
+    private Author son;
     //标识是否已经处理了这条
     @ColumnDefault("false")
     private Boolean clear;
@@ -26,6 +26,12 @@ public class DuplicateAuthor {
     private Date updatedAt;
 
     public DuplicateAuthor() {
+        clear = false;
+    }
+
+    public DuplicateAuthor(Author father, Author son) {
+        this.father = father;
+        this.son = son;
         clear = false;
     }
 
@@ -45,20 +51,20 @@ public class DuplicateAuthor {
         this.id = id;
     }
 
-    public Author getSource() {
-        return source;
+    public Author getFather() {
+        return father;
     }
 
-    public void setSource(Author source) {
-        this.source = source;
+    public void setFather(Author source) {
+        this.father = source;
     }
 
-    public Author getTarget() {
-        return target;
+    public Author getSon() {
+        return son;
     }
 
-    public void setTarget(Author target) {
-        this.target = target;
+    public void setSon(Author target) {
+        this.son = target;
     }
 
     public Date getUpdatedAt() {

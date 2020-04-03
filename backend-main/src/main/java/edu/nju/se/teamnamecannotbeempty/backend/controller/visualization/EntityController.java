@@ -22,7 +22,7 @@ public class EntityController {
 
     @RequestMapping(value = "/academic/{id}", method = RequestMethod.GET)
     public AcademicEntityVO getAcademicEntity(@PathVariable long id, @RequestParam int type) {
-        return entityService.getAcedemicEntity(id,type);
+        return entityService.getAcademicEntity(id,type);
     }
 
     @RequestMapping(value = "/graph/basic/{id}", method = RequestMethod.GET)

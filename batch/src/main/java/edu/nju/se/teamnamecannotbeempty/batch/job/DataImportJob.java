@@ -59,7 +59,7 @@ public class DataImportJob implements IDataImportJob {
     }
 
     private long readFile(String name, InputStream csv, InputStream json) {
-        logger.info("Start parsing " + name );
+        logger.info("Start import papers from " + name );
         List<Paper> papers = fromCSV.convert(csv);
         long size = papers.size();
         try {
@@ -96,7 +96,6 @@ public class DataImportJob implements IDataImportJob {
         }
 
         private List<Paper> attachJsonInfo(List<Paper> papers, InputStream jsonFile) {
-            logger.info("Start attach json");
             paperHashMap = new HashMap<>(papers.size());
             papers.forEach(paper -> paperHashMap.put(paper.getId(), paper));
 

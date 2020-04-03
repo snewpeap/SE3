@@ -12,6 +12,8 @@ public class PaperVO {
 
     private String publicationTitle; // 会议
 
+    private long conferenceId;
+
     private int publicationYear;
 
     private String ordno;
@@ -42,11 +44,16 @@ public class PaperVO {
 
     private String identifier;
 
-    public PaperVO(long id, String title, List<Author_AffiliationVO> author_affiliationVOS, String publicationTitle, int publicationYear, String ordno, int startPage, int endPage, String summary, String DOI, String PDFLink, List<String> authorKeywords, List<String> IEEETerms, List<String> controlledTerms, List<String> nonControlledTerms, int citationCount, int referenceCount, String publisher, String identifier) {
+    public PaperVO(long id, String title, List<Author_AffiliationVO> author_affiliationVOS, String publicationTitle,
+                   long conferenceId, int publicationYear, String ordno, int startPage, int endPage,
+                   String summary, String DOI, String PDFLink, List<String> authorKeywords, List<String> IEEETerms,
+                   List<String> controlledTerms, List<String> nonControlledTerms, int citationCount,
+                   int referenceCount, String publisher, String identifier) {
         this.id = id;
         this.title = title;
         this.author_affiliationVOS = author_affiliationVOS;
         this.publicationTitle = publicationTitle;
+        this.conferenceId = conferenceId;
         this.publicationYear = publicationYear;
         this.ordno = ordno;
         this.startPage = startPage;
@@ -86,6 +93,14 @@ public class PaperVO {
 
     public void setAuthor_affiliationVOS(List<Author_AffiliationVO> author_affiliationVOS) {
         this.author_affiliationVOS = author_affiliationVOS;
+    }
+
+    public long getConferenceId() {
+        return conferenceId;
+    }
+
+    public void setConferenceId(long conferenceId) {
+        this.conferenceId = conferenceId;
     }
 
     public String getPublicationTitle() {

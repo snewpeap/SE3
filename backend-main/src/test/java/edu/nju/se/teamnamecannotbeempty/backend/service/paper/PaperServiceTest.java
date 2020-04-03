@@ -82,25 +82,20 @@ public class PaperServiceTest {
         Author_Affiliation author_affiliation3 = mock(Author_Affiliation.class);
         Term term1 = mock(Term.class);
         Term term2 = mock(Term.class);
-        Affiliation affiliation1 = mock(Affiliation.class);
-        Affiliation affiliation2 = mock(Affiliation.class);
-        Affiliation affiliation3 = mock(Affiliation.class);
-        Author author1 = mock(Author.class);
-        Author author2 = mock(Author.class);
-        Author author3 = mock(Author.class);
+        Affiliation affiliation1 = new Affiliation(); affiliation1.setName("NanJingDaXue"); affiliation1.setId(1L);
+        Affiliation affiliation2 = new Affiliation(); affiliation2.setName("BeiJingDaXue"); affiliation2.setId(2L);
+        Affiliation affiliation3 = new Affiliation(); affiliation3.setName("TianJinDaXue"); affiliation3.setId(3L);
+        Author author1 = new Author(); author1.setName("YangYang"); author1.setId(1L);
+        Author author2 = new Author(); author2.setName("RiRi"); author2.setId(2L);
+        Author author3 = new Author(); author3.setName("DongDong"); author3.setId(3L);
 
         when(author_affiliation1.getAffiliation()).thenReturn(affiliation1);
         when(author_affiliation2.getAffiliation()).thenReturn(affiliation2);
         when(author_affiliation3.getAffiliation()).thenReturn(affiliation3);
+
         when(author_affiliation1.getAuthor()).thenReturn(author1);
         when(author_affiliation2.getAuthor()).thenReturn(author2);
         when(author_affiliation3.getAuthor()).thenReturn(author3);
-        when(author_affiliation1.getAffiliation().getName()).thenReturn("NanJingDaXue");
-        when(author_affiliation2.getAffiliation().getName()).thenReturn("BeiJingDaXue");
-        when(author_affiliation3.getAffiliation().getName()).thenReturn("TianJinDaXue");
-        when(author_affiliation1.getAuthor().getName()).thenReturn("YangYang");
-        when(author_affiliation2.getAuthor().getName()).thenReturn("RiRi");
-        when(author_affiliation3.getAuthor().getName()).thenReturn("DongDong");
         when(term1.getContent()).thenReturn("Soft");
         when(term2.getContent()).thenReturn("Hard");
 
@@ -127,15 +122,18 @@ public class PaperServiceTest {
         when(paper1.getConference().getName()).thenReturn("IEEE");
         when(paper2.getConference().getName()).thenReturn("HEEE");
         when(paper3.getConference().getName()).thenReturn("VEEE");
+        when(paper1.getConference().getId()).thenReturn(1L);
+        when(paper2.getConference().getId()).thenReturn(2L);
+        when(paper3.getConference().getId()).thenReturn(3L);
         when(paper1.getConference().getYear_highlight()).thenReturn("2121");
         when(paper2.getConference().getYear_highlight()).thenReturn("2121");
         when(paper3.getConference().getYear_highlight()).thenReturn("2121");
 
         when(paperPage.getContent()).thenReturn(Arrays.asList(paper1, paper2, paper3));
 
-        Author_SimpleAffiliationVO author_simpleAffiliationVO1 = new Author_SimpleAffiliationVO("YangYang", "NanJingDaXue");
-        Author_SimpleAffiliationVO author_simpleAffiliationVO2 = new Author_SimpleAffiliationVO("RiRi", "BeiJingDaXue");
-        Author_SimpleAffiliationVO author_simpleAffiliationVO3 = new Author_SimpleAffiliationVO("DongDong", "TianJinDaXue");
+        Author_SimpleAffiliationVO author_simpleAffiliationVO1 = new Author_SimpleAffiliationVO("YangYang",1L, "NanJingDaXue",1L);
+        Author_SimpleAffiliationVO author_simpleAffiliationVO2 = new Author_SimpleAffiliationVO("RiRi",2L, "BeiJingDaXue",2L);
+        Author_SimpleAffiliationVO author_simpleAffiliationVO3 = new Author_SimpleAffiliationVO("DongDong",3L, "TianJinDaXue",3L);
         List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS1 = Arrays.asList(author_simpleAffiliationVO1, author_simpleAffiliationVO2, author_simpleAffiliationVO3);
         List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS2 = Arrays.asList(author_simpleAffiliationVO1, author_simpleAffiliationVO3);
         List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS3 = Arrays.asList(author_simpleAffiliationVO2, author_simpleAffiliationVO3);
@@ -143,9 +141,9 @@ public class PaperServiceTest {
         List<String> key2 = Collections.singletonList("Soft");
 
 
-        SimplePaperVO simplePaperVO1 = new SimplePaperVO(paper1.getId(), paper1.getTitle(), author_simpleAffiliationVOS1, paper1.getConference().getName(), "2121", key1);
-        SimplePaperVO simplePaperVO2 = new SimplePaperVO(paper2.getId(), paper2.getTitle(), author_simpleAffiliationVOS2, paper2.getConference().getName(), "2121", key2);
-        SimplePaperVO simplePaperVO3 = new SimplePaperVO(paper3.getId(), paper3.getTitle(), author_simpleAffiliationVOS3, paper3.getConference().getName(), "2121", new ArrayList<>());
+        SimplePaperVO simplePaperVO1 = new SimplePaperVO(paper1.getId(), paper1.getTitle(), author_simpleAffiliationVOS1, paper1.getConference().getName(),paper1.getConference().getId(), "2121", key1);
+        SimplePaperVO simplePaperVO2 = new SimplePaperVO(paper2.getId(), paper2.getTitle(), author_simpleAffiliationVOS2, paper2.getConference().getName(),paper2.getConference().getId(), "2121", key2);
+        SimplePaperVO simplePaperVO3 = new SimplePaperVO(paper3.getId(), paper3.getTitle(), author_simpleAffiliationVOS3, paper3.getConference().getName(),paper3.getConference().getId(), "2121", new ArrayList<>());
         List<SimplePaperVO> simplePaperVOList = Arrays.asList(simplePaperVO1, simplePaperVO2, simplePaperVO3);
         List<SimplePaperVO> result = paperService.search("1", "1", 1, "!", 1);
         Assert.assertEquals(simplePaperVOList, result);
@@ -189,10 +187,10 @@ public class PaperServiceTest {
         when(paperDao.findById(anyLong())).thenReturn(optionalPaper);
 
         List<String> keywords = Arrays.asList("Beauty", "Handsome");
-        Author_AffiliationVO author_affiliationVO1 = new Author_AffiliationVO("ZhenZhen", "NJU", "NanJing");
-        Author_AffiliationVO author_affiliationVO2 = new Author_AffiliationVO("PiaoLiang", "ZhengXingYiYuan", "TianTangDao");
+        Author_AffiliationVO author_affiliationVO1 = new Author_AffiliationVO("ZhenZhen",0L, new AffiliationVO("NJU", "NanJing",0L));
+        Author_AffiliationVO author_affiliationVO2 = new Author_AffiliationVO("PiaoLiang", 1L,new AffiliationVO("ZhengXingYiYuan", "TianTangDao", 1L));
         PaperVO paperVO = new PaperVO((long) 0, "Do You Want To Be More Beautiful?", Arrays.asList(author_affiliationVO1, author_affiliationVO2),
-                "GKD", 2121, "99th", 12,
+                "GKD", 0,2121, "99th", 12,
                 23, "I do not want to write test case!", "1001", null, keywords, new ArrayList<>(), new ArrayList<>(),
                 new ArrayList<>(), 1, 100, null, null);
         ResponseVO responseVO = paperService.getPaper((long) 0);

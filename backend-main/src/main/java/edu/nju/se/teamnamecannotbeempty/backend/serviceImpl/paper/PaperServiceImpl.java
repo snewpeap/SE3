@@ -6,10 +6,7 @@ import edu.nju.se.teamnamecannotbeempty.backend.service.paper.PaperService;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchMode;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SearchService;
 import edu.nju.se.teamnamecannotbeempty.backend.service.search.SortMode;
-import edu.nju.se.teamnamecannotbeempty.backend.vo.Author_AffiliationVO;
-import edu.nju.se.teamnamecannotbeempty.backend.vo.PaperVO;
-import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
-import edu.nju.se.teamnamecannotbeempty.backend.vo.SimplePaperVO;
+import edu.nju.se.teamnamecannotbeempty.backend.vo.*;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Author_Affiliation;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Term;
@@ -71,7 +68,9 @@ public class PaperServiceImpl implements PaperService {
         List<Author_Affiliation> author_affiliations = paper.getAa();
         for (Author_Affiliation author_affiliation : author_affiliations) {
             author_affiliationVOS.add(new Author_AffiliationVO(author_affiliation.getAuthor().getName(),
-                    author_affiliation.getAffiliation().getName(), author_affiliation.getAffiliation().getCountry()));
+                    author_affiliation.getAuthor().getActual().getId(),
+                    new AffiliationVO(author_affiliation.getAffiliation().getName() , author_affiliation.getAffiliation().getCountry(),
+                            author_affiliation.getAffiliation().getActual().getId())));
         }
         List<Term> termList_keywords = paper.getAuthor_keywords();
         List<Term> termList_IEEE = paper.getIeee_terms();
@@ -88,7 +87,8 @@ public class PaperServiceImpl implements PaperService {
         String pdf = paper.getPdf_link() == null ? null : paper.getPdf_link().toString();
 
         responseVO = ResponseVO.success();
-        responseVO.setContent(new PaperVO(paper.getId(), paper.getTitle(), author_affiliationVOS, paper.getConference().getName(), paper.getConference().getYear(),
+        responseVO.setContent(new PaperVO(paper.getId(), paper.getTitle(), author_affiliationVOS, paper.getConference().getName(),
+                paper.getConference().getId(), paper.getConference().getYear(),
                 assembleOrdno(paper.getConference().getOrdno()), paper.getStart_page(),
                 paper.getEnd_page(), paper.getSummary(), paper.getDoi(), pdf, keywords, ieees, controls,
                 noncontrols, paper.getCitation(), paper.getReference(), paper.getPublisher(), paper.getDocument_identifier()));

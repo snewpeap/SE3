@@ -9,30 +9,30 @@ import org.springframework.stereotype.Service;
 @Service
 public class EntityServiceImpl implements EntityService {
 
-    private final AcademicEntityFecth academicEntityFecth;
-    private final BasicGraphFecth basicGraphFecth;
-    private final CompleteGraphFecth completeGraphFecth;
+    private final AcademicEntityFetch academicEntityFetch;
+    private final BasicGraphFetch basicGraphFetch;
+    private final CompleteGraphFetch completeGraphFetch;
 
     @Autowired
-    public EntityServiceImpl(AcademicEntityFecth academicEntityFecth, BasicGraphFecth basicGraphFecth,
-                             CompleteGraphFecth completeGraphFecth) {
-        this.academicEntityFecth = academicEntityFecth;
-        this.basicGraphFecth = basicGraphFecth;
-        this.completeGraphFecth = completeGraphFecth;
+    public EntityServiceImpl(AcademicEntityFetch academicEntityFetch, BasicGraphFetch basicGraphFetch,
+                             CompleteGraphFetch completeGraphFetch) {
+        this.academicEntityFetch = academicEntityFetch;
+        this.basicGraphFetch = basicGraphFetch;
+        this.completeGraphFetch = completeGraphFetch;
     }
 
     @Override
-    public AcademicEntityVO getAcedemicEntity(long id, int type) {
-        return academicEntityFecth.getAcedemicEntity(id, type);
+    public AcademicEntityVO getAcademicEntity(long id, int type) {
+        return academicEntityFetch.getAcademicEntity(id, type);
     }
 
     @Override
     public GraphVO getBasicGraph(long id, int type) {
-        return basicGraphFecth.getBasicGraph(id, type);
+        return basicGraphFetch.getBasicGraph(id, type);
     }
 
     @Override
     public GraphVO getCompleteGraph(long id, int type) {
-        return completeGraphFecth.getCompleteGraph(id, type);
+        return completeGraphFetch.getCompleteGraph(id, type);
     }
 }

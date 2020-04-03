@@ -12,12 +12,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class RankFecth {
+public class RankFetch {
 
     private final PaperDao paperDao;
 
     @Autowired
-    public RankFecth(PaperDao paperDao) {
+    public RankFetch(PaperDao paperDao) {
         this.paperDao = paperDao;
     }
 

@@ -39,7 +39,7 @@ public class entityTest {
         entityController = new EntityController();
         AcademicEntityVO academicEntityVO = new AcademicEntityVO(1,0,"",-1,null,null, null,null,null);
         entityController.setEntityService(entityService);
-        Mockito.when(entityService.getAcedemicEntity(0,1)).thenReturn(academicEntityVO);
+        Mockito.when(entityService.getAcademicEntity(0,1)).thenReturn(academicEntityVO);
         assertEquals(academicEntityVO,entityController.getAcademicEntity(0,1));
     }
 
