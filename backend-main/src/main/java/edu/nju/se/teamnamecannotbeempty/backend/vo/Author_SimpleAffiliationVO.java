@@ -4,15 +4,15 @@ import java.util.Objects;
 
 public class Author_SimpleAffiliationVO {
     private String author;
-    private long authorType;
+    private long authorId;
     private String affiliation;
-    private long affiliationType;
+    private long affiliationId;
 
-    public Author_SimpleAffiliationVO(String author, long authorType, String affiliation, long affiliationType) {
+    public Author_SimpleAffiliationVO(String author, long authorId, String affiliation, long affiliationId) {
         this.author = author;
-        this.authorType = authorType;
+        this.authorId = authorId;
         this.affiliation = affiliation;
-        this.affiliationType = affiliationType;
+        this.affiliationId = affiliationId;
     }
 
     @Override
@@ -20,8 +20,8 @@ public class Author_SimpleAffiliationVO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Author_SimpleAffiliationVO that = (Author_SimpleAffiliationVO) o;
-        return authorType == that.authorType &&
-                affiliationType == that.affiliationType &&
+        return authorId == that.authorId &&
+                affiliationId == that.affiliationId &&
                 Objects.equals(author, that.author) &&
                 Objects.equals(affiliation, that.affiliation);
     }
@@ -29,6 +29,6 @@ public class Author_SimpleAffiliationVO {
     @Override
     public int hashCode() {
 
-        return Objects.hash(author, authorType, affiliation, affiliationType);
+        return Objects.hash(author, authorId, affiliation, affiliationId);
     }
 }
