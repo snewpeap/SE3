@@ -39,18 +39,17 @@ public class FromCSV {
                 new InputStreamReader(in, StandardCharsets.UTF_8)
         ).withType(PaperDelegation.class).withSkipLines(1).build().parse();
 
-        logger.info("Start saving non-paper");
         authorDao.saveAll(ToAuthor.getSaveList());
         affiliationDao.saveAll(ToAffiliation.getSaveList());
         termDao.saveAll(ToTerm.getSaveList());
 
-        logger.info("Start convert to paper POs");
         List<Paper> papers = new ArrayList<>(delegations.size());
         for (PaperDelegation delegation : delegations) {
             Paper paper = delegation.toPaper();
             if (paper != null && paper.getAa() != null)
                 papers.add(paper);
         }
+        logger.info("Done convert to paper POs");
         return papers;
     }
 }

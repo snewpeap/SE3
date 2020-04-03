@@ -125,4 +125,18 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
             "where exists (select 1 from p.aa aa where aa.affiliation.id = ?1) and " +
             "exists (select 1 from p.author_keywords ak where ak.id = ?2)")
     Double getWeightByAffiOnKeyword(Long affiId, Long keywordId);
+
+    /**
+     * 获得会议在某研究方向上的论文热度之和
+     *
+     * @param cfrId 会议id
+     * @param keywordId 研究方向id
+     * @return 会议在研究方向上的权重
+     * @前置条件 无
+     * @后置条件 无
+     */
+    @Query("select sum(pp.popularity) from paper_popularity pp inner join pp.paper p " +
+            "where p.conference.id = ?1 and " +
+            "exists (select 1 from p.author_keywords ak where ak.id = ?2)")
+    Double getWeightByConferenceOnKeyword(Long cfrId, Long keywordId);
 }

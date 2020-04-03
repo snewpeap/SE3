@@ -72,6 +72,14 @@ public interface PaperDao extends JpaRepository<Paper, Long> {
     @Query("select sum(p.citation) from Paper p inner join p.aa aa where aa.affiliation.id = ?1")
     long getCitationByAffiId(Long id);
 
+    /**
+     * 查找有相应的研究方向的论文
+     *
+     * @param id 研究方向id
+     * @return 在对应研究方向上的论文
+     * @前置条件 id不为null
+     * @后置条件 无
+     */
     @Query("select p from Paper p where exists (select 1 from p.author_keywords ak where ak.id = ?1)")
     List<Paper> getPapersByKeyword(Long id);
 }
