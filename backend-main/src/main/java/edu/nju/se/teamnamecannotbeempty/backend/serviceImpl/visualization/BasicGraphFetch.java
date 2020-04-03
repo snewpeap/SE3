@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class BasicGraphFecth {
+public class BasicGraphFetch {
 
     private final AffiliationDao affiliationDao;
     private final AuthorDao authorDao;
@@ -32,7 +32,7 @@ public class BasicGraphFecth {
     private final PaperPopDao paperPopDao;
 
     @Autowired
-    public BasicGraphFecth(AffiliationDao affiliationDao, AuthorDao authorDao, ConferenceDao conferenceDao,
+    public BasicGraphFetch(AffiliationDao affiliationDao, AuthorDao authorDao, ConferenceDao conferenceDao,
                            PaperDao paperDao, TermDao termDao, EntityMsg entityMsg,
                            TermPopDao termPopDao, PaperPopDao paperPopDao) {
         this.affiliationDao = affiliationDao;
@@ -129,9 +129,9 @@ public class BasicGraphFecth {
                 .collect(Collectors.toList());
     }
 
-    private List<Link> generateLinksWithoutWeight(long sourceId, int sourceType, List<Node> targeNodes) {
-        return targeNodes.stream().map(
-                targeNode -> new Link(sourceId, sourceType, targeNode.getId(), targeNode.getType(), -1))
+    private List<Link> generateLinksWithoutWeight(long sourceId, int sourceType, List<Node> targetNodes) {
+        return targetNodes.stream().map(
+                targetNode -> new Link(sourceId, sourceType, targetNode.getEntityId(), targetNode.getEntityType(), -1))
                 .collect(Collectors.toList());
     }
 

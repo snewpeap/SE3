@@ -17,12 +17,12 @@ public class RankServiceImpl implements RankService {
 
 
     private final RankMsg rankMsg;
-    private final RankFecth rankFecth;
+    private final RankFetch rankFetch;
 
     @Autowired
-    public RankServiceImpl(RankMsg rankMsg, RankFecth rankFecth) {
+    public RankServiceImpl(RankMsg rankMsg, RankFetch rankFetch) {
         this.rankMsg = rankMsg;
-        this.rankFecth = rankFecth;
+        this.rankFetch = rankFetch;
     }
 
 
@@ -30,7 +30,7 @@ public class RankServiceImpl implements RankService {
     public ResponseVO getRank(String mode, Integer pageNumber, boolean descend, int startYear, int endYear) {
         if (pageNumber == null || pageNumber <= 0) pageNumber = 1;
 
-        List<RankItem> rankItemList = rankFecth.getAllResult(mode, startYear, endYear);
+        List<RankItem> rankItemList = rankFetch.getAllResult(mode, startYear, endYear);
         int len = rankItemList.size();
         ResponseVO responseVO;
         if (pageNumber * rankMsg.getEachNum() - len > rankMsg.getEachNum()) {

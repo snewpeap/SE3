@@ -4,38 +4,53 @@ import java.util.Objects;
 
 public class Node {
 
-    private long id;
-    private String name;
-    private int type;
+    private String id;
+    private long entityId;
+    private String entityName;
+    private int entityType;
 
-    public Node(long id, String name, int type) {
-        this.id = id;
-        this.name = name;
-        this.type = type;
+    public Node(long entityId, String entityName, int entityType) {
+        StringBuilder preId = new StringBuilder(String.valueOf(entityId));
+        while (preId.length()<10){
+            preId.insert(0, "0");
+        }
+        preId.insert(0,String.valueOf(entityType));
+        this.id = preId.toString();
+        this.entityId = entityId;
+        this.entityName = entityName;
+        this.entityType = entityType;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public long getEntityId() {
+        return entityId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setEntityId(long entityId) {
+        this.entityId = entityId;
     }
 
-    public int getType() {
-        return type;
+    public String getEntityName() {
+        return entityName;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setEntityName(String entityName) {
+        this.entityName = entityName;
+    }
+
+    public int getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(int entityType) {
+        this.entityType = entityType;
     }
 
     @Override
@@ -43,14 +58,15 @@ public class Node {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Node node = (Node) o;
-        return id == node.id &&
-                type == node.type &&
-                Objects.equals(name, node.name);
+        return entityId == node.entityId &&
+                entityType == node.entityType &&
+                Objects.equals(id, node.id) &&
+                Objects.equals(entityName, node.entityName);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, name, type);
+        return Objects.hash(id, entityId, entityName, entityType);
     }
 }

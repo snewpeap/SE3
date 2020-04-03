@@ -11,7 +11,7 @@ public interface EntityService {
      * @param type 学术实体种类
      * @return AcademicEntityVO 学术实体的VO
      */
-    AcademicEntityVO getAcedemicEntity(long id, int type);
+    AcademicEntityVO getAcademicEntity(long id, int type);
 
     /**
      * 获取学术实体的基础关系图（限定了连接距离，好像是2）
