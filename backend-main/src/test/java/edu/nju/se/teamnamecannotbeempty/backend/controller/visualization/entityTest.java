@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class entityTest {
 
@@ -42,7 +41,7 @@ public class entityTest {
     @Test
     public void getGraphTest1() throws Exception{
         entityController = new EntityController();
-        GraphVO graphVO = new GraphVO(0,null,null);
+        GraphVO graphVO = new GraphVO(0,0,null,null,null);
         entityController.setEntityService(entityService);
         Mockito.when(entityService.getBasicGraph(0,1)).thenReturn(graphVO);
         assertEquals(graphVO,entityController.getGraph(0,1));
@@ -51,7 +50,7 @@ public class entityTest {
     @Test
     public void getMoreGraphTest1() throws Exception{
         entityController = new EntityController();
-        GraphVO graphVO = new GraphVO(0,null,null);
+        GraphVO graphVO = new GraphVO(0,0,null,null,null);
         entityController.setEntityService(entityService);
         Mockito.when(entityService.getCompleteGraph(0,1)).thenReturn(graphVO);
         assertEquals(graphVO,entityController.getMoreGraph(0,1));
