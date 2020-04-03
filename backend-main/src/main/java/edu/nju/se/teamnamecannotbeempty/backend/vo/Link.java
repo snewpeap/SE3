@@ -19,7 +19,7 @@ public class Link {
         while (preTarget.length()<10){
             preTarget.insert(0,"0");
         }
-        preSource.insert(0,String.valueOf(targetType));
+        preTarget.insert(0,String.valueOf(targetType));
         this.source = preSource.toString();
         this.target = preTarget.toString();
         this.value = value;
