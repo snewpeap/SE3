@@ -107,7 +107,7 @@ public class BasicGraphFetch {
         links.addAll(links1);
 
         List<Link> links2 = papers.stream().map(paper -> new Link(id, entityMsg.getTermType(),
-                paper.getId(), entityMsg.getPaperType(), paperPopDao.getByPaper_Id(paper.getId()).get().getPopularity()))
+                paper.getId(), entityMsg.getPaperType(),paperPopDao.getByPaper_Id(paper.getId()).get().getPopularity()))
                 .collect(Collectors.toList());
         links.addAll(links2);
 
@@ -136,7 +136,7 @@ public class BasicGraphFetch {
     }
 
 
-    List<Node> generateAuthorNode(List<Author> authors) {
+    private List<Node> generateAuthorNode(List<Author> authors) {
         return authors.stream().map(
                 author -> new Node(author.getActual().getId(), author.getName(), entityMsg.getAuthorType()))
                 .collect(Collectors.toList());
@@ -154,7 +154,7 @@ public class BasicGraphFetch {
                 .collect(Collectors.toList());
     }
 
-    List<Node> generateAffiliationNode(List<Affiliation> affiliations) {
+    private List<Node> generateAffiliationNode(List<Affiliation> affiliations) {
         return affiliations.stream().map(
                 affiliation -> new Node(affiliation.getActual().getId(), affiliation.getName(), entityMsg.getAffiliationType()))
                 .collect(Collectors.toList());
