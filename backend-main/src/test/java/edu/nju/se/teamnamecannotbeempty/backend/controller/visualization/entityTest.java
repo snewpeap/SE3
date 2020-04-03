@@ -29,15 +29,24 @@ public class entityTest {
         mockMvc = MockMvcBuilders.standaloneSetup(entityController).build();
     }
 
+    /**
+     * 获得实体信息的测试
+     *
+     * @throws Exception
+     */
     @Test
     public void getAcademicEntityTest1() throws Exception{
         entityController = new EntityController();
         AcademicEntityVO academicEntityVO = new AcademicEntityVO(1,0,"",-1,null,null, null,null,null);
         entityController.setEntityService(entityService);
-        Mockito.when(entityService.getAcedemicEntity(0,1)).thenReturn(academicEntityVO);
+        Mockito.when(entityService.getAcademicEntity(0,1)).thenReturn(academicEntityVO);
         assertEquals(academicEntityVO,entityController.getAcademicEntity(0,1));
     }
 
+    /**
+     * 获得图信息
+     * @throws Exception
+     */
     @Test
     public void getGraphTest1() throws Exception{
         entityController = new EntityController();
@@ -47,6 +56,10 @@ public class entityTest {
         assertEquals(graphVO,entityController.getGraph(0,1));
     }
 
+    /**
+     * 获得更多的图信息
+     * @throws Exception
+     */
     @Test
     public void getMoreGraphTest1() throws Exception{
         entityController = new EntityController();

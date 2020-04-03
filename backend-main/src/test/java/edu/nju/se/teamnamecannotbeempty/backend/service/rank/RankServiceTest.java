@@ -1,13 +1,13 @@
 package edu.nju.se.teamnamecannotbeempty.backend.service.rank;
 
 import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.RankMsg;
-import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.rank.RankFecth;
+import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.rank.RankFetch;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.rank.RankServiceImpl;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.RankItem;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.RankVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
 import edu.nju.se.teamnamecannotbeempty.data.domain.*;
-import edu.nju.se.teamnamecannotbeempty.data.repository.*;
+import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class RankServiceTest {
     @Mock
     private RankMsg rankMsg;
     @Mock
-    private RankFecth rankFecth;
+    private RankFetch rankFetch;
     @InjectMocks
     private RankServiceImpl rankService;
 
@@ -114,7 +114,7 @@ public class RankServiceTest {
         RankItem rankItem4 = new RankItem("Title4", 1);
         List<RankItem> rankItemList = Arrays.asList(rankItem1, rankItem2, rankItem3, rankItem4);
         RankVO rankVO = new RankVO(1, rankItemList);
-        when(rankFecth.getAllResult("Paper-Cited",2222,2223)).
+        when(rankFetch.getAllResult("Paper-Cited",2222,2223)).
                 thenReturn(Arrays.asList(rankItem4, rankItem3, rankItem2, rankItem1));
         ResponseVO result = rankService.getRank("Paper-Cited", 1, true, 2222, 2223);
         Assert.assertTrue(result.isSuccess());
@@ -129,7 +129,7 @@ public class RankServiceTest {
         RankItem rankItem4 = new RankItem("Title4", 1);
         List<RankItem> rankItemList = Arrays.asList(rankItem4, rankItem3, rankItem2, rankItem1);
         RankVO rankVO = new RankVO(1, rankItemList);
-        when(rankFecth.getAllResult("Paper-Cited",2222,2223)).
+        when(rankFetch.getAllResult("Paper-Cited",2222,2223)).
                 thenReturn(rankItemList);
         ResponseVO result = rankService.getRank("Paper-Cited", 1, false, 2222, 2223);
         Assert.assertTrue(result.isSuccess());
@@ -151,7 +151,7 @@ public class RankServiceTest {
         RankItem rankItem4 = new RankItem("RiRi", 9);
         List<RankItem> rankItemList = Arrays.asList(rankItem1, rankItem2, rankItem3, rankItem4);
         RankVO rankVO = new RankVO(1, rankItemList);
-        when(rankFecth.getAllResult("Author-Cited",2222,2223)).
+        when(rankFetch.getAllResult("Author-Cited",2222,2223)).
                 thenReturn(Arrays.asList(rankItem4, rankItem3, rankItem2, rankItem1));
         ResponseVO result = rankService.getRank("Author-Cited", 1, true, 2222, 2223);
         Assert.assertTrue(result.isSuccess());
@@ -166,7 +166,7 @@ public class RankServiceTest {
         RankItem rankItem4 = new RankItem("RiRi", 9);
         List<RankItem> rankItemList = Arrays.asList(rankItem4, rankItem3, rankItem2, rankItem1);
         RankVO rankVO = new RankVO(1, rankItemList);
-        when(rankFecth.getAllResult("Author-Cited",2222,2223)).
+        when(rankFetch.getAllResult("Author-Cited",2222,2223)).
                 thenReturn(Arrays.asList(rankItem4, rankItem3, rankItem2, rankItem1));
         ResponseVO result = rankService.getRank("Author-Cited", 1, false, 2222, 2223);
         Assert.assertTrue(result.isSuccess());
@@ -181,7 +181,7 @@ public class RankServiceTest {
         RankItem rankItem4 = new RankItem("YangYang", 1);
         List<RankItem> rankItemList = Arrays.asList(rankItem1, rankItem2, rankItem3, rankItem4);
         RankVO rankVO = new RankVO(1, rankItemList);
-        when(rankFecth.getAllResult("Author-Paper",2222,2223)).
+        when(rankFetch.getAllResult("Author-Paper",2222,2223)).
                 thenReturn(Arrays.asList(rankItem4, rankItem3, rankItem2, rankItem1));
         ResponseVO result = rankService.getRank("Author-Paper", 1, true, 2222, 2223);
         Assert.assertTrue(result.isSuccess());
@@ -195,7 +195,7 @@ public class RankServiceTest {
         RankItem rankItem3 = new RankItem("BeiJingDaXue", 2);
         List<RankItem> rankItemList = Arrays.asList(rankItem1, rankItem2, rankItem3);
         RankVO rankVO = new RankVO(1, rankItemList);
-        when(rankFecth.getAllResult("Affiliation-Paper",2222,2223)).
+        when(rankFetch.getAllResult("Affiliation-Paper",2222,2223)).
                 thenReturn(Arrays.asList(rankItem3, rankItem2, rankItem1));
         ResponseVO result = rankService.getRank("Affiliation-Paper", 1, true, 2222, 2223);
         Assert.assertTrue(result.isSuccess());
@@ -208,7 +208,7 @@ public class RankServiceTest {
         RankItem rankItem2 = new RankItem("2016 3 MaLanShan", 1);
         List<RankItem> rankItemList = Arrays.asList(rankItem1, rankItem2);
         RankVO rankVO = new RankVO(1, rankItemList);
-        when(rankFecth.getAllResult("Publication-Paper",2222,2223)).
+        when(rankFetch.getAllResult("Publication-Paper",2222,2223)).
                 thenReturn(Arrays.asList(rankItem2, rankItem1));
         ResponseVO result = rankService.getRank("Publication-Paper", 1, true, 2222, 2223);
         Assert.assertTrue(result.isSuccess());
@@ -225,7 +225,7 @@ public class RankServiceTest {
         RankItem rankItem6 = new RankItem("666", 1);
         List<RankItem> rankItemList = Arrays.asList(rankItem1, rankItem2, rankItem3, rankItem4, rankItem5, rankItem6);
         RankVO rankVO = new RankVO(1, rankItemList);
-        when(rankFecth.getAllResult("Keyword-Paper",2222,2223)).
+        when(rankFetch.getAllResult("Keyword-Paper",2222,2223)).
                 thenReturn(Arrays.asList(rankItem6, rankItem5,rankItem4, rankItem3, rankItem2, rankItem1));
         ResponseVO result = rankService.getRank("Keyword-Paper", 1, true, 2222, 2223);
         Assert.assertTrue(result.isSuccess());

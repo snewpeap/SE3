@@ -1,12 +1,18 @@
 package edu.nju.se.teamnamecannotbeempty.backend.vo;
 
-public class Author_SimpleAffiliationVO {
-    private String author;
-    private String affiliation;
+import java.util.Objects;
 
-    public Author_SimpleAffiliationVO(String author, String affiliation) {
+public class Author_SimpleAffiliationVO{
+    private String author;
+    private Long authorId;
+    private String affiliation;
+    private Long affiliationId;
+
+    public Author_SimpleAffiliationVO(String author, Long authorId, String affiliation, Long affiliationId) {
         this.author = author;
+        this.authorId = authorId;
         this.affiliation = affiliation;
+        this.affiliationId = affiliationId;
     }
 
     public String getAuthor() {
@@ -17,6 +23,14 @@ public class Author_SimpleAffiliationVO {
         this.author = author;
     }
 
+    public Long getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
+    }
+
     public String getAffiliation() {
         return affiliation;
     }
@@ -25,8 +39,28 @@ public class Author_SimpleAffiliationVO {
         this.affiliation = affiliation;
     }
 
+    public Long getAffiliationId() {
+        return affiliationId;
+    }
+
+    public void setAffiliationId(Long affiliationId) {
+        this.affiliationId = affiliationId;
+    }
+
+    @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Author_SimpleAffiliationVO)) return false;
-        return author.equals(((Author_SimpleAffiliationVO) o).author) && affiliation.equals(((Author_SimpleAffiliationVO) o).affiliation);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Author_SimpleAffiliationVO that = (Author_SimpleAffiliationVO) o;
+        return authorId == that.authorId &&
+                affiliationId == that.affiliationId &&
+                Objects.equals(author, that.author) &&
+                Objects.equals(affiliation, that.affiliation);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(author, authorId, affiliation, affiliationId);
     }
 }

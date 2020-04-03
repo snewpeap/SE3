@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class BasicGraphFecth {
+public class BasicGraphFetch {
 
     private final AffiliationDao affiliationDao;
     private final AuthorDao authorDao;
@@ -32,7 +32,7 @@ public class BasicGraphFecth {
     private final PaperPopDao paperPopDao;
 
     @Autowired
-    public BasicGraphFecth(AffiliationDao affiliationDao, AuthorDao authorDao, ConferenceDao conferenceDao,
+    public BasicGraphFetch(AffiliationDao affiliationDao, AuthorDao authorDao, ConferenceDao conferenceDao,
                            PaperDao paperDao, TermDao termDao, EntityMsg entityMsg,
                            TermPopDao termPopDao, PaperPopDao paperPopDao) {
         this.affiliationDao = affiliationDao;
@@ -48,14 +48,14 @@ public class BasicGraphFecth {
     @Cacheable(value = "getBasicGraph", key = "#p0+'_'+#p1", unless = "#result=null")
     @Transactional
     public GraphVO getBasicGraph(long id, int type) {
-        if (type == entityMsg.getAuthorType()) return AuthorBasicGraph(id);
-        else if (type == entityMsg.getAffiliationType()) return AffiliationBasicGraph(id);
-        else if (type == entityMsg.getConferenceType()) return ConferenceBasicGraph(id);
-        else if (type == entityMsg.getTermType()) return TermBasicGraph(id);
+        if (type == entityMsg.getAuthorType()) return authorBasicGraph(id);
+        else if (type == entityMsg.getAffiliationType()) return affiliationBasicGraph(id);
+        else if (type == entityMsg.getConferenceType()) return conferenceBasicGraph(id);
+        else if (type == entityMsg.getTermType()) return termBasicGraph(id);
         else return null;
     }
 
-    private GraphVO AuthorBasicGraph(long id) {
+    private GraphVO authorBasicGraph(long id) {
         List<Node> nodes = generatePaperNode(paperPopDao.findTopPapersByAuthorId(id));
         nodes.addAll(generateAffiliationNode(affiliationDao.getAffiliationsByAuthor(id)));
         List<Link> links = generateLinksWithoutWeight(id, entityMsg.getAuthorType(), nodes);
@@ -67,7 +67,7 @@ public class BasicGraphFecth {
 
 
     //默认机构的研究方向是其辖下作者的研究方向的并集
-    private GraphVO AffiliationBasicGraph(long id) {
+    private GraphVO affiliationBasicGraph(long id) {
         List<Author> authors = authorDao.getAuthorsByAffiliation(id);
         List<Node> nodes = generateAuthorNode(authors);
         List<Link> links = generateLinksWithoutWeight(id, entityMsg.getAffiliationType(), nodes);
@@ -82,14 +82,14 @@ public class BasicGraphFecth {
         return new GraphVO(id, entityMsg.getAffiliationType(), affiliationDao.findById(id).get().getName(), nodes, links);
     }
 
-    private GraphVO ConferenceBasicGraph(long id) {
+    private GraphVO conferenceBasicGraph(long id) {
         List<Node> nodes = generatePaperNode(paperPopDao.findTopPapersByConferenceId(id));
         List<Link> links = generateLinksWithoutWeight(id, entityMsg.getConferenceType(), nodes);
         return new GraphVO(id, entityMsg.getConferenceType(), conferenceDao.findById(id).get().buildName(), nodes, links);
     }
 
     //默认论文的研究方向也属于作者的研究方向
-    private GraphVO TermBasicGraph(long id) {
+    private GraphVO termBasicGraph(long id) {
         List<Author> authors = authorDao.getAuthorsByKeyword(id);
         List<Paper> papers = paperDao.getPapersByKeyword(id);
         List<Node> nodes = generateAuthorNode(authors);
@@ -107,7 +107,7 @@ public class BasicGraphFecth {
         links.addAll(links1);
 
         List<Link> links2 = papers.stream().map(paper -> new Link(id, entityMsg.getTermType(),
-                paper.getId(), entityMsg.getPaperType(), paperPopDao.getByPaper_Id(paper.getId()).get().getPopularity()))
+                paper.getId(), entityMsg.getPaperType(),paperPopDao.getByPaper_Id(paper.getId()).get().getPopularity()))
                 .collect(Collectors.toList());
         links.addAll(links2);
 
@@ -129,14 +129,14 @@ public class BasicGraphFecth {
                 .collect(Collectors.toList());
     }
 
-    private List<Link> generateLinksWithoutWeight(long sourceId, int sourceType, List<Node> targeNodes) {
-        return targeNodes.stream().map(
-                targeNode -> new Link(sourceId, sourceType, targeNode.getId(), targeNode.getType(), -1))
+    private List<Link> generateLinksWithoutWeight(long sourceId, int sourceType, List<Node> targetNodes) {
+        return targetNodes.stream().map(
+                targetNode -> new Link(sourceId, sourceType, targetNode.getEntityId(), targetNode.getEntityType(), -1))
                 .collect(Collectors.toList());
     }
 
 
-    List<Node> generateAuthorNode(List<Author> authors) {
+    private List<Node> generateAuthorNode(List<Author> authors) {
         return authors.stream().map(
                 author -> new Node(author.getActual().getId(), author.getName(), entityMsg.getAuthorType()))
                 .collect(Collectors.toList());
@@ -154,7 +154,7 @@ public class BasicGraphFecth {
                 .collect(Collectors.toList());
     }
 
-    List<Node> generateAffiliationNode(List<Affiliation> affiliations) {
+    private List<Node> generateAffiliationNode(List<Affiliation> affiliations) {
         return affiliations.stream().map(
                 affiliation -> new Node(affiliation.getActual().getId(), affiliation.getName(), entityMsg.getAffiliationType()))
                 .collect(Collectors.toList());
