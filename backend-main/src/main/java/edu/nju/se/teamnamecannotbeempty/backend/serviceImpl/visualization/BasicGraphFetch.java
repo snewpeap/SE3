@@ -75,6 +75,7 @@ public class BasicGraphFetch {
         nodes.addAll(generateTermNode(termPopularityList));
         links.addAll(generateLinksWithWeightInAffi(id, termPopularityList));
         List<Link> links1 = authors.stream().flatMap(author -> termPopDao.getTermPopByAuthorID(author.getActual().getId()).stream()
+                .filter(termPop->termIsBelongToAffiliation(termPop.getTerm().getId(),id))
                 .map(termPop -> new Link(author.getActual().getId(), entityMsg.getAuthorType(), termPop.getTerm().getId(),
                         entityMsg.getTermType(), paperPopDao.getWeightByAuthorOnKeyword(author.getActual().getId(), termPop.getTerm().getId()))))
                 .collect(Collectors.toList());
@@ -168,5 +169,13 @@ public class BasicGraphFetch {
         return affiliations.stream().map(
                 affiliation -> new Node(affiliation.getActual().getId(), affiliation.getName(), entityMsg.getAffiliationType()))
                 .collect(Collectors.toList());
+    }
+
+    private boolean termIsBelongToAffiliation(long termId, long affiId){
+        List<Term.Popularity> termPopList = termPopDao.getTermPopByAffiID(affiId);
+        for (Term.Popularity termPop:termPopList){
+            if(termId == termPop.getTerm().getId()) return true;
+        }
+        return false;
     }
 }
