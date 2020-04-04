@@ -1,11 +1,14 @@
 package edu.nju.se.teamnamecannotbeempty.data.repository.duplication;
 
 import edu.nju.se.teamnamecannotbeempty.data.domain.DuplicateAuthor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.util.Streamable;
 
 public interface DuplicateAuthorDao extends JpaRepository<DuplicateAuthor, Long> {
     Streamable<DuplicateAuthor> findByClearIs(Boolean clear);
+
+    Streamable<DuplicateAuthor> findByClear(Boolean clear, Pageable pageable);
 
     Streamable<DuplicateAuthor> findBySon_Id(Long id);
 

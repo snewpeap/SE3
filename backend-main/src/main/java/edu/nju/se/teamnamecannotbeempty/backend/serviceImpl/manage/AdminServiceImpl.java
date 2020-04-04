@@ -13,10 +13,12 @@ import edu.nju.se.teamnamecannotbeempty.data.repository.duplication.DuplicateAff
 import edu.nju.se.teamnamecannotbeempty.data.repository.duplication.DuplicateAuthorDao;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -26,6 +28,7 @@ public final class AdminServiceImpl implements AdminService {
     private final AuthorDao authorDao;
     private final AffiliationDao affiliationDao;
     private EntityMsg entityMsg;
+    public static final int SIZE = 10;
 
     @Autowired
     public AdminServiceImpl(DuplicateAuthorDao duplicateAuthorDao, DuplicateAffiliationDao duplicateAffiliationDao, EntityMsg entityMsg, AuthorDao authorDao, AffiliationDao affiliationDao) {
@@ -37,16 +40,22 @@ public final class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<AliasVO> getDataError() {
-        ArrayList<AliasVO> vos = getAliasVOs(duplicateAuthorDao.findByClearIs(false), entityMsg.getAuthorType());
-        vos.addAll(getAliasVOs(duplicateAffiliationDao.findByClearIs(false), entityMsg.getAffiliationType()));
-        return vos;
+    public List<AliasVO> getDataError(int page, int type) {
+        return getData(page, type, false);
     }
 
     @Override
-    public List<AliasVO> getDataOperated() {
-        ArrayList<AliasVO> vos = getAliasVOs(duplicateAuthorDao.findByClearIs(true), entityMsg.getAuthorType());
-        vos.addAll(getAliasVOs(duplicateAffiliationDao.findByClearIs(true), entityMsg.getAffiliationType()));
+    public List<AliasVO> getDataOperated(int page, int type) {
+        return getData(page, type, true);
+    }
+
+    private List<AliasVO> getData(int page, int type, boolean clear) {
+        List<AliasVO> vos = Collections.emptyList();
+        if (type == entityMsg.getAuthorType()) {
+            vos = getAliasVOs(duplicateAuthorDao.findByClear(clear, PageRequest.of(page, SIZE)), type);
+        } else if (type == entityMsg.getAffiliationType()) {
+            vos = getAliasVOs(duplicateAffiliationDao.findByClear(clear, PageRequest.of(page, SIZE)), type);
+        }
         return vos;
     }
 
@@ -87,7 +96,6 @@ public final class AdminServiceImpl implements AdminService {
             responseVO.setSuccess(false);
             responseVO.setMessage("No such record with type " + type);
         }
-        responseVO.setContent(getDataError());
         return responseVO;
     }
 
@@ -116,7 +124,6 @@ public final class AdminServiceImpl implements AdminService {
             responseVO.setSuccess(false);
             responseVO.setMessage("No such record with type " + type);
         }
-        responseVO.setContent(getDataOperated());
         return responseVO;
     }
 }

@@ -11,8 +11,10 @@ public interface AdminService {
      * 返回管理员未处理过的系统发现的对应可能重名的全部实体（作者，机构）
      *
      * @return List<AliasVO> 可能重名的全部实体
+     * @param page 页数
+     * @param type 类型
      */
-    List<AliasVO> getDataError();
+    List<AliasVO> getDataError(int page, int type);
 
     /**
      * 管理员选择某一条重名对象进行处理
@@ -28,8 +30,10 @@ public interface AdminService {
      * 返回管理员处理过的系统发现的对应可能重名的全部实体（作者，机构）
      *
      * @return List<AliasVO> 可能重名的全部实体
+     * @param page 页数
+     * @param type 类型
      */
-    List<AliasVO> getDataOperated();
+    List<AliasVO> getDataOperated(int page, int type);
 
     /**
      * 管理员选择某一条之前处理过的消息进行撤销操作

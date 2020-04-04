@@ -19,7 +19,8 @@ import static org.junit.Assert.assertEquals;
 
 public class adminTest {
     private MockMvc mockMvc;
-    @Mock private AdminService adminService;
+    @Mock
+    private AdminService adminService;
 
     @InjectMocks
     private AdminController adminController;
@@ -38,14 +39,14 @@ public class adminTest {
      * @throws Exception
      */
     @Test
-    public void getConfusedAliasTest1() throws Exception{
+    public void getConfusedAliasTest1() throws Exception {
         List<AliasVO> aliasVOS1 = new ArrayList<>();
 
         Mockito.when(
-                adminService.getDataOperated()
+                adminService.getDataOperated(1, 1)
         ).thenReturn(aliasVOS1);
-        List<AliasVO> aliasVOS = adminController.getConfusedAlias();
-        assertEquals(aliasVOS,aliasVOS1);
+        List<AliasVO> aliasVOS = adminController.getConfusedAlias(1,1);
+        assertEquals(aliasVOS, aliasVOS1);
     }
 
     /**
@@ -55,10 +56,10 @@ public class adminTest {
      * @throws Exception
      */
     @Test
-    public void modifyAliasTest1() throws Exception{
+    public void modifyAliasTest1() throws Exception {
         ResponseVO responseVO = new ResponseVO();
-        Mockito.when(adminService.operateDataAlias(0,1,1)).thenReturn(responseVO);
-        assertEquals(adminController.modifyAlias(0,1,1),responseVO);
+        Mockito.when(adminService.operateDataAlias(0, 1, 1)).thenReturn(responseVO);
+        assertEquals(adminController.modifyAlias(0, 1, 1), responseVO);
     }
 
     /**
@@ -68,10 +69,10 @@ public class adminTest {
      * @throws Exception
      */
     @Test
-    public void getEffectiveAliasTest1() throws Exception{
+    public void getEffectiveAliasTest1() throws Exception {
         List<AliasVO> aliasVOS1 = new ArrayList<>();
-        Mockito.when(adminService.getDataError()).thenReturn(aliasVOS1);
-        assertEquals(adminController.getEffectiveAlias(),aliasVOS1);
+        Mockito.when(adminService.getDataError(1, 1)).thenReturn(aliasVOS1);
+        assertEquals(adminController.getEffectiveAlias(1, 1), aliasVOS1);
     }
 
     /**
@@ -81,9 +82,9 @@ public class adminTest {
      * @throws Exception
      */
     @Test
-    public void cancelAliasTest1() throws Exception{
+    public void cancelAliasTest1() throws Exception {
         ResponseVO responseVO = new ResponseVO();
-        Mockito.when(adminService.undoOperate(0,1)).thenReturn(responseVO);
-        assertEquals(adminController.cancelAlias(0,1),responseVO);
+        Mockito.when(adminService.undoOperate(0, 1)).thenReturn(responseVO);
+        assertEquals(adminController.cancelAlias(0, 1), responseVO);
     }
 }

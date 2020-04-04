@@ -18,12 +18,12 @@ import java.util.List;
 @RestController()
 @Service
 public class AdminController {
-    @Autowired(required = false)
+    @Autowired
     AdminService adminService;
 
     @GetMapping(value = "/admin/getConfusedAlias")
-    public List<AliasVO> getConfusedAlias() {
-        return adminService.getDataError();
+    public List<AliasVO> getConfusedAlias(@RequestParam int page, @RequestParam int type) {
+        return adminService.getDataError(page, type);
     }
 
     @PostMapping(value = "/admin/modifyAlias")
@@ -32,8 +32,8 @@ public class AdminController {
     }
 
     @GetMapping(value = "/admin/getEffectiveAlias")
-    public List<AliasVO> getEffectiveAlias() {
-        return adminService.getDataOperated();
+    public List<AliasVO> getEffectiveAlias(@RequestParam int page, @RequestParam int type) {
+        return adminService.getDataOperated(page, type);
     }
 
     @PostMapping("/admin/cancelAlias")

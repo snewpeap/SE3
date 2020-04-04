@@ -13,11 +13,14 @@ import edu.nju.se.teamnamecannotbeempty.data.repository.duplication.DuplicateAff
 import edu.nju.se.teamnamecannotbeempty.data.repository.duplication.DuplicateAuthorDao;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Streamable;
 
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -36,37 +39,48 @@ public class AdminServiceImplTest {
         when(msg.getAuthorType()).thenReturn(1);
         when(msg.getAffiliationType()).thenReturn(2);
         duplicateAuthorDao = mock(DuplicateAuthorDao.class);
-        when(duplicateAuthorDao.findByClearIs(true)).thenReturn(getClearAuthor());
-        when(duplicateAuthorDao.findByClearIs(false)).thenReturn(getUnclearAuthor());
+        when(duplicateAuthorDao.findByClear(eq(true), any(Pageable.class))).thenReturn(getClearAuthor());
+        when(duplicateAuthorDao.findByClear(eq(false), any(Pageable.class))).thenReturn(getUnclearAuthor());
         duplicateAffiliationDao = mock(DuplicateAffiliationDao.class);
-        when(duplicateAffiliationDao.findByClearIs(true)).thenReturn(getClearAffi());
-        when(duplicateAffiliationDao.findByClearIs(false)).thenReturn(getUnclearAffi());
+        when(duplicateAffiliationDao.findByClear(eq(true), any(Pageable.class))).thenReturn(getClearAffi());
+        when(duplicateAffiliationDao.findByClear(eq(false), any(Pageable.class))).thenReturn(getUnclearAffi());
     }
 
     @Test
     public void getDataError() {
         service = new AdminServiceImpl(duplicateAuthorDao, duplicateAffiliationDao, msg, authorDao, affiliationDao);
-        List<AliasVO> vos = service.getDataError();
-        assertEquals(3, vos.size());
+        List<AliasVO> vos = service.getDataError(0, msg.getAuthorType());
+        assertEquals(2, vos.size());
         for (AliasVO vo : vos) {
+            assertEquals(msg.getAuthorType(), vo.getType());
             assertEquals(1, vo.getFathers().size());
             AliasItem item = vo.getFathers().get(0);
-            if (vo.getType() == msg.getAuthorType()) {
-                assertEquals(1L, item.getFatherId());
-                assertEquals("a1", item.getAliasName());
-            } else {
-                assertEquals(2L, item.getFatherId());
-                assertEquals("a2", item.getAliasName());
-            }
+            assertEquals(1L, item.getFatherId());
+            assertEquals("a1", item.getAliasName());
+        }
+    }
+
+    @Test
+    public void getDataError_affi() {
+        service = new AdminServiceImpl(duplicateAuthorDao, duplicateAffiliationDao, msg, authorDao, affiliationDao);
+        List<AliasVO> vos = service.getDataError(0, msg.getAffiliationType());
+        assertEquals(1, vos.size());
+        for (AliasVO vo : vos) {
+            assertEquals(msg.getAffiliationType(), vo.getType());
+            assertEquals(1, vo.getFathers().size());
+            AliasItem item = vo.getFathers().get(0);
+            assertEquals(2L, item.getFatherId());
+            assertEquals("a2", item.getAliasName());
         }
     }
 
     @Test
     public void getDataOperated() {
         service = new AdminServiceImpl(duplicateAuthorDao, duplicateAffiliationDao, msg, authorDao, affiliationDao);
-        List<AliasVO> vos = service.getDataOperated();
-        assertEquals(4, vos.size());
+        List<AliasVO> vos = service.getDataOperated(0, 1);
+        assertEquals(2, vos.size());
         for (AliasVO vo : vos) {
+            assertEquals(msg.getAuthorType(), vo.getType());
             assertEquals(1, vo.getFathers().size());
             AliasItem item = vo.getFathers().get(0);
             assertEquals(1L, item.getFatherId());
