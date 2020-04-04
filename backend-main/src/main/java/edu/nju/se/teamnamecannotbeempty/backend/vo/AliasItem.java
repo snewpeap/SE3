@@ -1,32 +1,23 @@
 package edu.nju.se.teamnamecannotbeempty.backend.vo;
 
 import java.util.Objects;
+import java.util.StringJoiner;
 
 public class AliasItem {
-    private long recordId;
-    private long targetId;
+    private long fatherId;
     private String aliasName;
 
-    public AliasItem(long recordId, long targetId, String aliasName) {
-        this.recordId = recordId;
-        this.targetId = targetId;
+    public AliasItem(long fatherId, String aliasName) {
+        this.fatherId = fatherId;
         this.aliasName = aliasName;
     }
 
-    public long getTargetId() {
-        return targetId;
+    public long getFatherId() {
+        return fatherId;
     }
 
-    public void setTargetId(long targetId) {
-        this.targetId = targetId;
-    }
-
-    public long getRecordId() {
-        return recordId;
-    }
-
-    public void setRecordId(long recordId) {
-        this.recordId = recordId;
+    public void setFatherId(long fatherId) {
+        this.fatherId = fatherId;
     }
 
     public String getAliasName() {
@@ -42,11 +33,19 @@ public class AliasItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AliasItem aliasItem = (AliasItem) o;
-        return recordId == aliasItem.recordId;
+        return fatherId == aliasItem.fatherId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(recordId);
+        return Objects.hash(fatherId);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", AliasItem.class.getSimpleName() + "[", "]")
+                .add("fatherId=" + fatherId)
+                .add("aliasName='" + aliasName + "'")
+                .toString();
     }
 }

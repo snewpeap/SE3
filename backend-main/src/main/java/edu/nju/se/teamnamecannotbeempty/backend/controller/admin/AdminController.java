@@ -27,8 +27,8 @@ public class AdminController {
     }
 
     @PostMapping(value = "/admin/modifyAlias")
-    public ResponseVO modifyAlias(@RequestParam long recordId, @RequestParam boolean isAlias, @RequestParam int type) {
-        return adminService.operateDataAlias(recordId, isAlias, type);
+    public ResponseVO modifyAlias(@RequestParam long sonId, @RequestParam long fatherId, @RequestParam int type) {
+        return adminService.operateDataAlias(sonId, fatherId, type);
     }
 
     @GetMapping(value = "/admin/getEffectiveAlias")

@@ -57,8 +57,8 @@ public class adminTest {
     @Test
     public void modifyAliasTest1() throws Exception{
         ResponseVO responseVO = new ResponseVO();
-        Mockito.when(adminService.operateDataAlias(0,true,1)).thenReturn(responseVO);
-        assertEquals(adminController.modifyAlias(0,true,1),responseVO);
+        Mockito.when(adminService.operateDataAlias(0,1,1)).thenReturn(responseVO);
+        assertEquals(adminController.modifyAlias(0,1,1),responseVO);
     }
 
     /**
