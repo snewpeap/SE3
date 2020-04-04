@@ -30,6 +30,11 @@ public class DuplicateAffiliation implements IDuplication<Affiliation> {
         clear = false;
     }
 
+    public DuplicateAffiliation(Affiliation father, Affiliation son) {
+        this.father = father;
+        this.son = son;
+    }
+
     @Override
     public Long getId() {
         return id;

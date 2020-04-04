@@ -17,6 +17,7 @@ public class Affiliation implements Aliasable<Affiliation> {
     @Field
     // 机构名，包括部门/院系名和组织/单位名（如软件学院of南京大学）
     private String name;
+    private String formattedName;
     // 实际上是地理位置，最精确到市
     private String country;
     @ManyToOne(fetch = FetchType.EAGER)
@@ -126,6 +127,14 @@ public class Affiliation implements Aliasable<Affiliation> {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getFormattedName() {
+        return formattedName;
+    }
+
+    public void setFormattedName(String formatted_name) {
+        this.formattedName = formatted_name;
     }
 
     @Override

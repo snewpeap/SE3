@@ -41,7 +41,7 @@ public interface AffiliationDao extends JpaRepository<Affiliation, Long> {
      * @后置条件 无
      */
     @Query(nativeQuery = true,
-            value = "select distinct id, country, af_name, alias_id from affiliations " +
+            value = "select distinct id, country, formatted_name, af_name, alias_id from affiliations " +
                     "inner join paper_aa on affiliations.id = paper_aa.affiliation_id " +
                     "where paper_aa.author_id = ?1")
     List<Affiliation> getAffiliationsByAuthor(Long id);

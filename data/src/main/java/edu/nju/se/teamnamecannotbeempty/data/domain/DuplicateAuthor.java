@@ -35,7 +35,6 @@ public class DuplicateAuthor implements IDuplication<Author> {
     public DuplicateAuthor(Author father, Author son) {
         this.father = father;
         this.son = son;
-        clear = false;
     }
 
     public Boolean getClear() {
