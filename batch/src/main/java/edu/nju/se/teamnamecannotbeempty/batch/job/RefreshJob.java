@@ -35,21 +35,19 @@ public class RefreshJob {
     private final AuthorPopGenerator authorPopGenerator;
     private final AffiPopGenerator affiPopGenerator;
     private final TermPopGenerator termPopGenerator;
-    private final PaperDao paperDao;
-    private final PaperPopDao paperPopDao;
+    private final PaperPopGenerator paperPopGenerator;
     private final AuthorDupGenerator authorDupGenerator;
     private final AffiDupGenerator affiDupGenerator;
 
     @Autowired
     public RefreshJob(AuthorPopGenerator authorPopGenerator, AffiPopGenerator affiPopGenerator, TermPopGenerator termPopGenerator,
-                      PaperDao paperDao, PaperPopDao paperPopDao, AuthorDupGenerator authorDupGenerator, AffiDupGenerator affiDupGenerator) {
+                      AuthorDupGenerator authorDupGenerator, AffiDupGenerator affiDupGenerator, PaperPopGenerator paperPopGenerator) {
         this.authorPopGenerator = authorPopGenerator;
         this.affiPopGenerator = affiPopGenerator;
         this.termPopGenerator = termPopGenerator;
-        this.paperDao = paperDao;
-        this.paperPopDao = paperPopDao;
         this.authorDupGenerator = authorDupGenerator;
         this.affiDupGenerator = affiDupGenerator;
+        this.paperPopGenerator = paperPopGenerator;
     }
 
     @Async
@@ -60,19 +58,19 @@ public class RefreshJob {
     void trigger_init(long total) {
         long startTime = System.currentTimeMillis();
         final long DEADLINE = 1000 * 60 * 3;
-        while (paperDao.count() != total) {
+        while (paperPopGenerator.count() != total) {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 logger.warn(e.getMessage());
             }
             if (System.currentTimeMillis() - startTime > DEADLINE) {
-                logger.error("Data Import time exceed " + DEADLINE + " millis, and current count is " + paperDao.count() + ". Abort it");
+                logger.error("Data Import time exceed " + DEADLINE + " millis, and current count is " + paperPopGenerator.count() + ". Abort it");
                 return;
             }
         }
         logger.info("Done import papers. Start generating paper popularity...");
-        generatePaperPop();
+        paperPopGenerator.generatePaperPop();
         logger.info("Done generate paper popularity");
         Future<?> authorFuture = authorPopGenerator.generateAuthorPop();
         Future<?> affiFuture = affiPopGenerator.generateAffiPop();
@@ -81,12 +79,28 @@ public class RefreshJob {
         authorDupGenerator.generateAuthorDup(authorFuture);
     }
 
-    void generatePaperPop() {
-        //TODO PageRank implemented by Spark
-        paperDao.streamAll().forEach(paper -> {
-            Paper.Popularity pop = new Paper.Popularity(paper, paper.getCitation().doubleValue());
-            paperPopDao.save(pop);
-        });
+    @Component
+    public static class PaperPopGenerator {
+        private final PaperDao paperDao;
+        private final PaperPopDao paperPopDao;
+
+        @Autowired
+        public PaperPopGenerator(PaperDao paperDao, PaperPopDao paperPopDao) {
+            this.paperDao = paperDao;
+            this.paperPopDao = paperPopDao;
+        }
+
+        void generatePaperPop() {
+            //TODO PageRank implemented by Spark
+            paperDao.streamAll().forEach(paper -> {
+                Paper.Popularity pop = new Paper.Popularity(paper, paper.getCitation().doubleValue());
+                paperPopDao.save(pop);
+            });
+        }
+
+        long count() {
+            return paperDao.count();
+        }
     }
 
     @Component

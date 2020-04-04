@@ -1,34 +1,33 @@
 package edu.nju.se.teamnamecannotbeempty.backend.vo;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class AliasVO {
-    private String origin;
-    private long originId;
+    private String name;
+    private long sonId;
     /*
     1=作者
     2=机构
      */
     private int type;
-    private List<AliasItem> alias;
+    private List<AliasItem> fathers;
 
-    public AliasVO(String origin, long originId, int type, List<AliasItem> alias) {
-        this.origin = origin;
-        this.originId = originId;
+    public AliasVO(String name, long sonId, int type, List<AliasItem> fathers) {
+        this.name = name;
+        this.sonId = sonId;
         this.type = type;
-        this.alias = alias;
+        this.fathers = fathers;
     }
 
     public AliasVO() {
     }
 
-    public String getOrigin() {
-        return origin;
+    public String getName() {
+        return name;
     }
 
-    public void setOrigin(String origin) {
-        this.origin = origin;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getType() {
@@ -39,20 +38,20 @@ public class AliasVO {
         this.type = type;
     }
 
-    public List<AliasItem> getAlias() {
-        return alias;
+    public List<AliasItem> getFathers() {
+        return fathers;
     }
 
-    public void setAlias(List<AliasItem> alias) {
-        this.alias = alias;
+    public void setFathers(List<AliasItem> fathers) {
+        this.fathers = fathers;
     }
 
-    public long getOriginId() {
-        return originId;
+    public long getSonId() {
+        return sonId;
     }
 
-    public void setOriginId(long originId) {
-        this.originId = originId;
+    public void setSonId(long sonId) {
+        this.sonId = sonId;
     }
 
     @Override
@@ -60,12 +59,22 @@ public class AliasVO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AliasVO aliasVO = (AliasVO) o;
-        return originId == aliasVO.originId &&
+        return sonId == aliasVO.sonId &&
                 type == aliasVO.type;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(originId, type);
+        return Objects.hash(sonId, type);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", AliasVO.class.getSimpleName() + "[", "]")
+                .add("name='" + name + "'")
+                .add("sonId=" + sonId)
+                .add("type=" + type)
+                .add("fathers.size=" + Optional.ofNullable(fathers).orElse(Collections.emptyList()).size())
+                .toString();
     }
 }

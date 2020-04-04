@@ -35,7 +35,7 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select pp from paper_popularity pp inner join pp.paper p inner join p.aa aa " +
+    @Query("select distinct pp from paper_popularity pp inner join pp.paper p inner join p.aa aa " +
             "where aa.author.id = ?1 order by pp.popularity desc")
     List<Paper.Popularity> findTopPapersByAuthorId(Long id);
 
@@ -47,7 +47,7 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select pp from paper_popularity pp inner join pp.paper p inner join p.aa aa " +
+    @Query("select distinct pp from paper_popularity pp inner join pp.paper p inner join p.aa aa " +
             "where aa.affiliation.id = ?1 order by pp.popularity desc")
     List<Paper.Popularity> findTopPapersByAffiId(Long id);
 
@@ -59,7 +59,7 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select pp from paper_popularity pp where pp.paper.conference.id = ?1 order by pp.popularity desc")
+    @Query("select distinct pp from paper_popularity pp where pp.paper.conference.id = ?1 order by pp.popularity desc")
     List<Paper.Popularity> findTopPapersByConferenceId(Long id);
 
     /**
