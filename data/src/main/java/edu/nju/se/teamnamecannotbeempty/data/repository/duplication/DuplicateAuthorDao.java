@@ -5,10 +5,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.util.Streamable;
 
-public interface DuplicateAuthorDao extends JpaRepository<DuplicateAuthor, Long> {
-    Streamable<DuplicateAuthor> findByClearIs(Boolean clear);
+import java.util.List;
 
-    Streamable<DuplicateAuthor> findByClear(Boolean clear, Pageable pageable);
+public interface DuplicateAuthorDao extends JpaRepository<DuplicateAuthor, Long> {
+
+    List<DuplicateAuthor> findByClear(Boolean clear, Pageable pageable);
 
     Streamable<DuplicateAuthor> findBySon_Id(Long id);
 

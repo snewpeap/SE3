@@ -24,10 +24,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.Future;
 
 @Service
@@ -50,7 +47,6 @@ public class RefreshJob {
         this.paperPopGenerator = paperPopGenerator;
     }
 
-    @Async
     public void trigger() {
     }
 
@@ -224,10 +220,12 @@ public class RefreshJob {
         }
 
         private boolean notBelongsTo(HashSet<String> father, HashSet<String> son) {
-            return (!father.contains("dept") || son.contains("dept")) &&
-                    (!father.contains("lab") || son.contains("lab")) &&
-                    (!father.contains("sch") || son.contains("sch")) &&
-                    (!father.contains("institute") || son.contains("institute"));
+            List<String> list = Arrays.asList("dept", "lab", "sch", "inst", "center", "fac", "res", "coll");
+            boolean b = true;
+            for (String s : list) {
+                b = b && (!father.contains(s) || son.contains(s));
+            }
+            return b;
         }
 
         private HashSet<String> getTokenSet(Affiliation affiliation) throws IOException {

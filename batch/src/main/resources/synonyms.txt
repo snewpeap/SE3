@@ -14,5 +14,9 @@ Electrical Electr.
 Faculty Fac.
 Research Res.
 Laboratory Lab.
+Laboratories Lab.
 National Nat.
 School sch.
+Centre Center
+Institute Inst.
+Division Div.

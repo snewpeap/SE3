@@ -14,8 +14,9 @@ import edu.nju.se.teamnamecannotbeempty.data.repository.duplication.DuplicateAut
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.util.Streamable;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -96,7 +97,7 @@ public class AdminServiceImplTest {
     public void undoOperate() {
     }
 
-    private Streamable<DuplicateAuthor> getClearAuthor() {
+    private List<DuplicateAuthor> getClearAuthor() {
         Author a1 = new Author();
         a1.setId(1L);
         a1.setName("a1");
@@ -115,10 +116,10 @@ public class AdminServiceImplTest {
         DuplicateAuthor d2 = new DuplicateAuthor(a2, a3);
         d2.setId(2L);
         d2.setClear(true);
-        return Streamable.of(d1, d2);
+        return Arrays.asList(d1, d2);
     }
 
-    private Streamable<DuplicateAuthor> getUnclearAuthor() {
+    private List<DuplicateAuthor> getUnclearAuthor() {
         Author a1 = new Author();
         a1.setId(1L);
         a1.setName("a1");
@@ -132,10 +133,10 @@ public class AdminServiceImplTest {
         d1.setId(1L);
         DuplicateAuthor d2 = new DuplicateAuthor(a1, a3);
         d2.setId(2L);
-        return Streamable.of(d1, d2);
+        return Arrays.asList(d1, d2);
     }
 
-    private Streamable<DuplicateAffiliation> getClearAffi() {
+    private List<DuplicateAffiliation> getClearAffi() {
         Affiliation a1 = new Affiliation();
         a1.setId(1L);
         a1.setName("a1");
@@ -154,10 +155,10 @@ public class AdminServiceImplTest {
         DuplicateAffiliation d2 = new DuplicateAffiliation(a2, a3);
         d2.setId(2L);
         d2.setClear(true);
-        return Streamable.of(d1, d2);
+        return Arrays.asList(d1, d2);
     }
 
-    private Streamable<DuplicateAffiliation> getUnclearAffi() {
+    private List<DuplicateAffiliation> getUnclearAffi() {
         Affiliation a1 = new Affiliation();
         a1.setId(1L);
         a1.setName("a1");
@@ -168,6 +169,6 @@ public class AdminServiceImplTest {
         a2.setAlias(null);
         DuplicateAffiliation d = new DuplicateAffiliation(a2, a1);
         d.setId(1L);
-        return Streamable.of(d);
+        return Collections.singletonList(d);
     }
 }

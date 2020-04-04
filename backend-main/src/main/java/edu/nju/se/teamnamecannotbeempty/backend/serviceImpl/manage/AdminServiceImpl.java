@@ -14,7 +14,6 @@ import edu.nju.se.teamnamecannotbeempty.data.repository.duplication.DuplicateAut
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -59,7 +58,7 @@ public final class AdminServiceImpl implements AdminService {
         return vos;
     }
 
-    <T extends Aliasable<T>> ArrayList<AliasVO> getAliasVOs(Streamable<? extends IDuplication<T>> iter, int type) {
+    <T extends Aliasable<T>> ArrayList<AliasVO> getAliasVOs(List<? extends IDuplication<T>> iter, int type) {
         HashSetValuedHashMap<AliasVO, AliasItem> projection = new HashSetValuedHashMap<>();
         iter.forEach(dup -> {
             AliasVO vo = new AliasVO(dup.getSon().getName(), dup.getSon().getId(), type, null);
