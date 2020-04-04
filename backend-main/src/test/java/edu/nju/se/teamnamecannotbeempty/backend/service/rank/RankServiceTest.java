@@ -21,8 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 @SpringBootTest
@@ -232,5 +231,10 @@ public class RankServiceTest {
         Assert.assertEquals(rankVO, result.getContent());
     }
 
+    @Test
+    public void popRankTest(){
+        List<RankItem> rankItemList = rankService.getPopRank(1);
+        verify(rankFetch).getPopRank(1);
+    }
 
 }

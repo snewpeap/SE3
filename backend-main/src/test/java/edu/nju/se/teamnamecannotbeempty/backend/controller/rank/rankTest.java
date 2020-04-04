@@ -1,6 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.controller.rank;
 
 import edu.nju.se.teamnamecannotbeempty.backend.service.rank.RankService;
+import edu.nju.se.teamnamecannotbeempty.backend.vo.RankItem;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +14,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -89,6 +93,25 @@ public class rankTest {
                         .param("descend", "true")
                         .param("startYear", "2010")
                         .param("endYear", "2010"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    /**
+     * 对RankController中 getPopRank的测试
+     * 通过url测试 传参数type时
+     * @throws Exception
+     */
+    @Test
+    public void testGetPopRank() throws Exception{
+        List<RankItem> rankItemList = new ArrayList<>();
+        Mockito.when(rankService.getPopRank(1))
+                .thenReturn(rankItemList);
+        MvcResult result = mvc
+                .perform(MockMvcRequestBuilders.get("/hot")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("type", "1"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();

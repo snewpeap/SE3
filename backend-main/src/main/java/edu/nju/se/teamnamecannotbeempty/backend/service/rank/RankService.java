@@ -1,7 +1,10 @@
 package edu.nju.se.teamnamecannotbeempty.backend.service.rank;
 
 
+import edu.nju.se.teamnamecannotbeempty.backend.vo.RankItem;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
+
+import java.util.List;
 
 /**
  * 定义排名相关的业务逻辑接口
@@ -22,4 +25,11 @@ public interface RankService {
      * @return RankVO 返回的排行对象VO，包含一个列表
      */
     ResponseVO getRank(String mode, Integer pageNumber, boolean descend, int startYear, int endYear);
+
+    /**
+     * 返回热度排行
+     * @param type 热度排行的实体类型
+     * @return 热度排行（前20）
+     */
+    List<RankItem> getPopRank(int type);
 }

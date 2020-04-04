@@ -1,12 +1,12 @@
 package edu.nju.se.teamnamecannotbeempty.backend.controller.rank;
 
 import edu.nju.se.teamnamecannotbeempty.backend.service.rank.RankService;
+import edu.nju.se.teamnamecannotbeempty.backend.vo.RankItem;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 排行
@@ -35,5 +35,15 @@ public class RankController {
     @RequestMapping(value = "/rank/{mode}")
     public ResponseVO getRank(@PathVariable String mode, @RequestParam(required = false) Integer pageNumber, @RequestParam boolean descend, @RequestParam int startYear, @RequestParam int endYear) {
         return rankService.getRank(mode, pageNumber, descend, startYear, endYear);
+    }
+
+    /**
+     * 获取实体热度排行榜（作者，机构，研究方向）
+     * @param type 实体类型
+     * @return 排行榜（前20）
+     */
+    @RequestMapping(value = "/hot", method = RequestMethod.GET)
+    public List<RankItem> getPopRank(@RequestParam int type){
+        return rankService.getPopRank(type);
     }
 }
