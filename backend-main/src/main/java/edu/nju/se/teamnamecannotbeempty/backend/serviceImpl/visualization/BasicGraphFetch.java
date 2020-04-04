@@ -173,9 +173,7 @@ public class BasicGraphFetch {
 
     private boolean termIsBelongToAffiliation(long termId, long affiId){
         List<Term.Popularity> termPopList = termPopDao.getTermPopByAffiID(affiId);
-        for (Term.Popularity termPop:termPopList){
-            if(termId == termPop.getTerm().getId()) return true;
-        }
-        return false;
+        return termPopList.stream().anyMatch(termPop->termPop.getTerm().getId() == termId);
+
     }
 }
