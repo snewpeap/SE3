@@ -1,8 +1,12 @@
 package edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.rank;
 
+import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.EntityMsg;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.RankItem;
 import edu.nju.se.teamnamecannotbeempty.data.domain.*;
 import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.AffiPopDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.AuthorPopDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -15,10 +19,19 @@ import java.util.stream.Collectors;
 public class RankFetch {
 
     private final PaperDao paperDao;
+    private final AffiPopDao affiPopDao;
+    private final AuthorPopDao authorPopDao;
+    private final TermPopDao termPopDao;
+    private final EntityMsg entityMsg;
 
     @Autowired
-    public RankFetch(PaperDao paperDao) {
+    public RankFetch(PaperDao paperDao, AuthorPopDao authorPopDao, AffiPopDao affiPopDao,
+                     TermPopDao termPopDao, EntityMsg entityMsg) {
         this.paperDao = paperDao;
+        this.affiPopDao = affiPopDao;
+        this.authorPopDao = authorPopDao;
+        this.termPopDao = termPopDao;
+        this.entityMsg = entityMsg;
     }
 
     static class AuthorPaperCitationNum {
@@ -77,6 +90,14 @@ public class RankFetch {
         return rankItemList;
     }
 
+    @Cacheable(value = "getPopRank", key = "#p0", unless = "#result.size()=0")
+    public List<RankItem> getPopRank(int type) {
+        if(type == entityMsg.getAuthorType()) return authorPopRank();
+        else if(type == entityMsg.getAffiliationType()) return affiliationPopRank();
+        else if(type == entityMsg.getTermType()) return termPopRank();
+        return new ArrayList<>();
+    }
+
     private List<RankItem> paperCited(List<Paper> paperList) {
         return paperList.stream().sorted(Comparator.comparingInt(Paper::getCitation))
                 .map(paper -> new RankItem(paper.getTitle(), paper.getCitation())).collect(Collectors.toList());
@@ -132,5 +153,26 @@ public class RankFetch {
     private List<RankItem> mapToList(Map<String, Long> map) {
         return map.entrySet().stream().sorted(Comparator.comparingLong(Map.Entry::getValue))
                 .map(e -> new RankItem(e.getKey(), e.getValue().intValue())).collect(Collectors.toList());
+    }
+
+    private List<RankItem> authorPopRank(){
+        List<Author.Popularity> authorPops = authorPopDao.findTop20ByOrderByPopularityDesc();
+        return authorPops.stream().map(authorPop->
+                new RankItem(authorPop.getAuthor().getName(), authorPop.getPopularity()))
+                .collect(Collectors.toList());
+    }
+
+    private List<RankItem> affiliationPopRank(){
+        List<Affiliation.Popularity> affiPops = affiPopDao.findTop20ByOrderByPopularityDesc();
+        return affiPops.stream().map(affiPop->
+        new RankItem(affiPop.getAffiliation().getName(), affiPop.getPopularity()))
+                .collect(Collectors.toList());
+    }
+
+    private List<RankItem> termPopRank(){
+        List<Term.Popularity> termPops = termPopDao.findTop20ByOrderByPopularityDesc();
+        return termPops.stream().map(termPop->
+        new RankItem(termPop.getTerm().getContent(), termPop.getPopularity()))
+                .collect(Collectors.toList());
     }
 }

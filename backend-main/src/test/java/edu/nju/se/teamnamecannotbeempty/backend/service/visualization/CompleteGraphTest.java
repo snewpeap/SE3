@@ -4,7 +4,9 @@ import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.EntityMsg;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.visualization.CompleteGraphFetch;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.GraphVO;
 import edu.nju.se.teamnamecannotbeempty.data.domain.*;
-import edu.nju.se.teamnamecannotbeempty.data.repository.*;
+import edu.nju.se.teamnamecannotbeempty.data.repository.AffiliationDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.AuthorDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.ConferenceDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.PaperPopDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
 import org.junit.Assert;
@@ -41,10 +43,6 @@ public class CompleteGraphTest {
     private EntityMsg entityMsg;
     @Mock
     private PaperPopDao paperPopDao;
-    @Mock
-    private PaperDao paperDao;
-    @Mock
-    private TermDao termDao;
     @InjectMocks
     private CompleteGraphFetch completeGraphFetch;
 

@@ -80,6 +80,7 @@ public class AcademicEntityTest {
         Term.Popularity termPopularity3 = new Term.Popularity(); termPopularity3.setTerm(term1);
 
         Conference conference = new Conference(); conference.setName("conference1"); conference.setYear_highlight("");
+        conference.setId(1L);
         Paper paper = new Paper(); paper.setId(1L); paper.setTitle("paper1"); paper.setConference(conference);
         paper.setAa(new ArrayList<>());paper.setAuthor_keywords(new ArrayList<>());
         Paper.Popularity paperPop = new Paper.Popularity(); paperPop.setPaper(paper);

@@ -4,10 +4,7 @@ import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.EntityMsg;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.GraphVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.Link;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.Node;
-import edu.nju.se.teamnamecannotbeempty.data.domain.Affiliation;
-import edu.nju.se.teamnamecannotbeempty.data.domain.Author;
-import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
-import edu.nju.se.teamnamecannotbeempty.data.domain.Term;
+import edu.nju.se.teamnamecannotbeempty.data.domain.*;
 import edu.nju.se.teamnamecannotbeempty.data.repository.*;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.PaperPopDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
@@ -62,7 +59,10 @@ public class BasicGraphFetch {
         List<Term.Popularity> termPopularities = termPopDao.getTermPopByAuthorID(id);
         nodes.addAll(generateTermNode(termPopularities));
         links.addAll(generateLinksWithWeightInAuthor(id, termPopularities));
-        return new GraphVO(id, entityMsg.getAuthorType(), authorDao.findById(id).get().getName(), nodes, links);
+        String centerName = authorDao.findById(id).orElseGet(Author::new).getName();
+        Node centerNode = new Node(id,centerName,entityMsg.getAuthorType());
+        nodes.add(centerNode);
+        return new GraphVO(id, entityMsg.getAuthorType(),centerName , nodes, links);
     }
 
 
@@ -75,17 +75,24 @@ public class BasicGraphFetch {
         nodes.addAll(generateTermNode(termPopularityList));
         links.addAll(generateLinksWithWeightInAffi(id, termPopularityList));
         List<Link> links1 = authors.stream().flatMap(author -> termPopDao.getTermPopByAuthorID(author.getActual().getId()).stream()
+                .filter(termPop->termIsBelongToAffiliation(termPop.getTerm().getId(),id))
                 .map(termPop -> new Link(author.getActual().getId(), entityMsg.getAuthorType(), termPop.getTerm().getId(),
                         entityMsg.getTermType(), paperPopDao.getWeightByAuthorOnKeyword(author.getActual().getId(), termPop.getTerm().getId()))))
                 .collect(Collectors.toList());
         links.addAll(links1);
-        return new GraphVO(id, entityMsg.getAffiliationType(), affiliationDao.findById(id).get().getName(), nodes, links);
+        String centerName = affiliationDao.findById(id).orElseGet(Affiliation::new).getName();
+        Node centerNode = new Node(id,centerName,entityMsg.getAffiliationType());
+        nodes.add(centerNode);
+        return new GraphVO(id, entityMsg.getAffiliationType(), centerName, nodes, links);
     }
 
     private GraphVO conferenceBasicGraph(long id) {
         List<Node> nodes = generatePaperNode(paperPopDao.findTopPapersByConferenceId(id));
         List<Link> links = generateLinksWithoutWeight(id, entityMsg.getConferenceType(), nodes);
-        return new GraphVO(id, entityMsg.getConferenceType(), conferenceDao.findById(id).get().buildName(), nodes, links);
+        String centerName = conferenceDao.findById(id).orElseGet(Conference::new).buildName();
+        Node centerNode = new Node(id,centerName,entityMsg.getConferenceType());
+        nodes.add(centerNode);
+        return new GraphVO(id, entityMsg.getConferenceType(), centerName, nodes, links);
     }
 
     //默认论文的研究方向也属于作者的研究方向
@@ -107,11 +114,15 @@ public class BasicGraphFetch {
         links.addAll(links1);
 
         List<Link> links2 = papers.stream().map(paper -> new Link(id, entityMsg.getTermType(),
-                paper.getId(), entityMsg.getPaperType(),paperPopDao.getByPaper_Id(paper.getId()).get().getPopularity()))
+                paper.getId(), entityMsg.getPaperType(),paperPopDao.getByPaper_Id(paper.getId()).orElseGet(Paper.Popularity::new).getPopularity()))
                 .collect(Collectors.toList());
         links.addAll(links2);
 
-        return new GraphVO(id, entityMsg.getTermType(), termDao.findById(id).get().getContent(), nodes, links);
+        String centerName = termDao.findById(id).orElseGet(Term::new).getContent();
+        Node centerNode = new Node(id,centerName,entityMsg.getTermType());
+        nodes.add(centerNode);
+
+        return new GraphVO(id, entityMsg.getTermType(), centerName, nodes, links);
     }
 
     private List<Link> generateLinksWithWeightInAuthor(long sourceId, List<Term.Popularity> termPopularityList) {
@@ -158,5 +169,13 @@ public class BasicGraphFetch {
         return affiliations.stream().map(
                 affiliation -> new Node(affiliation.getActual().getId(), affiliation.getName(), entityMsg.getAffiliationType()))
                 .collect(Collectors.toList());
+    }
+
+    private boolean termIsBelongToAffiliation(long termId, long affiId){
+        List<Term.Popularity> termPopList = termPopDao.getTermPopByAffiID(affiId);
+        for (Term.Popularity termPop:termPopList){
+            if(termId == termPop.getTerm().getId()) return true;
+        }
+        return false;
     }
 }

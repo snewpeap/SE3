@@ -5,9 +5,9 @@ import java.util.Objects;
 public class RankItem {
     private String name;
 
-    private int value;
+    private double value;
 
-    public RankItem(String name, int value) {
+    public RankItem(String name, double value) {
         this.name = name;
         this.value = value;
     }
@@ -20,11 +20,11 @@ public class RankItem {
         this.name = name;
     }
 
-    public int getValue() {
+    public double getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(double value) {
         this.value = value;
     }
 

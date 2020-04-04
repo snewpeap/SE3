@@ -19,10 +19,12 @@ public class RankServiceImpl implements RankService {
     private final RankMsg rankMsg;
     private final RankFetch rankFetch;
 
+
     @Autowired
     public RankServiceImpl(RankMsg rankMsg, RankFetch rankFetch) {
         this.rankMsg = rankMsg;
         this.rankFetch = rankFetch;
+
     }
 
 
@@ -52,6 +54,11 @@ public class RankServiceImpl implements RankService {
         responseVO = ResponseVO.success();
         responseVO.setContent(new RankVO(totalPage, result));
         return responseVO;
+    }
+
+    @Override
+    public List<RankItem> getPopRank(int type) {
+        return rankFetch.getPopRank(type);
     }
 
 
