@@ -86,6 +86,7 @@ public class AcademicEntityFetch {
     }
 
     private AcademicEntityVO conferenceEntity(long id) {
+
         List<AcademicEntityItem> authorEntityItems = generateAuthorEntityItems(authorDao.getAuthorsByConference(id));
         List<AcademicEntityItem> affiEntityItems = generateAffiEntityItems(affiliationDao.getAffiliationsByConference(id));
         List<Term.Popularity> termPopularityList = termPopDao.getTermPopByConferenceID(id);
