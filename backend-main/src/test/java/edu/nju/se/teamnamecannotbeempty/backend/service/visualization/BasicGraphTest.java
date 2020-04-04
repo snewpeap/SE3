@@ -72,7 +72,7 @@ public class BasicGraphTest {
         when(termPopDao.getTermPopByAuthorID(1L)).thenReturn(Collections.singletonList(termPop));
         when(paperPopDao.getWeightByAuthorOnKeyword(1L,1L)).thenReturn(1.0);
         GraphVO graphVO = basicGraphFetch.getBasicGraph(1L,1);
-        Assert.assertEquals(graphVO.getNodes().size(),3);
+        Assert.assertEquals(graphVO.getNodes().size(),4);
         Assert.assertEquals(graphVO.getLinks().size(),3);
         Assert.assertEquals(graphVO.getId(),"10000000001");
     }
@@ -96,7 +96,7 @@ public class BasicGraphTest {
         when(affiliationDao.findById(1L)).thenReturn(optionalAffiliation);
 
         GraphVO graphVO = basicGraphFetch.getBasicGraph(1L,2);
-        Assert.assertEquals(graphVO.getNodes().size(),2);
+        Assert.assertEquals(graphVO.getNodes().size(),3);
         Assert.assertEquals(graphVO.getLinks().size(),3);
         Assert.assertEquals(graphVO.getId(),"20000000001");
     }
@@ -112,7 +112,7 @@ public class BasicGraphTest {
         when(conferenceDao.findById(1L)).thenReturn(optionalConference);
 
         GraphVO graphVO=basicGraphFetch.getBasicGraph(1L,3);
-        Assert.assertEquals(graphVO.getNodes().size(),1);
+        Assert.assertEquals(graphVO.getNodes().size(),2);
         Assert.assertEquals(graphVO.getLinks().size(),1);
         Assert.assertEquals(graphVO.getId(),"30000000001");
     }
@@ -136,7 +136,7 @@ public class BasicGraphTest {
         when(termDao.findById(1L)).thenReturn(optionalTerm);
 
         GraphVO graphVO = basicGraphFetch.getBasicGraph(1L, 4);
-        Assert.assertEquals(graphVO.getNodes().size(),4);
+        Assert.assertEquals(graphVO.getNodes().size(),5);
         Assert.assertEquals(graphVO.getLinks().size(),5);
         Assert.assertEquals(graphVO.getId(),"40000000001");
     }

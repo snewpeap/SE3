@@ -86,7 +86,7 @@ public class CompleteGraphFetch {
 
         List<Node> nodeList = nodes.stream().distinct().filter(node -> id!=node.getEntityId()).collect(Collectors.toList());
 
-        return new GraphVO(id, entityMsg.getAuthorType(), authorDao.findById(id).get().getName(),nodeList,links);
+        return new GraphVO(id, entityMsg.getAuthorType(), authorDao.findById(id).orElseGet(Author::new).getName(),nodeList,links);
     }
 
     private GraphVO affiliationCompleteGraph(long id) {
@@ -103,7 +103,7 @@ public class CompleteGraphFetch {
         ).collect(Collectors.toList());
         List<Node> preNodes = generateAffiliationNode(affiliationList);
         List<Node> nodes = preNodes.stream().filter(node -> id!=node.getEntityId()).distinct().collect(Collectors.toList());
-        return new GraphVO(id,entityMsg.getAffiliationType(),affiliationDao.findById(id).get().getName(),nodes,links);
+        return new GraphVO(id,entityMsg.getAffiliationType(),affiliationDao.findById(id).orElseGet(Affiliation::new).getName(),nodes,links);
     }
 
     private GraphVO conferenceCompleteGraph(long id) {
@@ -140,7 +140,7 @@ public class CompleteGraphFetch {
         List<Node> reNodes = nodes.stream().distinct().collect(Collectors.toList());
         List<Link> reLinks = links.stream().distinct().collect(Collectors.toList());
 
-        return new GraphVO(id, entityMsg.getConferenceType(), conferenceDao.findById(id).get().buildName(), reNodes, reLinks);
+        return new GraphVO(id, entityMsg.getConferenceType(), conferenceDao.findById(id).orElseGet(Conference::new).buildName(), reNodes, reLinks);
     }
 
     private List<Node> generateAffiliationNode(List<Affiliation> affiliations) {
@@ -159,7 +159,7 @@ public class CompleteGraphFetch {
     private boolean havePaperInTheConferenceByAffi(long id, long conferenceId){
         List<Paper.Popularity> paperPops = paperPopDao.findTopPapersByConferenceId(id);
         for(Paper.Popularity paperPop:paperPops){
-            if(paperPop.getPaper().getConference().getId() == id) return true;
+            if(paperPop.getPaper().getConference().getId() == conferenceId) return true;
         }
         return false;
     }
