@@ -35,6 +35,8 @@ public class InitDataSource implements ApplicationListener<ContextRefreshedEvent
             AppContextProvider.getBean(Searchable.class).setNum(total);
             logger.info(total + " papers to import. 从数据库获取count(Paper)来确认导入完成");
             serviceHibernate.flushIndexes();
+        } else {
+            AppContextProvider.getBean(Searchable.class).pass();
         }
     }
 }

@@ -9,6 +9,7 @@ public class Searchable {
     private final PaperDao paperDao;
     private static boolean ok = false;
     private static boolean indexing = false;
+    private static boolean pass = false;
     private static Long num = null;
 
     @Autowired
@@ -24,7 +25,11 @@ public class Searchable {
     public boolean isOk() {
         if (!ok)
             ok = importOK();
-        return ok && !indexing;
+        return (ok && !indexing) || pass;
+    }
+
+    public void pass() {
+        pass = true;
     }
 
     /**
