@@ -28,15 +28,16 @@ public class InitDataSource implements ApplicationListener<ContextRefreshedEvent
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        if (event.getApplicationContext().getParent() == null &&
-                AppContextProvider.getBean(HibernateProperties.class).getDdlAuto().startsWith("create")) {
-            logger.info("Import data...");
-            long total = dataImportJob.trigger();
-            AppContextProvider.getBean(Searchable.class).setNum(total);
-            logger.info(total + " papers to import. 从数据库获取count(Paper)来确认导入完成");
-            serviceHibernate.flushIndexes();
-        } else {
-            AppContextProvider.getBean(Searchable.class).pass();
+        if (event.getApplicationContext().getParent() == null) {
+            if (AppContextProvider.getBean(HibernateProperties.class).getDdlAuto().startsWith("create")) {
+                logger.info("Import data...");
+                long total = dataImportJob.trigger();
+                AppContextProvider.getBean(Searchable.class).setNum(total);
+                logger.info(total + " papers to import. 从数据库获取count(Paper)来确认导入完成");
+                serviceHibernate.flushIndexes();
+            } else {
+                AppContextProvider.getBean(Searchable.class).pass();
+            }
         }
     }
 }
