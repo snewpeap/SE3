@@ -31,6 +31,7 @@ public class DuplicateAffiliation implements IDuplication<Affiliation> {
     }
 
     public DuplicateAffiliation(Affiliation father, Affiliation son) {
+        this();
         this.father = father;
         this.son = son;
     }

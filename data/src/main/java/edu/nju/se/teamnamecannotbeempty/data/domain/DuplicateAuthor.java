@@ -33,6 +33,7 @@ public class DuplicateAuthor implements IDuplication<Author> {
     }
 
     public DuplicateAuthor(Author father, Author son) {
+        this();
         this.father = father;
         this.son = son;
     }
