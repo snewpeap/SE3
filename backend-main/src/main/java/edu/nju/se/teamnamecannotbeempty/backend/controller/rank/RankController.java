@@ -1,7 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.controller.rank;
 
 import edu.nju.se.teamnamecannotbeempty.backend.service.rank.RankService;
-import edu.nju.se.teamnamecannotbeempty.backend.vo.RankItem;
+import edu.nju.se.teamnamecannotbeempty.backend.vo.PopRankItem;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +43,7 @@ public class RankController {
      * @return 排行榜（前20）
      */
     @RequestMapping(value = "/hot", method = RequestMethod.GET)
-    public List<RankItem> getPopRank(@RequestParam int type){
+    public List<PopRankItem> getPopRank(@RequestParam int type){
         return rankService.getPopRank(type);
     }
 }

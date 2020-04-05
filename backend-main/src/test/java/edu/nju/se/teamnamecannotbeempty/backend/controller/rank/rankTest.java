@@ -1,7 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.controller.rank;
 
 import edu.nju.se.teamnamecannotbeempty.backend.service.rank.RankService;
-import edu.nju.se.teamnamecannotbeempty.backend.vo.RankItem;
+import edu.nju.se.teamnamecannotbeempty.backend.vo.PopRankItem;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
 import org.junit.Before;
 import org.junit.Test;
@@ -105,7 +105,7 @@ public class rankTest {
      */
     @Test
     public void testGetPopRank() throws Exception{
-        List<RankItem> rankItemList = new ArrayList<>();
+        List<PopRankItem> rankItemList = new ArrayList<>();
         Mockito.when(rankService.getPopRank(1))
                 .thenReturn(rankItemList);
         MvcResult result = mvc

@@ -3,6 +3,7 @@ package edu.nju.se.teamnamecannotbeempty.backend.service.rank;
 import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.RankMsg;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.rank.RankFetch;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.rank.RankServiceImpl;
+import edu.nju.se.teamnamecannotbeempty.backend.vo.PopRankItem;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.RankItem;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.RankVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
@@ -233,7 +234,7 @@ public class RankServiceTest {
 
     @Test
     public void popRankTest(){
-        List<RankItem> rankItemList = rankService.getPopRank(1);
+        List<PopRankItem> rankItemList = rankService.getPopRank(1);
         verify(rankFetch).getPopRank(1);
     }
 
