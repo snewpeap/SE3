@@ -90,7 +90,7 @@ public class RankFetch {
         return rankItemList;
     }
 
-    @Cacheable(value = "getPopRank", key = "#p0", unless = "#result.size()=0")
+    @Cacheable(value = "getPopRank", key = "#p0", unless = "#result=null")
     public List<RankItem> getPopRank(int type) {
         if(type == entityMsg.getAuthorType()) return authorPopRank();
         else if(type == entityMsg.getAffiliationType()) return affiliationPopRank();
