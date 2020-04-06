@@ -23,7 +23,6 @@ public class RMIConfig {
         exporter.setService(dataImportJob);
         exporter.setRegistry(rmiRegistryFactoryBean.getObject());
         exporter.setServicePort(9912);
-        System.out.println(rmi.getHost());
         exporter.setRegistryHost(rmi.getHost());
         return exporter;
     }
@@ -38,7 +37,6 @@ public class RMIConfig {
         exporter.setService(refreshJob);
         exporter.setRegistry(rmiRegistryFactoryBean.getObject());
         exporter.setServicePort(9912);
-        System.out.println(rmi.getHost());
         exporter.setRegistryHost(rmi.getHost());
         return exporter;
     }
