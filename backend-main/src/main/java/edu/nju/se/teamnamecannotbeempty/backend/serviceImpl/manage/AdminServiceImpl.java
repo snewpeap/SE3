@@ -66,7 +66,7 @@ public final class AdminServiceImpl implements AdminService {
             projection.put(vo, new AliasItem(actual.getId(), actual.getName()));
         });
         ArrayList<AliasVO> vos = new ArrayList<>(projection.size());
-        projection.keys().forEach(p -> vos.add(new AliasVO(p.getName(), p.getSonId(), type, new ArrayList<>(projection.get(p)))));
+        projection.keySet().forEach(p -> vos.add(new AliasVO(p.getName(), p.getSonId(), type, new ArrayList<>(projection.get(p)))));
         return vos;
     }
 
