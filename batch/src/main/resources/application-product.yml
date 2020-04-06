@@ -2,3 +2,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://120.77.42.11:3306/se3?serverTimezone=CTT&characterEncoding=UTF-8
+    username: root
+    password: snewpeap

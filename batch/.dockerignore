@@ -1,0 +1,17 @@
+# Created by .ignore support plugin (hsz.mobi)
+
+### Maven template
+target/
+
+# IntelliJ project files
+.idea
+*.iml
+/src/
+/sql/
+/.mvn/
+/mvnw
+/mvnw.cmd
+/pom.xml
+/Jenkinsfile
+/.gitignore
+!target/*.jar
