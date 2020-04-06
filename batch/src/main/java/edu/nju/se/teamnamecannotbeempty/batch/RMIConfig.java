@@ -15,7 +15,9 @@ import org.springframework.stereotype.Component;
 public class RMIConfig {
     @Bean
     public RmiServiceExporter dateImportRMIServiceExporter(DataImportJob dataImportJob,
-                                                           RmiRegistryFactoryBean rmiRegistryFactoryBean) throws Exception {
+                                                           RmiRegistryFactoryBean rmiRegistryFactoryBean,
+                                                           RMI rmi) throws Exception {
+        System.setProperty("java.rmi.server.hostname", rmi.getHost());
         RmiServiceExporter exporter = new RmiServiceExporter();
         exporter.setServiceInterface(IDataImportJob.class);
         exporter.setServiceName("dataImportJob");
@@ -27,7 +29,9 @@ public class RMIConfig {
 
     @Bean
     public RmiServiceExporter refreshRMIServiceExporter(RefreshJob refreshJob,
-                                                        RmiRegistryFactoryBean rmiRegistryFactoryBean) throws Exception {
+                                                        RmiRegistryFactoryBean rmiRegistryFactoryBean,
+                                                        RMI rmi) throws Exception {
+        System.setProperty("java.rmi.server.hostname", rmi.getHost());
         RmiServiceExporter exporter = new RmiServiceExporter();
         exporter.setServiceInterface(IRefreshJob.class);
         exporter.setServiceName("refreshJob");
