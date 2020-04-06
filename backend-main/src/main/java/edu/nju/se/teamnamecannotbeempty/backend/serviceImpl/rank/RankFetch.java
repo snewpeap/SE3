@@ -118,11 +118,11 @@ public class RankFetch {
 
     private List<RankItem> affiliationPaper(List<Paper> paperList) {
         List<Affiliation> affiliationList = paperList.stream().flatMap(paper -> paper.getAa().stream().filter(author_affiliation ->
-                (!"".equals(author_affiliation.getAffiliation().getName()) && !"NA".equals(author_affiliation.getAffiliation().getName())))
+                (!"".equals(author_affiliation.getAffiliation().getName()) && !"NA".equals(author_affiliation.getAffiliation().getActual().getName())))
                 .collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
-                        new TreeSet<>(Comparator.comparing(a -> a.getAffiliation().getName() + ";" + a.getAffiliation().getCountry()))), ArrayList::new)).stream()
+                        new TreeSet<>(Comparator.comparing(a -> a.getAffiliation().getActual().getName() + ";" + a.getAffiliation().getCountry()))), ArrayList::new)).stream()
                 .map(Author_Affiliation::getAffiliation)).collect(Collectors.toList());
-        Map<String, Long> affiliationPaperNums = affiliationList.stream().collect(Collectors.groupingBy(Affiliation::getName, Collectors.counting()));
+        Map<String, Long> affiliationPaperNums = affiliationList.stream().collect(Collectors.groupingBy( affiliation-> affiliation.getActual().getName(), Collectors.counting()));
         return mapToList(affiliationPaperNums);
     }
 
@@ -145,8 +145,8 @@ public class RankFetch {
     //从Paper的list转为AuthorPaperCitationNum的List
     private List<AuthorPaperCitationNum> getAuthorPaperCitationNumList(List<Paper> paperList) {
         return paperList.stream().
-                flatMap(paper -> paper.getAa().stream().filter(author_affiliation -> !"".equals(author_affiliation.getAuthor().getName()))
-                        .map(author_affiliation -> new AuthorPaperCitationNum(author_affiliation.getAuthor().getName(), paper.getCitation())))
+                flatMap(paper -> paper.getAa().stream().filter(author_affiliation -> !"".equals(author_affiliation.getAuthor().getActual().getName()))
+                        .map(author_affiliation -> new AuthorPaperCitationNum(author_affiliation.getAuthor().getActual().getName(), paper.getCitation())))
                 .collect(Collectors.toList());
     }
 
@@ -160,7 +160,7 @@ public class RankFetch {
         List<Author.Popularity> authorPops = authorPopDao.findTop20ByOrderByPopularityDesc();
         return authorPops.stream().map(authorPop->
                 new PopRankItem(authorPop.getAuthor().getActual().getId(),
-                        authorPop.getAuthor().getName(), authorPop.getPopularity()))
+                        authorPop.getAuthor().getActual().getName(), authorPop.getPopularity()))
                 .collect(Collectors.toList());
     }
 
@@ -168,7 +168,7 @@ public class RankFetch {
         List<Affiliation.Popularity> affiPops = affiPopDao.findTop20ByOrderByPopularityDesc();
         return affiPops.stream().map(affiPop->
         new PopRankItem(affiPop.getAffiliation().getActual().getId(),
-                affiPop.getAffiliation().getName(), affiPop.getPopularity()))
+                affiPop.getAffiliation().getActual().getName(), affiPop.getPopularity()))
                 .collect(Collectors.toList());
     }
 
