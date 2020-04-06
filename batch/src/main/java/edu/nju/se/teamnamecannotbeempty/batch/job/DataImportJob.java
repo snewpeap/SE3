@@ -50,7 +50,6 @@ public class DataImportJob implements IDataImportJob {
         String name = "/datasource/ase13_15_16_17_19.csv";
         InputStream ase_csv = getClass().getResourceAsStream(name);
         InputStream ase_json = getClass().getResourceAsStream("/datasource/ase_res.json");
-        logger.info(" ");
         total += readFile(name, ase_csv, ase_json);
 
         name = "/datasource/icse15_16_17_18_19.csv";

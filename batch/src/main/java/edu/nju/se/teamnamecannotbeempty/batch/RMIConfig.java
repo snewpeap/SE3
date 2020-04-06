@@ -15,36 +15,33 @@ import org.springframework.stereotype.Component;
 public class RMIConfig {
     @Bean
     public RmiServiceExporter dateImportRMIServiceExporter(DataImportJob dataImportJob,
-                                                           RmiRegistryFactoryBean rmiRegistryFactoryBean,
-                                                           RMI rmi) throws Exception {
+                                                           RmiRegistryFactoryBean rmiRegistryFactoryBean) throws Exception {
         RmiServiceExporter exporter = new RmiServiceExporter();
         exporter.setServiceInterface(IDataImportJob.class);
         exporter.setServiceName("dataImportJob");
         exporter.setService(dataImportJob);
         exporter.setRegistry(rmiRegistryFactoryBean.getObject());
         exporter.setServicePort(9912);
-        exporter.setRegistryHost(rmi.getHost());
         return exporter;
     }
 
     @Bean
     public RmiServiceExporter refreshRMIServiceExporter(RefreshJob refreshJob,
-                                                        RmiRegistryFactoryBean rmiRegistryFactoryBean,
-                                                        RMI rmi) throws Exception {
+                                                        RmiRegistryFactoryBean rmiRegistryFactoryBean) throws Exception {
         RmiServiceExporter exporter = new RmiServiceExporter();
         exporter.setServiceInterface(IRefreshJob.class);
         exporter.setServiceName("refreshJob");
         exporter.setService(refreshJob);
         exporter.setRegistry(rmiRegistryFactoryBean.getObject());
         exporter.setServicePort(9912);
-        exporter.setRegistryHost(rmi.getHost());
         return exporter;
     }
 
     @Bean
-    public RmiRegistryFactoryBean rmiRegistryFactoryBean() {
+    public RmiRegistryFactoryBean rmiRegistryFactoryBean(RMI rmi) {
         RmiRegistryFactoryBean bean = new RmiRegistryFactoryBean();
         bean.setPort(9911);
+        bean.setHost(rmi.getHost());
         return bean;
     }
 
