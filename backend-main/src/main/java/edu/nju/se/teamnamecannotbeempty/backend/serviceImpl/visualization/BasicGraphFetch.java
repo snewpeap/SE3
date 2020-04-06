@@ -54,12 +54,16 @@ public class BasicGraphFetch {
 
     private GraphVO authorBasicGraph(long id) {
         List<Node> nodes = generatePaperNode(paperPopDao.findTopPapersByAuthorId(id));
-        nodes.addAll(generateAffiliationNode(affiliationDao.getAffiliationsByAuthor(id)));
+        //去NA
+        List<Affiliation> affiliationList = affiliationDao.getAffiliationsByAuthor(id).stream()
+                .filter(affiliation -> !affiliation.getActual().getName().equals("NA")).collect(Collectors.toList());
+
+        nodes.addAll(generateAffiliationNode(affiliationList));
         List<Link> links = generateLinksWithoutWeight(id, entityMsg.getAuthorType(), nodes);
         List<Term.Popularity> termPopularities = termPopDao.getTermPopByAuthorID(id);
         nodes.addAll(generateTermNode(termPopularities));
         links.addAll(generateLinksWithWeightInAuthor(id, termPopularities));
-        String centerName = authorDao.findById(id).orElseGet(Author::new).getName();
+        String centerName = authorDao.findById(id).orElseGet(Author::new).getActual().getName();
         Node centerNode = new Node(id,centerName,entityMsg.getAuthorType());
         nodes.add(centerNode);
         return new GraphVO(id, entityMsg.getAuthorType(),centerName , nodes, links);
@@ -80,7 +84,7 @@ public class BasicGraphFetch {
                         entityMsg.getTermType(), paperPopDao.getWeightByAuthorOnKeyword(author.getActual().getId(), termPop.getTerm().getId()))))
                 .collect(Collectors.toList());
         links.addAll(links1);
-        String centerName = affiliationDao.findById(id).orElseGet(Affiliation::new).getName();
+        String centerName = affiliationDao.findById(id).orElseGet(Affiliation::new).getActual().getName();
         Node centerNode = new Node(id,centerName,entityMsg.getAffiliationType());
         nodes.add(centerNode);
         return new GraphVO(id, entityMsg.getAffiliationType(), centerName, nodes, links);
@@ -149,7 +153,7 @@ public class BasicGraphFetch {
 
     private List<Node> generateAuthorNode(List<Author> authors) {
         return authors.stream().map(
-                author -> new Node(author.getActual().getId(), author.getName(), entityMsg.getAuthorType()))
+                author -> new Node(author.getActual().getId(), author.getActual().getName(), entityMsg.getAuthorType()))
                 .collect(Collectors.toList());
     }
 
@@ -167,7 +171,7 @@ public class BasicGraphFetch {
 
     private List<Node> generateAffiliationNode(List<Affiliation> affiliations) {
         return affiliations.stream().map(
-                affiliation -> new Node(affiliation.getActual().getId(), affiliation.getName(), entityMsg.getAffiliationType()))
+                affiliation -> new Node(affiliation.getActual().getId(), affiliation.getActual().getName(), entityMsg.getAffiliationType()))
                 .collect(Collectors.toList());
     }
 

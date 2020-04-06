@@ -64,7 +64,7 @@ public class AcademicEntityFetch {
         ).collect(Collectors.toList());
         List<SimplePaperVO> simplePaperVOS = generateTopPapers(paperPopDao.findTopPapersByAuthorId(id));
 
-        return new AcademicEntityVO(entityMsg.getAuthorType(), id, authorDao.findById(id).orElseGet(Author::new).getName(),
+        return new AcademicEntityVO(entityMsg.getAuthorType(), id, authorDao.findById(id).orElseGet(Author::new).getActual().getName(),
                 (int) paperDao.getCitationByAuthorId(id), null, affiEntityItems, conferenceEntityItems, termItems,
                 simplePaperVOS);
     }
@@ -80,7 +80,7 @@ public class AcademicEntityFetch {
         List<SimplePaperVO> simplePaperVOS = generateTopPapers(paperPopDao.findTopPapersByAffiId(id));
 
         return new AcademicEntityVO(entityMsg.getAffiliationType(), id, affiliationDao.findById(id).
-                orElseGet(Affiliation::new).getName(),
+                orElseGet(Affiliation::new).getActual().getName(),
                 (int) paperDao.getCitationByAffiId(id), authorEntityItems, null, conferenceEntityItems, termItems,
                 simplePaperVOS);
     }
@@ -105,14 +105,17 @@ public class AcademicEntityFetch {
 
     private List<AcademicEntityItem> generateAuthorEntityItems(List<Author> authors) {
         List<AcademicEntityItem> academicEntityItems = authors.stream().map(
-                author -> new AcademicEntityItem(entityMsg.getAuthorType(), author.getActual().getId(), author.getName()))
+                author -> new AcademicEntityItem(entityMsg.getAuthorType(), author.getActual().getId(), author.getActual().getName()))
                 .collect(Collectors.toList());
         return academicEntityItems.size() > 15 ? academicEntityItems.subList(0, 15) : academicEntityItems;
     }
 
     private List<AcademicEntityItem> generateAffiEntityItems(List<Affiliation> affiliations) {
-        List<AcademicEntityItem> academicEntityItems = affiliations.stream().map(
-                affiliation -> new AcademicEntityItem(entityMsg.getAffiliationType(), affiliation.getActual().getId(), affiliation.getName()))
+        List<AcademicEntityItem> academicEntityItems = affiliations.stream()
+                .filter(affiliation -> !affiliation.getActual().getName().equals("NA"))
+                .map(
+                affiliation -> new AcademicEntityItem(entityMsg.getAffiliationType(), affiliation.getActual().getId(),
+                        affiliation.getActual().getName()))
                 .collect(Collectors.toList());
         return academicEntityItems.size() > 15 ? academicEntityItems.subList(0, 15) : academicEntityItems;
     }

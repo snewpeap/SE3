@@ -7,10 +7,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(scanBasePackageClasses = {BackendApplication.class, DataConfig.class})
 @EnableCaching
 @EnableAsync
+@EnableScheduling
 @Import({DataConfig.class, HibernateSearchConfig.class})
 public class BackendApplication {
 
