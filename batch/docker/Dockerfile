@@ -8,4 +8,4 @@ EXPOSE 9910
 EXPOSE 9911
 EXPOSE 9912
 
-ENTRYPOINT ["java", "-jar", "/app.jar", "--Dspring.profiles.active=product", "--rmi.host=120.26.47.203"]
+ENTRYPOINT ["java", "-jar", "/app.jar", "--Dspring.profiles.active=product", "--Drmi.host=120.26.47.203"]
