@@ -38,10 +38,9 @@ public class RMIConfig {
     }
 
     @Bean
-    public RmiRegistryFactoryBean rmiRegistryFactoryBean(RMI rmi) {
+    public RmiRegistryFactoryBean rmiRegistryFactoryBean() {
         RmiRegistryFactoryBean bean = new RmiRegistryFactoryBean();
         bean.setPort(9911);
-        bean.setHost(rmi.getHost());
         return bean;
     }
 
