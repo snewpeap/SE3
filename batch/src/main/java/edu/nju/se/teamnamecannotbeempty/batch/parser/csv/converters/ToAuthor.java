@@ -27,4 +27,8 @@ public class ToAuthor extends AbstractCsvConverter {
     public static List<Author> getSaveList() {
         return new ArrayList<>(saveMap.values());
     }
+
+    public static void clearSave() {
+        saveMap.clear();
+    }
 }

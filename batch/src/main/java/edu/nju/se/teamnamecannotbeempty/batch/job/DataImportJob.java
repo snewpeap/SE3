@@ -4,6 +4,7 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import edu.nju.se.teamnamecannotbeempty.api.IDataImportJob;
+import edu.nju.se.teamnamecannotbeempty.batch.job.generators.*;
 import edu.nju.se.teamnamecannotbeempty.batch.parser.csv.FromCSV;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Ref;
@@ -24,20 +25,21 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Future;
 
 @Service
 public class DataImportJob implements IDataImportJob {
     private final FromCSV fromCSV;
     private final Attacher attacher;
-    private final RefreshJob refreshJob;
+    private final BatchGenerator batchGenerator;
 
     private static Logger logger = LoggerFactory.getLogger(DataImportJob.class);
 
     @Autowired
-    public DataImportJob(FromCSV fromCSV, Attacher attacher, RefreshJob refreshJob) {
+    public DataImportJob(FromCSV fromCSV, Attacher attacher, BatchGenerator batchGenerator) {
         this.fromCSV = fromCSV;
         this.attacher = attacher;
-        this.refreshJob = refreshJob;
+        this.batchGenerator = batchGenerator;
     }
 
     @Override
@@ -54,7 +56,7 @@ public class DataImportJob implements IDataImportJob {
         InputStream icse_json = getClass().getResourceAsStream("/datasource/icse_res.json");
         total += readFile(name, icse_csv, icse_json);
 
-        refreshJob.trigger_init(total);
+        batchGenerator.trigger_init(total);
         return total;
     }
 
@@ -143,6 +145,52 @@ public class DataImportJob implements IDataImportJob {
             }
             logger.info("Done attach json");
             return new ArrayList<>(paperHashMap.values());
+        }
+    }
+
+    @Component
+    static class BatchGenerator {
+        private final AuthorPopGenerator authorPopGenerator;
+        private final AffiPopGenerator affiPopGenerator;
+        private final TermPopGenerator termPopGenerator;
+        private final PaperPopGenerator paperPopGenerator;
+        private final AuthorDupGenerator authorDupGenerator;
+        private final AffiDupGenerator affiDupGenerator;
+
+        @Autowired
+        public BatchGenerator(AuthorPopGenerator authorPopGenerator, AffiPopGenerator affiPopGenerator, TermPopGenerator termPopGenerator,
+                          AuthorDupGenerator authorDupGenerator, AffiDupGenerator affiDupGenerator, PaperPopGenerator paperPopGenerator) {
+            this.authorPopGenerator = authorPopGenerator;
+            this.affiPopGenerator = affiPopGenerator;
+            this.termPopGenerator = termPopGenerator;
+            this.authorDupGenerator = authorDupGenerator;
+            this.affiDupGenerator = affiDupGenerator;
+            this.paperPopGenerator = paperPopGenerator;
+        }
+
+        @Async
+        void trigger_init(long total) {
+            long startTime = System.currentTimeMillis();
+            final long DEADLINE = 1000 * 60 * 3;
+            while (paperPopGenerator.count() != total) {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    logger.warn(e.getMessage());
+                }
+                if (System.currentTimeMillis() - startTime > DEADLINE) {
+                    logger.error("Data Import time exceed " + DEADLINE + " millis, and current count is " + paperPopGenerator.count() + ". Abort it");
+                    return;
+                }
+            }
+            logger.info("Done import papers. Start generating paper popularity...");
+            paperPopGenerator.generatePaperPop();
+            logger.info("Done generate paper popularity");
+            Future<?> authorFuture = authorPopGenerator.generateAuthorPop();
+            Future<?> affiFuture = affiPopGenerator.generateAffiPop();
+            termPopGenerator.generateTermPop();
+            affiDupGenerator.generateAffiDup(affiFuture);
+            authorDupGenerator.generateAuthorDup(authorFuture);
         }
     }
 }

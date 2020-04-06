@@ -35,6 +35,10 @@ public class ToAffiliation extends AbstractCsvConverter {
         return new ArrayList<>(saveMap.values());
     }
 
+    public static void clearSave() {
+        saveMap.clear();
+    }
+
     static {
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(

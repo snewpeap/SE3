@@ -26,4 +26,8 @@ public class ToTerm extends AbstractCsvConverter {
     public static List<Term> getSaveList() {
         return new ArrayList<>(saveMap.values());
     }
+
+    public static void clearSave() {
+        saveMap.clear();
+    }
 }

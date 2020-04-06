@@ -1,7 +1,6 @@
 package edu.nju.se.teamnamecannotbeempty.data.domain;
 
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -23,7 +22,6 @@ public class DuplicateAuthor implements IDuplication<Author> {
     //标识是否已经处理了这条
     @ColumnDefault("false")
     private Boolean clear;
-    @CreatedDate
     @LastModifiedDate
     @Temporal(TemporalType.DATE)
     private Date updatedAt;

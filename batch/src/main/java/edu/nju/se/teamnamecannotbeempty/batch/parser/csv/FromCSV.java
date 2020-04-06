@@ -35,6 +35,8 @@ public class FromCSV {
     }
 
     public List<Paper> convert(InputStream in) {
+        ToAuthor.clearSave();   ToAffiliation.clearSave();  ToTerm.clearSave();
+
         List<PaperDelegation> delegations = new CsvToBeanBuilder<PaperDelegation>(
                 new InputStreamReader(in, StandardCharsets.UTF_8)
         ).withType(PaperDelegation.class).withSkipLines(1).build().parse();

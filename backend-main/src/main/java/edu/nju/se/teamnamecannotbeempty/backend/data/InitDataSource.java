@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateProperties;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.remoting.RemoteLookupFailureException;
 import org.springframework.stereotype.Component;
 
 //TODO 定时任务
@@ -31,10 +32,14 @@ public class InitDataSource implements ApplicationListener<ContextRefreshedEvent
         if (event.getApplicationContext().getParent() == null) {
             if (AppContextProvider.getBean(HibernateProperties.class).getDdlAuto().startsWith("create")) {
                 logger.info("Import data...");
-                long total = dataImportJob.trigger();
-                AppContextProvider.getBean(Searchable.class).setNum(total);
-                logger.info(total + " papers to import. 从数据库获取count(Paper)来确认导入完成");
-                serviceHibernate.flushIndexes();
+                try {
+                    long total = dataImportJob.trigger();
+                    AppContextProvider.getBean(Searchable.class).setNum(total);
+                    logger.info(total + " papers to import. 从数据库获取count(Paper)来确认导入完成");
+                    serviceHibernate.flushIndexes();
+                } catch (RemoteLookupFailureException e) {
+                    logger.error("Connect to remote batch service fail. Import aborted.");
+                }
             } else {
                 AppContextProvider.getBean(Searchable.class).pass();
             }

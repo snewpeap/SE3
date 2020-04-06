@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.util.Streamable;
 
+import java.util.Date;
 import java.util.List;
 
 public interface DuplicateAffiliationDao extends JpaRepository<DuplicateAffiliation, Long> {
@@ -14,4 +15,6 @@ public interface DuplicateAffiliationDao extends JpaRepository<DuplicateAffiliat
     Streamable<DuplicateAffiliation> findBySon_Id(Long sonId);
 
     boolean existsByFather_IdAndSon_Id(Long fatherId, Long sonId);
+
+    Streamable<DuplicateAffiliation> findByUpdatedAtAfter(Date date);
 }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.util.Streamable;
 
+import java.util.Date;
 import java.util.List;
 
 public interface DuplicateAuthorDao extends JpaRepository<DuplicateAuthor, Long> {
@@ -14,4 +15,6 @@ public interface DuplicateAuthorDao extends JpaRepository<DuplicateAuthor, Long>
     Streamable<DuplicateAuthor> findBySon_Id(Long id);
 
     boolean existsByFather_IdAndSon_Id(Long fatherId, Long sonId);
+
+    Streamable<DuplicateAuthor> findByUpdatedAtAfter(Date date);
 }
