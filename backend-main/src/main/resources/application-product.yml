@@ -8,8 +8,6 @@ spring:
           default:
             directory_provider: "filesystem"
             indexBase: "/var/lucene/indexes"
-  profiles:
-    active: daoproduct
 
 server:
   port: 9090

@@ -6,4 +6,4 @@ echo "********************************************************"
 while ! `nc -z $BATCH_HOST $ALIVE_PORT `; do sleep 3; done
 echo ">>>>>>>>>>>> Batch Server has started"
 
-java -Dspring.profiles.active=product -Drmi.host=$BATCH_HOST -jar /app.jar
+java -Dspring.profiles.active=product,daoproduct -Drmi.host=$BATCH_HOST -jar /app.jar

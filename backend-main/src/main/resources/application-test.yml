@@ -7,5 +7,3 @@ spring:
         search:
           default:
             directory_provider: "local-heap"
-  profiles:
-    active: daotest
