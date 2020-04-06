@@ -1,6 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.rank;
 
 import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.EntityMsg;
+import edu.nju.se.teamnamecannotbeempty.backend.vo.PopRankItem;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.RankItem;
 import edu.nju.se.teamnamecannotbeempty.data.domain.*;
 import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
@@ -91,7 +92,7 @@ public class RankFetch {
     }
 
     @Cacheable(value = "getPopRank", key = "#p0", unless = "#result=null")
-    public List<RankItem> getPopRank(int type) {
+    public List<PopRankItem> getPopRank(int type) {
         if(type == entityMsg.getAuthorType()) return authorPopRank();
         else if(type == entityMsg.getAffiliationType()) return affiliationPopRank();
         else if(type == entityMsg.getTermType()) return termPopRank();
@@ -155,24 +156,26 @@ public class RankFetch {
                 .map(e -> new RankItem(e.getKey(), e.getValue().intValue())).collect(Collectors.toList());
     }
 
-    private List<RankItem> authorPopRank(){
+    private List<PopRankItem> authorPopRank(){
         List<Author.Popularity> authorPops = authorPopDao.findTop20ByOrderByPopularityDesc();
         return authorPops.stream().map(authorPop->
-                new RankItem(authorPop.getAuthor().getName(), authorPop.getPopularity()))
+                new PopRankItem(authorPop.getAuthor().getActual().getId(),
+                        authorPop.getAuthor().getName(), authorPop.getPopularity()))
                 .collect(Collectors.toList());
     }
 
-    private List<RankItem> affiliationPopRank(){
+    private List<PopRankItem> affiliationPopRank(){
         List<Affiliation.Popularity> affiPops = affiPopDao.findTop20ByOrderByPopularityDesc();
         return affiPops.stream().map(affiPop->
-        new RankItem(affiPop.getAffiliation().getName(), affiPop.getPopularity()))
+        new PopRankItem(affiPop.getAffiliation().getActual().getId(),
+                affiPop.getAffiliation().getName(), affiPop.getPopularity()))
                 .collect(Collectors.toList());
     }
 
-    private List<RankItem> termPopRank(){
+    private List<PopRankItem> termPopRank(){
         List<Term.Popularity> termPops = termPopDao.findTop20ByOrderByPopularityDesc();
         return termPops.stream().map(termPop->
-        new RankItem(termPop.getTerm().getContent(), termPop.getPopularity()))
+        new PopRankItem(termPop.getTerm().getId(),termPop.getTerm().getContent(), termPop.getPopularity()))
                 .collect(Collectors.toList());
     }
 }

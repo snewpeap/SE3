@@ -37,7 +37,7 @@ public class AdminController {
     }
 
     @PostMapping("/admin/cancelAlias")
-    public ResponseVO cancelAlias(@RequestParam long recordId, @RequestParam int type) {
-        return adminService.undoOperate(recordId, type);
+    public ResponseVO cancelAlias(@RequestParam long sonId, @RequestParam int type) {
+        return adminService.undoOperate(sonId, type);
     }
 }

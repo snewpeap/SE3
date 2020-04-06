@@ -2,6 +2,7 @@ package edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.rank;
 
 import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.RankMsg;
 import edu.nju.se.teamnamecannotbeempty.backend.service.rank.RankService;
+import edu.nju.se.teamnamecannotbeempty.backend.vo.PopRankItem;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.RankItem;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.RankVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
@@ -57,7 +58,7 @@ public class RankServiceImpl implements RankService {
     }
 
     @Override
-    public List<RankItem> getPopRank(int type) {
+    public List<PopRankItem> getPopRank(int type) {
         return rankFetch.getPopRank(type);
     }
 

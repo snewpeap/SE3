@@ -1,7 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.backend.service.rank;
 
 
-import edu.nju.se.teamnamecannotbeempty.backend.vo.RankItem;
+import edu.nju.se.teamnamecannotbeempty.backend.vo.PopRankItem;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
 
 import java.util.List;
@@ -31,5 +31,5 @@ public interface RankService {
      * @param type 热度排行的实体类型
      * @return 热度排行（前20）
      */
-    List<RankItem> getPopRank(int type);
+    List<PopRankItem> getPopRank(int type);
 }
