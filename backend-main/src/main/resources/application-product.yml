@@ -1,7 +1,7 @@
 spring:
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         search:
@@ -9,7 +9,7 @@ spring:
             directory_provider: "filesystem"
             indexBase: "/var/lucene/indexes"
   profiles:
-    include: daoproduct
+    active: daoproduct
 
 server:
   port: 9090

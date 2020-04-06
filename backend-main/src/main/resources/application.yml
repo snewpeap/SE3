@@ -9,7 +9,7 @@ spring:
           default:
             directory_provider: "local-heap"
   profiles:
-    include: dao
+    active: dao
 
 server:
   servlet:

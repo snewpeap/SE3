@@ -5,4 +5,4 @@ spring:
   datasource:
     url: jdbc:mysql://120.77.42.11:3306/se3?serverTimezone=CTT&characterEncoding=UTF-8
   profiles:
-    include: daoproduct
+    active: daoproduct
