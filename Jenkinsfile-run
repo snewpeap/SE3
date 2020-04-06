@@ -37,7 +37,7 @@ cd /root/docker && docker build -t batch:latest . && docker run -d -p 9910:9910 
                                                 makeEmptyDirs: false,
                                                 noDefaultExcludes: false,
                                                 patternSeparator: '[, ]+',
-                                                remoteDirectory: '/root/',
+                                                remoteDirectory: '',
                                                 remoteDirectorySDF: false,
                                                 removePrefix: 'batch',
                                                 sourceFiles: 'batch/docker/Dockerfile,batch/docker/se3.jar'
