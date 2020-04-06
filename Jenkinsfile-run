@@ -31,7 +31,7 @@ node {
                                                 cleanRemote: false,
                                                 excludes: '',
                                                 execCommand: '''docker rm -f se3
-cd /root/docker && docker build -t batch:latest . && docker run -d -p 9910:9910 -p 9911:9911 -p 9912:9912 -v /etc/localtime:/etc/localtime --name se3 batch:latest''',
+cd /root/docker && docker build -t batch:latest . && docker run -d -p 9910:9910 -p 9911:9911 -p 9912:9912 -v /etc/localtime:/etc/localtime --net="host" --name se3 batch:latest''',
                                                 execTimeout: 120000,
                                                 flatten: false,
                                                 makeEmptyDirs: false,
