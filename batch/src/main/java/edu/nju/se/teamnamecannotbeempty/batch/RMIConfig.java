@@ -17,7 +17,7 @@ public class RMIConfig {
     public RmiServiceExporter dateImportRMIServiceExporter(DataImportJob dataImportJob,
                                                            RmiRegistryFactoryBean rmiRegistryFactoryBean,
                                                            RMI rmi) throws Exception {
-        System.setProperty("java.rmi.server.hostname", rmi.getHost());
+//        System.setProperty("java.rmi.server.hostname", rmi.getHost());
         RmiServiceExporter exporter = new RmiServiceExporter();
         exporter.setServiceInterface(IDataImportJob.class);
         exporter.setServiceName("dataImportJob");
@@ -31,7 +31,7 @@ public class RMIConfig {
     public RmiServiceExporter refreshRMIServiceExporter(RefreshJob refreshJob,
                                                         RmiRegistryFactoryBean rmiRegistryFactoryBean,
                                                         RMI rmi) throws Exception {
-        System.setProperty("java.rmi.server.hostname", rmi.getHost());
+//        System.setProperty("java.rmi.server.hostname", rmi.getHost());
         RmiServiceExporter exporter = new RmiServiceExporter();
         exporter.setServiceInterface(IRefreshJob.class);
         exporter.setServiceName("refreshJob");
