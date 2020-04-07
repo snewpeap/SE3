@@ -1,16 +1,4 @@
 node {
-    stage("stop") {
-        try {
-            sh 'docker rm -f batch'
-        } catch (ignored) {
-            echo('Container\'s not running')
-        }
-        try {
-            sh 'docker rm -f se3'
-        } catch (ignored) {
-            echo('Container\'s not running')
-        }
-    }
     stage("checkout") {
         checkout([
                 $class                           : 'GitSCM',
@@ -25,6 +13,18 @@ node {
         ])
     }
 
+    stage("stop") {
+        try {
+            sh 'docker rm -f batch'
+        } catch (ignored) {
+            echo('Container\'s not running')
+        }
+        try {
+            sh 'docker rm -f se3'
+        } catch (ignored) {
+            echo('Container\'s not running')
+        }
+    }
     stage("package") {
         sh 'sh ./mvnw clean package -pl backend-main -am -Dmaven.test.skip=true'
         sh 'sh ./mvnw clean package -pl batch -am -Dmaven.test.skip=true'
