@@ -2,5 +2,3 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-  datasource:
-    url: jdbc:mysql://120.77.42.11:3306/se3?serverTimezone=CTT&characterEncoding=UTF-8
