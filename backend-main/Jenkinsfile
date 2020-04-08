@@ -15,7 +15,7 @@ node {
 
     stage("test") {
         sh 'sh backend-main/mvnw clean'
-        sh 'sh ./mvnw package -pl backend-main -am -Dmaven.test.failure.ignore=true'
+        sh 'sh ./mvnw test -pl backend-main -am -Dmaven.test.failure.ignore=true'
     }
     stage("publish") {
         publishHTML([

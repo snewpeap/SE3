@@ -13,6 +13,10 @@ server:
   servlet:
     context-path: "/api"
 
+rmi:
+  host: "127.0.0.1"
+  port: "9911"
+
 
 ################ 消息配置 ################
 global-msg:
