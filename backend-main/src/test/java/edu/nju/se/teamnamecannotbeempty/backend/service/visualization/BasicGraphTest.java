@@ -63,6 +63,7 @@ public class BasicGraphTest {
         when(authorDao.findById(1L)).thenReturn(optionalAuthor);
         Paper paper = new Paper(); paper.setId(1L); paper.setTitle("paper1");
         Paper.Popularity paperPop = new Paper.Popularity(); paperPop.setPaper(paper);
+        paperPop.setPopularity(1.0);
         Affiliation affiliation1 = new Affiliation(); affiliation1.setId(1L); affiliation1.setName("affiliation1");
         Term term1 = new Term(); term1.setContent("term1"); term1.setId(1L);
         Term.Popularity termPop = new Term.Popularity();
@@ -70,10 +71,11 @@ public class BasicGraphTest {
         when(paperPopDao.findTopPapersByAuthorId(1L)).thenReturn(Collections.singletonList(paperPop));
         when(affiliationDao.getAffiliationsByAuthor(1L)).thenReturn(Collections.singletonList(affiliation1));
         when(termPopDao.getTermPopByAuthorID(1L)).thenReturn(Collections.singletonList(termPop));
+        when(termPopDao.getTermPopByPaperID(1L)).thenReturn(Collections.singletonList(termPop));
         when(paperPopDao.getWeightByAuthorOnKeyword(1L,1L)).thenReturn(1.0);
         GraphVO graphVO = basicGraphFetch.getBasicGraph(1L,1);
         Assert.assertEquals(graphVO.getNodes().size(),4);
-        Assert.assertEquals(graphVO.getLinks().size(),3);
+        Assert.assertEquals(graphVO.getLinks().size(),4);
         Assert.assertEquals(graphVO.getId(),"10000000001");
     }
 
