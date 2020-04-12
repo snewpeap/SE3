@@ -4,7 +4,7 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import edu.nju.se.teamnamecannotbeempty.api.IDataImportJob;
-import edu.nju.se.teamnamecannotbeempty.batch.job.generators.*;
+import edu.nju.se.teamnamecannotbeempty.batch.job.worker.*;
 import edu.nju.se.teamnamecannotbeempty.batch.parser.csv.FromCSV;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Ref;
@@ -62,7 +62,7 @@ public class DataImportJob implements IDataImportJob {
     }
 
     private long readFile(String name, InputStream csv, InputStream json) {
-        logger.info("Start import papers from " + name );
+        logger.info("Start import papers from " + name);
         List<Paper> papers = fromCSV.convert(csv);
         long size = papers.size();
         try {
@@ -77,7 +77,6 @@ public class DataImportJob implements IDataImportJob {
     @Component
     static class Attacher {
         private final PaperDao paperDao;
-        private HashMap<Long, Paper> paperHashMap;
 
         @Autowired
         public Attacher(PaperDao paperDao) {
@@ -89,17 +88,22 @@ public class DataImportJob implements IDataImportJob {
          */
         @Async
         void attachAndSave(List<Paper> papers, InputStream jsonFile, String name) {
-            paperDao.saveAll(attachJsonInfo(papers, jsonFile));
-            logger.info("Done Saving data from " + name);
             try {
-                jsonFile.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+                paperDao.saveAll(attachJsonInfo(papers, jsonFile));
+                logger.info("Done Saving data from " + name);
+            } catch (Exception e) {
+                logger.error("Error Saving papers.");
+            } finally {
+                try {
+                    jsonFile.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
         private List<Paper> attachJsonInfo(List<Paper> papers, InputStream jsonFile) {
-            paperHashMap = new HashMap<>(papers.size());
+            HashMap<Long, Paper> paperHashMap = new HashMap<>(papers.size());
             papers.forEach(paper -> paperHashMap.put(paper.getId(), paper));
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(jsonFile, StandardCharsets.UTF_8));
@@ -118,8 +122,7 @@ public class DataImportJob implements IDataImportJob {
                                             String title = jsonObject.getStr("title");
                                             if (!StringUtils.isBlank(title)) {
                                                 String link = jsonObject.getStr("link");
-                                                Ref ref = new Ref();
-                                                ref.setRefTitle(title);
+                                                Ref ref = new Ref(title);
                                                 if (!StringUtils.isEmpty(link)) {
                                                     Long refereeId = Long.parseLong(
                                                             link.substring(link.lastIndexOf('/') + 1));
@@ -151,47 +154,51 @@ public class DataImportJob implements IDataImportJob {
 
     @Component
     static class BatchGenerator {
-        private final AuthorPopGenerator authorPopGenerator;
-        private final AffiPopGenerator affiPopGenerator;
-        private final TermPopGenerator termPopGenerator;
-        private final PaperPopGenerator paperPopGenerator;
-        private final AuthorDupGenerator authorDupGenerator;
-        private final AffiDupGenerator affiDupGenerator;
+        private final AuthorPopWorker authorPopWorker;
+        private final AffiPopWorker affiPopWorker;
+        private final TermPopWorker termPopWorker;
+        private final PaperPopWorker paperPopWorker;
+        private final AuthorDupWorker authorDupWorker;
+        private final AffiDupWorker affiDupWorker;
+        private final RefWorker refWorker;
 
         @Autowired
-        public BatchGenerator(AuthorPopGenerator authorPopGenerator, AffiPopGenerator affiPopGenerator, TermPopGenerator termPopGenerator,
-                          AuthorDupGenerator authorDupGenerator, AffiDupGenerator affiDupGenerator, PaperPopGenerator paperPopGenerator) {
-            this.authorPopGenerator = authorPopGenerator;
-            this.affiPopGenerator = affiPopGenerator;
-            this.termPopGenerator = termPopGenerator;
-            this.authorDupGenerator = authorDupGenerator;
-            this.affiDupGenerator = affiDupGenerator;
-            this.paperPopGenerator = paperPopGenerator;
+        public BatchGenerator(AuthorPopWorker authorPopWorker, AffiPopWorker affiPopWorker, TermPopWorker termPopWorker,
+                              AuthorDupWorker authorDupWorker, AffiDupWorker affiDupWorker, PaperPopWorker paperPopWorker,
+                              RefWorker refWorker) {
+            this.authorPopWorker = authorPopWorker;
+            this.affiPopWorker = affiPopWorker;
+            this.termPopWorker = termPopWorker;
+            this.authorDupWorker = authorDupWorker;
+            this.affiDupWorker = affiDupWorker;
+            this.paperPopWorker = paperPopWorker;
+            this.refWorker = refWorker;
         }
 
         @Async
         void trigger_init(long total) {
             long startTime = System.currentTimeMillis();
-            final long DEADLINE = 1000 * 60 * 3;
-            while (paperPopGenerator.count() != total) {
+            final long DEADLINE = 1000 * 60 * 5;
+            while (paperPopWorker.count() != total) {
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     logger.warn(e.getMessage());
                 }
                 if (System.currentTimeMillis() - startTime > DEADLINE) {
-                    logger.error("Data Import time exceed " + DEADLINE + " millis, and current count is " + paperPopGenerator.count() + ". Abort it");
+                    logger.error("Data Import time exceed " + DEADLINE / 1000 + " second, and current count is " + paperPopWorker.count() + ". Abort it");
                     return;
                 }
             }
             logger.info("Done import papers. Start generating paper popularity...");
-            paperPopGenerator.generatePaperPop();
+            paperPopWorker.generatePaperPop();
             logger.info("Done generate paper popularity");
-            Future<?> authorFuture = authorPopGenerator.generateAuthorPop();
-            Future<?> affiFuture = affiPopGenerator.generateAffiPop();
-            termPopGenerator.generateTermPop();
-            affiDupGenerator.generateAffiDup(affiFuture);
-            authorDupGenerator.generateAuthorDup(authorFuture);
+//            refWorker.generate();
+            Future<?> authorFuture = authorPopWorker.generateAuthorPop();
+            Future<?> affiFuture = affiPopWorker.generateAffiPop();
+            termPopWorker.generateTermPop();
+            affiDupWorker.generateAffiDup(affiFuture);
+            authorDupWorker.generateAuthorDup(authorFuture);
         }
     }
 }

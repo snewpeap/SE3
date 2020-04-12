@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 @DataJpaTest
 @RunWith(SpringJUnit4ClassRunner.class)
-@ActiveProfiles("test")
+@ActiveProfiles("daotest")
 @ContextConfiguration(classes = DataConfig.class)
 public class DuplicateAuthorDaoTest {
     @Autowired

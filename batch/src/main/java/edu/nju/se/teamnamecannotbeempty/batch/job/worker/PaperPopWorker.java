@@ -1,4 +1,4 @@
-package edu.nju.se.teamnamecannotbeempty.batch.job.generators;
+package edu.nju.se.teamnamecannotbeempty.batch.job.worker;
 
 import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
 import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PaperPopGenerator {
+public class PaperPopWorker {
     private final PaperDao paperDao;
     private final PaperPopDao paperPopDao;
 
     @Autowired
-    public PaperPopGenerator(PaperDao paperDao, PaperPopDao paperPopDao) {
+    public PaperPopWorker(PaperDao paperDao, PaperPopDao paperPopDao) {
         this.paperDao = paperDao;
         this.paperPopDao = paperPopDao;
     }

@@ -133,7 +133,7 @@ public class SearchServiceHibernateImpl implements SearchService {
         @Async
         public void flushIndexes() {
             long startTime = System.currentTimeMillis();
-            final long DEADLINE = 1000 * 60 * 3;
+            final long DEADLINE = 1000 * 60 * 8;
             searchable.startIndexing();
             while (!searchable.importOK()) {
                 try {

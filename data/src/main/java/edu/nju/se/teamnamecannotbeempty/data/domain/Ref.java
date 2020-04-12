@@ -8,7 +8,9 @@ import java.util.StringJoiner;
  * 引用对象，标识了一对引用-被引关系，但被引文章不一定在数据库内
  */
 @Entity
-@Table(name = "refs")
+@Table(name = "refs", indexes = {
+        @Index(name = "ref_lowercase_title", columnList = "lowercaseTitle")
+})
 public class Ref {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +20,8 @@ public class Ref {
     private Paper referer;
     @Column(nullable = false)
     private String refTitle;
+    @Column(nullable = false)
+    private String lowercaseTitle;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "referee_id", foreignKey = @ForeignKey(name = "FK_REFEREE"))
     //被引用者，可能为空
@@ -52,6 +56,11 @@ public class Ref {
     public Ref() {
     }
 
+    public Ref(String refTitle) {
+        this.refTitle = refTitle;
+        this.lowercaseTitle = refTitle.toLowerCase();
+    }
+
     public Long getId() {
         return id;
     }
@@ -74,6 +83,14 @@ public class Ref {
 
     public void setRefTitle(String refTitle) {
         this.refTitle = refTitle;
+    }
+
+    public String getLowercaseTitle() {
+        return lowercaseTitle;
+    }
+
+    public void setLowercaseTitle(String lowercaseTitle) {
+        this.lowercaseTitle = lowercaseTitle;
     }
 
     public Paper getReferee() {

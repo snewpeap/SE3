@@ -1,4 +1,4 @@
-package edu.nju.se.teamnamecannotbeempty.batch.job.generators;
+package edu.nju.se.teamnamecannotbeempty.batch.job.worker;
 
 import edu.nju.se.teamnamecannotbeempty.data.domain.Affiliation;
 import edu.nju.se.teamnamecannotbeempty.data.domain.DuplicateAffiliation;
@@ -19,18 +19,18 @@ import java.util.*;
 import java.util.concurrent.Future;
 
 @Component
-public class AffiDupGenerator {
+public class AffiDupWorker {
     private final DuplicateAffiliationDao duplicateAffiliationDao;
     private final AffiliationDao affiliationDao;
-    private final AffiPopGenerator affiPopGenerator;
+    private final AffiPopWorker affiPopWorker;
     private HashMap<Affiliation, HashSet<String>> tokenSetMap;
     private StandardAnalyzer analyzer;
 
     @Autowired
-    public AffiDupGenerator(DuplicateAffiliationDao duplicateAffiliationDao, AffiliationDao affiliationDao, AffiPopGenerator affiPopGenerator) {
+    public AffiDupWorker(DuplicateAffiliationDao duplicateAffiliationDao, AffiliationDao affiliationDao, AffiPopWorker affiPopWorker) {
         this.duplicateAffiliationDao = duplicateAffiliationDao;
         this.affiliationDao = affiliationDao;
-        this.affiPopGenerator = affiPopGenerator;
+        this.affiPopWorker = affiPopWorker;
     }
 
     @Async
@@ -102,8 +102,8 @@ public class AffiDupGenerator {
 
     @Async
     public void refresh(Date date) {
-        duplicateAffiliationDao.findByUpdatedAtAfter(date).forEach(dup -> affiPopGenerator.generatePop(dup.getSon()));
+        duplicateAffiliationDao.findByUpdatedAtAfter(date).forEach(dup -> affiPopWorker.generatePop(dup.getSon()));
     }
 
-    private static Logger logger = LoggerFactory.getLogger(AffiDupGenerator.class);
+    private static Logger logger = LoggerFactory.getLogger(AffiDupWorker.class);
 }

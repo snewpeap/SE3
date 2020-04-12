@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 
 @DataJpaTest
 @RunWith(SpringJUnit4ClassRunner.class)
-@ActiveProfiles("test")
+@ActiveProfiles("daotest")
 @ContextConfiguration(classes = DataConfig.class)
 public class TermPopDaoTest {
     @Autowired

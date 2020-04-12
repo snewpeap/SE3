@@ -1,4 +1,4 @@
-package edu.nju.se.teamnamecannotbeempty.batch.job.generators;
+package edu.nju.se.teamnamecannotbeempty.batch.job.worker;
 
 import edu.nju.se.teamnamecannotbeempty.data.domain.Term;
 import edu.nju.se.teamnamecannotbeempty.data.repository.TermDao;
@@ -10,13 +10,13 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TermPopGenerator {
+public class TermPopWorker {
     private final TermDao termDao;
     private final TermPopDao termPopDao;
     private final PaperPopDao paperPopDao;
 
     @Autowired
-    public TermPopGenerator(TermDao termDao, TermPopDao termPopDao, PaperPopDao paperPopDao) {
+    public TermPopWorker(TermDao termDao, TermPopDao termPopDao, PaperPopDao paperPopDao) {
         this.termDao = termDao;
         this.termPopDao = termPopDao;
         this.paperPopDao = paperPopDao;

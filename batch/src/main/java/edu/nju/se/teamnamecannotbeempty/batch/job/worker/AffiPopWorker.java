@@ -1,4 +1,4 @@
-package edu.nju.se.teamnamecannotbeempty.batch.job.generators;
+package edu.nju.se.teamnamecannotbeempty.batch.job.worker;
 
 import edu.nju.se.teamnamecannotbeempty.data.domain.Affiliation;
 import edu.nju.se.teamnamecannotbeempty.data.repository.AffiliationDao;
@@ -14,13 +14,13 @@ import java.util.Optional;
 import java.util.concurrent.Future;
 
 @Component
-public class AffiPopGenerator {
+public class AffiPopWorker {
     private final AffiliationDao affiliationDao;
     private final AffiPopDao affiPopDao;
     private final PaperPopDao paperPopDao;
 
     @Autowired
-    public AffiPopGenerator(AffiliationDao affiliationDao, AffiPopDao affiPopDao, PaperPopDao paperPopDao) {
+    public AffiPopWorker(AffiliationDao affiliationDao, AffiPopDao affiPopDao, PaperPopDao paperPopDao) {
         this.affiliationDao = affiliationDao;
         this.affiPopDao = affiPopDao;
         this.paperPopDao = paperPopDao;

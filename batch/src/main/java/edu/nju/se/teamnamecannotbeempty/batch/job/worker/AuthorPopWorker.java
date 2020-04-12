@@ -1,4 +1,4 @@
-package edu.nju.se.teamnamecannotbeempty.batch.job.generators;
+package edu.nju.se.teamnamecannotbeempty.batch.job.worker;
 
 import edu.nju.se.teamnamecannotbeempty.data.domain.Author;
 import edu.nju.se.teamnamecannotbeempty.data.repository.AuthorDao;
@@ -14,13 +14,13 @@ import java.util.Optional;
 import java.util.concurrent.Future;
 
 @Component
-public class AuthorPopGenerator {
+public class AuthorPopWorker {
     private final AuthorDao authorDao;
     private final AuthorPopDao authorPopDao;
     private final PaperPopDao paperPopDao;
 
     @Autowired
-    public AuthorPopGenerator(AuthorDao authorDao, AuthorPopDao authorPopDao, PaperPopDao paperPopDao) {
+    public AuthorPopWorker(AuthorDao authorDao, AuthorPopDao authorPopDao, PaperPopDao paperPopDao) {
         this.authorDao = authorDao;
         this.authorPopDao = authorPopDao;
         this.paperPopDao = paperPopDao;

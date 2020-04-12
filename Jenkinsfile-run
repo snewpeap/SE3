@@ -12,31 +12,65 @@ node {
                 ]
         ])
     }
-
-    stage("stop") {
-        try {
-            sh 'docker rm -f batch'
-        } catch (ignored) {
-            echo('Container\'s not running')
-        }
-        try {
-            sh 'docker rm -f se3'
-        } catch (ignored) {
-            echo('Container\'s not running')
-        }
-    }
+//    stage("stop") {
+//        try {
+//            sh 'docker rm -f batch'
+//        } catch (ignored) {
+//            echo('Container\'s not running')
+//        }
+//        try {
+//            sh 'docker rm -f se3'
+//        } catch (ignored) {
+//            echo('Container\'s not running')
+//        }
+//    }
     stage("package") {
         sh 'sh ./mvnw clean package -pl backend-main -am -Dmaven.test.skip=true'
         sh 'sh ./mvnw clean package -pl batch -am -Dmaven.test.skip=true'
-    }
-    stage("docker-build") {
         sh "cp backend-main/target/se3.jar backend-main/docker/"
-        sh "cd backend-main/docker && docker build -f Dockerfile -t se3app:latest ."
+        sh "cd backend-main/docker && tar -cvzf se3backend.tar.gz se3.jar Dockerfile run.sh"
         sh "cp batch/target/se3.jar batch/docker/"
-        sh "cd batch/docker && docker build -f Dockerfile -t se3batch:latest ."
+        sh "cd batch/docker && tar -cvzf se3batch.tar.gz se3.jar Dockerfile"
     }
-    stage("start") {
-        sh "docker run -d -p 9910:9910 -p 9911:9911 -p 9912:9912 -v /etc/localtime:/etc/localtime --link se3mysql:se3mysql --name batch se3batch:latest"
-        sh " docker run -d -p 9090:9090 -v /etc/localtime:/etc/localtime -v /etc/lucene/indexes:/etc/lucene/indexes -e \"BATCH_HOST=batch\" -e \"ALIVE_PORT=9910\" --link batch:batch --link se3mysql:se3mysql --name se3 se3app:latest"
+//    stage("docker-build") {
+//        sh "cp backend-main/target/se3.jar backend-main/docker/"
+//        sh "cd backend-main/docker && docker build -f Dockerfile -t se3app:latest ."
+//        sh "cp batch/target/se3.jar batch/docker/"
+//        sh "cd batch/docker && docker build -f Dockerfile -t se3batch:latest ."
+//    }
+//    stage("start") {
+//        sh "docker run -d -p 9910:9910 -p 9911:9911 -p 9912:9912 -v /etc/localtime:/etc/localtime --link se3mysql:se3mysql --name batch se3batch:latest"
+//        sh " docker run -d -p 9090:9090 -v /etc/localtime:/etc/localtime -v /etc/lucene/indexes:/etc/lucene/indexes -e \"BATCH_HOST=batch\" -e \"ALIVE_PORT=9910\" --link batch:batch --link se3mysql:se3mysql --name se3 se3app:latest"
+//    }
+    stage("remote-deploy") {
+        sshPublisher(
+                publishers: [
+                        sshPublisherDesc(
+                                configName: 'snewpeap',
+                                transfers: [
+                                        sshTransfer(
+                                                cleanRemote: false,
+                                                excludes: '',
+                                                execCommand: '''docker rm -f batch
+docker rm -f se3
+rm -rf /root/se3backend && mkdir /root/se3backend && cd /root/se3backend && tar -xzf ../se3backend.tar.gz && docker build -f Dockerfile -t se3app:latest .
+rm -rf /root/se3batch && mkdir /root/se3batch && cd /root/se3batch && tar -xzf ../se3batch.tar.gz && docker build -f Dockerfile -t se3batch:latest .''',
+                                                execTimeout: 120000,
+                                                flatten: false,
+                                                makeEmptyDirs: false,
+                                                noDefaultExcludes: false,
+                                                patternSeparator: '[, ]+',
+                                                remoteDirectory: '',
+                                                remoteDirectorySDF: false,
+                                                removePrefix: '',
+                                                sourceFiles: 'se3backend.tar.gz,se3batch.tar.gz'
+                                        )
+                                ],
+                                usePromotionTimestamp: false,
+                                useWorkspaceInPromotion: false,
+                                verbose: false
+                        )
+                ]
+        )
     }
 }

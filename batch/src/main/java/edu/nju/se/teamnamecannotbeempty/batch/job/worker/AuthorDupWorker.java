@@ -1,4 +1,4 @@
-package edu.nju.se.teamnamecannotbeempty.batch.job.generators;
+package edu.nju.se.teamnamecannotbeempty.batch.job.worker;
 
 import edu.nju.se.teamnamecannotbeempty.data.domain.Author;
 import edu.nju.se.teamnamecannotbeempty.data.domain.DuplicateAuthor;
@@ -16,16 +16,16 @@ import java.util.List;
 import java.util.concurrent.Future;
 
 @Component
-public class AuthorDupGenerator {
+public class AuthorDupWorker {
     private final DuplicateAuthorDao duplicateAuthorDao;
     private final AuthorDao authorDao;
-    private final AuthorPopGenerator authorPopGenerator;
+    private final AuthorPopWorker authorPopWorker;
 
     @Autowired
-    public AuthorDupGenerator(DuplicateAuthorDao duplicateAuthorDao, AuthorDao authorDao, AuthorPopGenerator authorPopGenerator) {
+    public AuthorDupWorker(DuplicateAuthorDao duplicateAuthorDao, AuthorDao authorDao, AuthorPopWorker authorPopWorker) {
         this.duplicateAuthorDao = duplicateAuthorDao;
         this.authorDao = authorDao;
-        this.authorPopGenerator = authorPopGenerator;
+        this.authorPopWorker = authorPopWorker;
     }
 
     @Async
@@ -81,8 +81,8 @@ public class AuthorDupGenerator {
 
     @Async
     public void refresh(Date date) {
-        duplicateAuthorDao.findByUpdatedAtAfter(date).forEach(dup -> authorPopGenerator.generatePop(dup.getSon()));
+        duplicateAuthorDao.findByUpdatedAtAfter(date).forEach(dup -> authorPopWorker.generatePop(dup.getSon()));
     }
 
-    private static Logger logger = LoggerFactory.getLogger(AuthorDupGenerator.class);
+    private static Logger logger = LoggerFactory.getLogger(AuthorDupWorker.class);
 }
