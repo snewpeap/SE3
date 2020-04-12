@@ -28,9 +28,9 @@ node {
         sh 'sh ./mvnw clean package -pl backend-main -am -Dmaven.test.skip=true'
         sh 'sh ./mvnw clean package -pl batch -am -Dmaven.test.skip=true'
         sh "cp backend-main/target/se3.jar backend-main/docker/"
-        sh "cd backend-main/docker && tar -cvzf se3backend.tar.gz se3.jar Dockerfile run.sh"
+        sh "cd backend-main/docker && tar -cvzf se3backend.tar.gz se3.jar Dockerfile run.sh && mv se3backend.tar.gz ../../"
         sh "cp batch/target/se3.jar batch/docker/"
-        sh "cd batch/docker && tar -cvzf se3batch.tar.gz se3.jar Dockerfile"
+        sh "cd batch/docker && tar -cvzf se3batch.tar.gz se3.jar Dockerfile && mv se3batch.tar.gz ../../"
     }
 //    stage("docker-build") {
 //        sh "cp backend-main/target/se3.jar backend-main/docker/"
