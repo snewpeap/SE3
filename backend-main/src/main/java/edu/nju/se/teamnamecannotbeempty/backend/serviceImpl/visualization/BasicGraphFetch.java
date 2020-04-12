@@ -53,7 +53,8 @@ public class BasicGraphFetch {
     }
 
     private GraphVO authorBasicGraph(long id) {
-        List<Node> nodes = generatePaperNode(paperPopDao.findTopPapersByAuthorId(id));
+        List<Paper.Popularity> paperPopList = paperPopDao.findTopPapersByAuthorId(id);
+        List<Node> nodes = generatePaperNode(paperPopList);
         //去NA
         List<Affiliation> affiliationList = affiliationDao.getAffiliationsByAuthor(id).stream()
                 .filter(affiliation -> !affiliation.getActual().getName().equals("NA")).collect(Collectors.toList());
@@ -63,6 +64,11 @@ public class BasicGraphFetch {
         List<Term.Popularity> termPopularities = termPopDao.getTermPopByAuthorID(id);
         nodes.addAll(generateTermNode(termPopularities));
         links.addAll(generateLinksWithWeightInAuthor(id, termPopularities));
+        List<Link> links1 = paperPopList.stream().flatMap(paperPop->
+                termPopDao.getTermPopByPaperID(paperPop.getPaper().getId()).stream()
+        .map(termPop->new Link(paperPop.getPaper().getId(), entityMsg.getPaperType(), termPop.getTerm().getId(),
+                entityMsg.getTermType(),paperPop.getPopularity()))).collect(Collectors.toList());
+        links.addAll(links1);
         String centerName = authorDao.findById(id).orElseGet(Author::new).getActual().getName();
         Node centerNode = new Node(id,centerName,entityMsg.getAuthorType());
         nodes.add(centerNode);
