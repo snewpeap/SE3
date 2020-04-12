@@ -6,6 +6,8 @@ import edu.nju.se.teamnamecannotbeempty.backend.vo.AliasItem;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.AliasVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Aliasable;
+import edu.nju.se.teamnamecannotbeempty.data.domain.DuplicateAffiliation;
+import edu.nju.se.teamnamecannotbeempty.data.domain.DuplicateAuthor;
 import edu.nju.se.teamnamecannotbeempty.data.domain.IDuplication;
 import edu.nju.se.teamnamecannotbeempty.data.repository.AffiliationDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.AuthorDao;
@@ -13,7 +15,6 @@ import edu.nju.se.teamnamecannotbeempty.data.repository.duplication.DuplicateAff
 import edu.nju.se.teamnamecannotbeempty.data.repository.duplication.DuplicateAuthorDao;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -51,9 +52,13 @@ public final class AdminServiceImpl implements AdminService {
     private List<AliasVO> getData(int page, int type, boolean clear) {
         List<AliasVO> vos = Collections.emptyList();
         if (type == entityMsg.getAuthorType()) {
-            vos = getAliasVOs(duplicateAuthorDao.findByClear(clear, PageRequest.of(page, SIZE)), type);
+            List<DuplicateAuthor> dups = new ArrayList<>();
+            duplicateAuthorDao.findIdsPage(SIZE * page, SIZE, clear).forEach(l -> dups.addAll(duplicateAuthorDao.findBySon_IdAndClear(l, clear)));
+            vos = getAliasVOs(dups, type);
         } else if (type == entityMsg.getAffiliationType()) {
-            vos = getAliasVOs(duplicateAffiliationDao.findByClear(clear, PageRequest.of(page, SIZE)), type);
+            List<DuplicateAffiliation> dups = new ArrayList<>();
+            duplicateAffiliationDao.findIdsPage(SIZE * page, SIZE, clear).forEach(l -> dups.addAll(duplicateAffiliationDao.findBySon_IdAndClear(l, clear)));
+            vos = getAliasVOs(dups, type);
         }
         return vos;
     }
