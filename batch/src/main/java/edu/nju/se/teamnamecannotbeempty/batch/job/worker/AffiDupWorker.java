@@ -4,6 +4,7 @@ import edu.nju.se.teamnamecannotbeempty.data.domain.Affiliation;
 import edu.nju.se.teamnamecannotbeempty.data.domain.DuplicateAffiliation;
 import edu.nju.se.teamnamecannotbeempty.data.repository.AffiliationDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.duplication.DuplicateAffiliationDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.AffiPopDao;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -21,16 +22,18 @@ import java.util.concurrent.Future;
 @Component
 public class AffiDupWorker {
     private final DuplicateAffiliationDao duplicateAffiliationDao;
+    private final AffiPopDao affiPopDao;
     private final AffiliationDao affiliationDao;
     private final AffiPopWorker affiPopWorker;
     private HashMap<Affiliation, HashSet<String>> tokenSetMap;
     private StandardAnalyzer analyzer;
 
     @Autowired
-    public AffiDupWorker(DuplicateAffiliationDao duplicateAffiliationDao, AffiliationDao affiliationDao, AffiPopWorker affiPopWorker) {
+    public AffiDupWorker(DuplicateAffiliationDao duplicateAffiliationDao, AffiliationDao affiliationDao, AffiPopWorker affiPopWorker, AffiPopDao affiPopDao) {
         this.duplicateAffiliationDao = duplicateAffiliationDao;
         this.affiliationDao = affiliationDao;
         this.affiPopWorker = affiPopWorker;
+        this.affiPopDao = affiPopDao;
     }
 
     @Async
@@ -102,7 +105,18 @@ public class AffiDupWorker {
 
     @Async
     public void refresh(Date date) {
-        duplicateAffiliationDao.findByUpdatedAtAfter(date).forEach(dup -> affiPopWorker.generatePop(dup.getSon()));
+        duplicateAffiliationDao.findByUpdatedAtAfter(date).forEach(dup -> {
+            affiPopWorker.generatePop(dup.getSon());
+            if (dup.getClear() && !dup.getSon().getId().equals(dup.getSon().getActual().getId())) {
+                Optional<Affiliation.Popularity> result = affiPopDao.findByAffiliation_Id(dup.getSon().getId());
+                result.ifPresent(pop -> {
+                    pop.setPopularity(0.0);
+                    affiPopDao.save(pop);
+                });
+            } else if (!dup.getClear()) {
+                affiPopWorker.generatePop(dup.getFather());
+            }
+        });
     }
 
     private static Logger logger = LoggerFactory.getLogger(AffiDupWorker.class);
