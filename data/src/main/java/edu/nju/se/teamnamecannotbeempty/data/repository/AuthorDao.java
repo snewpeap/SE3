@@ -33,7 +33,7 @@ public interface AuthorDao extends JpaRepository<Author, Long> {
     Optional<Author> findById(Long id);
 
     /**
-     * 用机构id查询曾经在机构发表过论文的作者
+     * 用机构id查询曾经在机构发表过论文的作者，根据活跃度倒序排序
      *
      * @param id 机构的id
      * @return 在id对应的机构发表过论文的作者
@@ -41,20 +41,22 @@ public interface AuthorDao extends JpaRepository<Author, Long> {
      * @后置条件 无
      */
     @Query(nativeQuery = true,
-            value = "select distinct id, lower_case_name, au_name, alias_id from authors " +
-                    "inner join paper_aa on authors.id = paper_aa.author_id " +
-                    "where paper_aa.affiliation_id = ?1")
+            value = "select distinct authors.id, lower_case_name, au_name, alias_id from authors " +
+                    "inner join paper_aa on authors.id = paper_aa.author_id inner join author_popularity ap on authors.id = ap.author_id " +
+                    "where paper_aa.affiliation_id = ?1 order by ap.popularity desc, au_name")
     List<Author> getAuthorsByAffiliation(Long id);
 
     /**
-     * 查询参加过某会议的作者
+     * 查询参加过某会议的作者，根据活跃度倒序排序
      *
      * @param id 会议的id
      * @return 参加过该会议的作者（指发表过文章）
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select distinct aa.author from Paper p inner join p.aa aa where p.conference.id = ?1")
+    @Query("select distinct aa.author from Paper p " +
+            "inner join p.aa aa inner join author_popularity ap on aa.author.id = ap.author.id " +
+            "where p.conference.id = ?1 order by ap.popularity desc")
     List<Author> getAuthorsByConference(Long id);
 
     /**

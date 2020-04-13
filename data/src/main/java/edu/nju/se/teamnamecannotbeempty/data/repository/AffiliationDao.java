@@ -33,7 +33,7 @@ public interface AffiliationDao extends JpaRepository<Affiliation, Long> {
     Optional<Affiliation> findById(Long id);
 
     /**
-     * 用作者id查询作者在过的机构（指在机构下发表过论文）
+     * 用作者id查询作者在过的机构（指在机构下发表过论文），根据活跃度倒序排序
      *
      * @param id 作者的id
      * @return 作者在过的机构
@@ -41,20 +41,23 @@ public interface AffiliationDao extends JpaRepository<Affiliation, Long> {
      * @后置条件 无
      */
     @Query(nativeQuery = true,
-            value = "select distinct id, country, formatted_name, af_name, alias_id from affiliations " +
+            value = "select distinct affiliations.id, country, formatted_name, af_name, alias_id from affiliations " +
                     "inner join paper_aa on affiliations.id = paper_aa.affiliation_id " +
-                    "where paper_aa.author_id = ?1")
+                    "inner join affi_popularity ap on affiliations.id = ap.affiliation_id " +
+                    "where paper_aa.author_id = ?1 order by ap.popularity desc, af_name")
     List<Affiliation> getAffiliationsByAuthor(Long id);
 
     /**
-     * 查询参加过某会议的机构（有作者在该会议以该机构的名义发表过论文）
+     * 查询参加过某会议的机构（有作者在该会议以该机构的名义发表过论文），根据活跃度倒序排序
      *
      * @param id 会议id
      * @return 参加过会议的机构
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select distinct aa.affiliation from Paper p inner join p.aa aa where p.conference.id = ?1")
+    @Query("select distinct aa.affiliation from Paper p " +
+            "inner join p.aa aa inner join affi_popularity ap on aa.affiliation.id = ap.affiliation.id " +
+            "where p.conference.id = ?1 order by ap.popularity desc")
     List<Affiliation> getAffiliationsByConference(Long id);
 
     /**
