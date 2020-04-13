@@ -23,7 +23,6 @@ public class DuplicateAuthor implements IDuplication<Author> {
     @ColumnDefault("false")
     private Boolean clear;
     @LastModifiedDate
-    @Temporal(TemporalType.DATE)
     private Date updatedAt;
 
     public DuplicateAuthor() {

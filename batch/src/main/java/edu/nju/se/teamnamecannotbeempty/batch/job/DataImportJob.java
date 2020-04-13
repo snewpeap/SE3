@@ -160,23 +160,20 @@ public class DataImportJob implements IDataImportJob {
         private final PaperPopWorker paperPopWorker;
         private final AuthorDupWorker authorDupWorker;
         private final AffiDupWorker affiDupWorker;
-        private final RefWorker refWorker;
 
         @Autowired
         public BatchGenerator(AuthorPopWorker authorPopWorker, AffiPopWorker affiPopWorker, TermPopWorker termPopWorker,
-                              AuthorDupWorker authorDupWorker, AffiDupWorker affiDupWorker, PaperPopWorker paperPopWorker,
-                              RefWorker refWorker) {
+                              AuthorDupWorker authorDupWorker, AffiDupWorker affiDupWorker, PaperPopWorker paperPopWorker) {
             this.authorPopWorker = authorPopWorker;
             this.affiPopWorker = affiPopWorker;
             this.termPopWorker = termPopWorker;
             this.authorDupWorker = authorDupWorker;
             this.affiDupWorker = affiDupWorker;
             this.paperPopWorker = paperPopWorker;
-            this.refWorker = refWorker;
         }
 
         @Async
-        void trigger_init(long total) {
+        public void trigger_init(long total) {
             long startTime = System.currentTimeMillis();
             final long DEADLINE = 1000 * 60 * 5;
             while (paperPopWorker.count() != total) {
@@ -193,7 +190,6 @@ public class DataImportJob implements IDataImportJob {
             logger.info("Done import papers. Start generating paper popularity...");
             paperPopWorker.generatePaperPop();
             logger.info("Done generate paper popularity");
-//            refWorker.generate();
             Future<?> authorFuture = authorPopWorker.generateAuthorPop();
             Future<?> affiFuture = affiPopWorker.generateAffiPop();
             termPopWorker.generateTermPop();

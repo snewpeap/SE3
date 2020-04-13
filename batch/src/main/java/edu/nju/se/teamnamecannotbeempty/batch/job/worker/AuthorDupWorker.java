@@ -4,6 +4,7 @@ import edu.nju.se.teamnamecannotbeempty.data.domain.Author;
 import edu.nju.se.teamnamecannotbeempty.data.domain.DuplicateAuthor;
 import edu.nju.se.teamnamecannotbeempty.data.repository.AuthorDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.duplication.DuplicateAuthorDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.AuthorPopDao;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,19 +14,22 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Future;
 
 @Component
 public class AuthorDupWorker {
     private final DuplicateAuthorDao duplicateAuthorDao;
+    private final AuthorPopDao authorPopDao;
     private final AuthorDao authorDao;
     private final AuthorPopWorker authorPopWorker;
 
     @Autowired
-    public AuthorDupWorker(DuplicateAuthorDao duplicateAuthorDao, AuthorDao authorDao, AuthorPopWorker authorPopWorker) {
+    public AuthorDupWorker(DuplicateAuthorDao duplicateAuthorDao, AuthorDao authorDao, AuthorPopWorker authorPopWorker, AuthorPopDao authorPopDao) {
         this.duplicateAuthorDao = duplicateAuthorDao;
         this.authorDao = authorDao;
         this.authorPopWorker = authorPopWorker;
+        this.authorPopDao = authorPopDao;
     }
 
     @Async
@@ -63,6 +67,14 @@ public class AuthorDupWorker {
         logger.info("Done generate duplicate authors");
     }
 
+    /**
+     * 判断两个作者名字的中间部分的词组是否相似
+     * 相似的依据是：较短词组中的每个词（有可能是缩写）在较长词组中都有以它开头的词存在
+     *
+     * @param parts 一个词组
+     * @param suspectParts 另一个词组
+     * @return 是否相似
+     */
     private boolean isSimilar(String[] parts, String[] suspectParts) {
         boolean partsIsLess = parts.length < suspectParts.length;
         String[] less = partsIsLess ? parts : suspectParts;
@@ -81,7 +93,18 @@ public class AuthorDupWorker {
 
     @Async
     public void refresh(Date date) {
-        duplicateAuthorDao.findByUpdatedAtAfter(date).forEach(dup -> authorPopWorker.generatePop(dup.getSon()));
+        duplicateAuthorDao.findByUpdatedAtAfter(date).forEach(dup -> {
+            authorPopWorker.generatePop(dup.getSon());
+            if (dup.getClear() && !dup.getSon().getId().equals(dup.getSon().getActual().getId())) {
+                Optional<Author.Popularity> result = authorPopDao.findByAuthor_Id(dup.getSon().getId());
+                result.ifPresent(pop -> {
+                    pop.setPopularity(0.0);
+                    authorPopDao.save(pop);
+                });
+            } else if (!dup.getClear()) {
+                authorPopWorker.generatePop(dup.getFather());
+            }
+        });
     }
 
     private static Logger logger = LoggerFactory.getLogger(AuthorDupWorker.class);

@@ -91,22 +91,6 @@ public class SearchServiceHibernateImpl implements SearchService {
         for (Paper paper : result) {
             mode.highlight(
                     highlighter,
-//                    new Analyzer() {
-//                        @Override
-//                        protected TokenStreamComponents createComponents(String fieldName) {
-//                            return new TokenStreamComponents(new LetterTokenizer() {
-//                                @Override
-//                                protected int normalize(int c) {
-//                                    return Character.toLowerCase(c);
-//                                }
-//
-//                                @Override
-//                                protected boolean isTokenChar(int c) {
-//                                    return !Character.isSpaceChar(c);
-//                                }
-//                            });
-//                        }
-//                    },
                     Search.getFullTextEntityManager(entityManager).getSearchFactory().getAnalyzer("noStopWords"),
                     paper
             );
