@@ -41,9 +41,9 @@ public interface AuthorDao extends JpaRepository<Author, Long> {
      * @后置条件 无
      */
     @Query(nativeQuery = true,
-            value = "select distinct authors.id, lower_case_name, au_name, alias_id from authors " +
+            value = "select distinct authors.id, lower_case_name, au_name, alias_id, popularity from authors " +
                     "inner join paper_aa on authors.id = paper_aa.author_id inner join author_popularity ap on authors.id = ap.author_id " +
-                    "where paper_aa.affiliation_id = ?1 order by ap.popularity desc, au_name")
+                    "where paper_aa.affiliation_id = ?1 order by popularity desc, au_name")
     List<Author> getAuthorsByAffiliation(Long id);
 
     /**
@@ -54,7 +54,7 @@ public interface AuthorDao extends JpaRepository<Author, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select distinct aa.author from Paper p " +
+    @Query("select distinct aa.author, ap.popularity from Paper p " +
             "inner join p.aa aa inner join author_popularity ap on aa.author.id = ap.author.id " +
             "where p.conference.id = ?1 order by ap.popularity desc")
     List<Author> getAuthorsByConference(Long id);

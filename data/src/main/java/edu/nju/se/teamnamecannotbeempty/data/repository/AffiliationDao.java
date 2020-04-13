@@ -41,10 +41,10 @@ public interface AffiliationDao extends JpaRepository<Affiliation, Long> {
      * @后置条件 无
      */
     @Query(nativeQuery = true,
-            value = "select distinct affiliations.id, country, formatted_name, af_name, alias_id from affiliations " +
+            value = "select distinct affiliations.id, country, formatted_name, af_name, alias_id, popularity from affiliations " +
                     "inner join paper_aa on affiliations.id = paper_aa.affiliation_id " +
                     "inner join affi_popularity ap on affiliations.id = ap.affiliation_id " +
-                    "where paper_aa.author_id = ?1 order by ap.popularity desc, af_name")
+                    "where paper_aa.author_id = ?1 order by popularity desc, af_name")
     List<Affiliation> getAffiliationsByAuthor(Long id);
 
     /**
@@ -55,7 +55,7 @@ public interface AffiliationDao extends JpaRepository<Affiliation, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select distinct aa.affiliation from Paper p " +
+    @Query("select distinct aa.affiliation, ap.popularity from Paper p " +
             "inner join p.aa aa inner join affi_popularity ap on aa.affiliation.id = ap.affiliation.id " +
             "where p.conference.id = ?1 order by ap.popularity desc")
     List<Affiliation> getAffiliationsByConference(Long id);
