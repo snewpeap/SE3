@@ -5,6 +5,8 @@ import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.visualization.BasicG
 import edu.nju.se.teamnamecannotbeempty.backend.vo.GraphVO;
 import edu.nju.se.teamnamecannotbeempty.data.domain.*;
 import edu.nju.se.teamnamecannotbeempty.data.repository.*;
+import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.AffiPopDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.AuthorPopDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.PaperPopDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
 import org.junit.Assert;
@@ -44,6 +46,10 @@ public class BasicGraphTest {
     private EntityMsg entityMsg;
     @Mock
     private PaperPopDao paperPopDao;
+    @Mock
+    private AuthorPopDao authorPopDao;
+    @Mock
+    private AffiPopDao affiPopDao;
     @InjectMocks
     private BasicGraphFetch basicGraphFetch;
 

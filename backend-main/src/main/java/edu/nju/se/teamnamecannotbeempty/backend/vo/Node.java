@@ -8,6 +8,7 @@ public class Node {
     private long entityId;
     private String entityName;
     private int entityType;
+    private Double popularity;
 
     public Node(long entityId, String entityName, int entityType) {
         StringBuilder preId = new StringBuilder(String.valueOf(entityId));
@@ -53,6 +54,14 @@ public class Node {
         this.entityType = entityType;
     }
 
+    public Double getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(Double popularity) {
+        this.popularity = popularity;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,12 +70,12 @@ public class Node {
         return entityId == node.entityId &&
                 entityType == node.entityType &&
                 Objects.equals(id, node.id) &&
-                Objects.equals(entityName, node.entityName);
+                Objects.equals(entityName, node.entityName) &&
+                Objects.equals(popularity, node.popularity);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id, entityId, entityName, entityType);
+        return Objects.hash(id, entityId, entityName, entityType, popularity);
     }
 }

@@ -6,6 +6,8 @@ import edu.nju.se.teamnamecannotbeempty.backend.vo.Link;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.Node;
 import edu.nju.se.teamnamecannotbeempty.data.domain.*;
 import edu.nju.se.teamnamecannotbeempty.data.repository.*;
+import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.AffiPopDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.AuthorPopDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.PaperPopDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,11 +30,14 @@ public class BasicGraphFetch {
     private final TermPopDao termPopDao;
     private final EntityMsg entityMsg;
     private final PaperPopDao paperPopDao;
+    private final AuthorPopDao authorPopDao;
+    private final AffiPopDao affiPopDao;
 
     @Autowired
     public BasicGraphFetch(AffiliationDao affiliationDao, AuthorDao authorDao, ConferenceDao conferenceDao,
                            PaperDao paperDao, TermDao termDao, EntityMsg entityMsg,
-                           TermPopDao termPopDao, PaperPopDao paperPopDao) {
+                           TermPopDao termPopDao, PaperPopDao paperPopDao, AuthorPopDao authorPopDao,
+                           AffiPopDao affiPopDao) {
         this.affiliationDao = affiliationDao;
         this.authorDao = authorDao;
         this.conferenceDao = conferenceDao;
@@ -40,6 +46,8 @@ public class BasicGraphFetch {
         this.entityMsg = entityMsg;
         this.termPopDao = termPopDao;
         this.paperPopDao = paperPopDao;
+        this.authorPopDao = authorPopDao;
+        this.affiPopDao = affiPopDao;
     }
 
     @Cacheable(value = "getBasicGraph", key = "#p0+'_'+#p1", unless = "#result=null")
@@ -72,7 +80,8 @@ public class BasicGraphFetch {
         String centerName = authorDao.findById(id).orElseGet(Author::new).getActual().getName();
         Node centerNode = new Node(id,centerName,entityMsg.getAuthorType());
         nodes.add(centerNode);
-        return new GraphVO(id, entityMsg.getAuthorType(),centerName , nodes, links);
+        nodes.forEach(node -> node.setPopularity(addPopInNode(node)));
+        return new GraphVO(id, entityMsg.getAuthorType(),centerName , nodes, links, addPopInNode(centerNode));
     }
 
 
@@ -93,7 +102,8 @@ public class BasicGraphFetch {
         String centerName = affiliationDao.findById(id).orElseGet(Affiliation::new).getActual().getName();
         Node centerNode = new Node(id,centerName,entityMsg.getAffiliationType());
         nodes.add(centerNode);
-        return new GraphVO(id, entityMsg.getAffiliationType(), centerName, nodes, links);
+        nodes.forEach(node -> node.setPopularity(addPopInNode(node)));
+        return new GraphVO(id, entityMsg.getAffiliationType(), centerName, nodes, links, addPopInNode(centerNode));
     }
 
     private GraphVO conferenceBasicGraph(long id) {
@@ -102,7 +112,8 @@ public class BasicGraphFetch {
         String centerName = conferenceDao.findById(id).orElseGet(Conference::new).buildName();
         Node centerNode = new Node(id,centerName,entityMsg.getConferenceType());
         nodes.add(centerNode);
-        return new GraphVO(id, entityMsg.getConferenceType(), centerName, nodes, links);
+        nodes.forEach(node -> node.setPopularity(addPopInNode(node)));
+        return new GraphVO(id, entityMsg.getConferenceType(), centerName, nodes, links,addPopInNode(centerNode));
     }
 
     //默认论文的研究方向也属于作者的研究方向
@@ -131,8 +142,8 @@ public class BasicGraphFetch {
         String centerName = termDao.findById(id).orElseGet(Term::new).getContent();
         Node centerNode = new Node(id,centerName,entityMsg.getTermType());
         nodes.add(centerNode);
-
-        return new GraphVO(id, entityMsg.getTermType(), centerName, nodes, links);
+        nodes.forEach(node -> node.setPopularity(addPopInNode(node)));
+        return new GraphVO(id, entityMsg.getTermType(), centerName, nodes, links,addPopInNode(centerNode));
     }
 
     private List<Link> generateLinksWithWeightInAuthor(long sourceId, List<Term.Popularity> termPopularityList) {
@@ -185,5 +196,23 @@ public class BasicGraphFetch {
         List<Term.Popularity> termPopList = termPopDao.getTermPopByAffiID(affiId);
         return termPopList.stream().anyMatch(termPop->termPop.getTerm().getId() == termId);
 
+    }
+
+    private Double addPopInNode(Node node){
+        double pop = -1.0;
+        if(node.getEntityType()==entityMsg.getAuthorType()){
+            Optional<Author.Popularity> authorPop = authorPopDao.findByAuthor_Id(node.getEntityId());
+            if(authorPop.isPresent()) pop = authorPop.get().getPopularity();
+        }else if(node.getEntityType() == entityMsg.getAffiliationType()){
+            Optional<Affiliation.Popularity> affiPop = affiPopDao.findByAffiliation_Id(node.getEntityId());
+            if(affiPop.isPresent()) pop = affiPop.get().getPopularity();
+        }else if(node.getEntityType() == entityMsg.getPaperType()){
+            Optional<Paper.Popularity> paperPop = paperPopDao.findById(node.getEntityId());
+            if(paperPop.isPresent()) pop = paperPop.get().getPopularity();
+        }else if(node.getEntityType() == entityMsg.getTermType()){
+            Optional<Term.Popularity> termPop = termPopDao.getDistinctByTerm_Id(node.getEntityId());
+            if(termPop.isPresent()) pop = termPop.get().getPopularity();
+        }
+        return pop;
     }
 }

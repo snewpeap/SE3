@@ -10,8 +10,9 @@ public class GraphVO {
     private String centerName;
     private List<Node> nodes;
     private List<Link> links;
+    private Double popularity;
 
-    public GraphVO(long centerId, int centerType, String centerName, List<Node> nodes, List<Link> links) {
+    public GraphVO(long centerId, int centerType, String centerName, List<Node> nodes, List<Link> links, Double popularity) {
         StringBuilder preId = new StringBuilder(String.valueOf(centerId));
         while (preId.length()<10){
             preId.insert(0,"0");
@@ -23,6 +24,7 @@ public class GraphVO {
         this.centerName = centerName;
         this.nodes = nodes;
         this.links = links;
+        this.popularity = popularity;
     }
 
     public String getId() {
@@ -73,6 +75,14 @@ public class GraphVO {
         this.links = links;
     }
 
+    public Double getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(Double popularity) {
+        this.popularity = popularity;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -83,12 +93,12 @@ public class GraphVO {
                 Objects.equals(id, graphVO.id) &&
                 Objects.equals(centerName, graphVO.centerName) &&
                 Objects.equals(nodes, graphVO.nodes) &&
-                Objects.equals(links, graphVO.links);
+                Objects.equals(links, graphVO.links) &&
+                Objects.equals(popularity, graphVO.popularity);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id, centerId, centerType, centerName, nodes, links);
+        return Objects.hash(id, centerId, centerType, centerName, nodes, links, popularity);
     }
 }

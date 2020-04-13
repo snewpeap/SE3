@@ -8,6 +8,8 @@ import edu.nju.se.teamnamecannotbeempty.data.domain.*;
 import edu.nju.se.teamnamecannotbeempty.data.repository.AffiliationDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.AuthorDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.ConferenceDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.AffiPopDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.AuthorPopDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.PaperPopDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,16 +30,20 @@ public class CompleteGraphFetch {
     private final TermPopDao termPopDao;
     private final EntityMsg entityMsg;
     private final PaperPopDao paperPopDao;
+    private final AuthorPopDao authorPopDao;
+    private final AffiPopDao affiPopDao;
 
     @Autowired
     public CompleteGraphFetch(AffiliationDao affiliationDao, AuthorDao authorDao, ConferenceDao conferenceDao, EntityMsg entityMsg,
-                              TermPopDao termPopDao, PaperPopDao paperPopDao) {
+                              TermPopDao termPopDao, PaperPopDao paperPopDao, AffiPopDao affiPopDao, AuthorPopDao authorPopDao) {
         this.affiliationDao = affiliationDao;
         this.authorDao = authorDao;
         this.conferenceDao = conferenceDao;
         this.entityMsg = entityMsg;
         this.termPopDao = termPopDao;
         this.paperPopDao = paperPopDao;
+        this.affiPopDao = affiPopDao;
+        this.authorPopDao = authorPopDao;
     }
 
     @Cacheable(value = "getCompleteGraph", key = "#p0+'_'+#p1", unless = "#result=null")
@@ -87,8 +94,15 @@ public class CompleteGraphFetch {
         links.addAll(links2);
 
         List<Node> nodeList = nodes.stream().distinct().filter(node -> id!=node.getEntityId()).collect(Collectors.toList());
-
-        return new GraphVO(id, entityMsg.getAuthorType(), authorDao.findById(id).orElseGet(Author::new).getActual().getName(),nodeList,links);
+        nodeList.forEach(node -> node.setPopularity(addPopInNode(node)));
+        Optional<Author.Popularity> authorPopOp = authorPopDao.findByAuthor_Id(id);
+        String name = null;
+        double pop = -1;
+        if(authorPopOp.isPresent()){
+            name = authorPopOp.get().getAuthor().getName();
+            pop = authorPopOp.get().getPopularity();
+        }
+        return new GraphVO(id, entityMsg.getAuthorType(),name,nodeList,links,pop);
     }
 
     private GraphVO affiliationCompleteGraph(long id) {
@@ -107,7 +121,15 @@ public class CompleteGraphFetch {
         ).collect(Collectors.toList());
         List<Node> preNodes = generateAffiliationNode(affiliationList);
         List<Node> nodes = preNodes.stream().filter(node -> id!=node.getEntityId()).distinct().collect(Collectors.toList());
-        return new GraphVO(id,entityMsg.getAffiliationType(),affiliationDao.findById(id).orElseGet(Affiliation::new).getActual().getName(),nodes,links);
+        nodes.forEach(node -> node.setPopularity(addPopInNode(node)));
+        Optional<Affiliation.Popularity> affiPopOp = affiPopDao.findByAffiliation_Id(id);
+        String name = null;
+        double pop = -1;
+        if(affiPopOp.isPresent()){
+            name = affiPopOp.get().getAffiliation().getName();
+            pop = affiPopOp.get().getPopularity();
+        }
+        return new GraphVO(id,entityMsg.getAffiliationType(),null,nodes,links,pop);
     }
 
     private GraphVO conferenceCompleteGraph(long id) {
@@ -169,7 +191,7 @@ public class CompleteGraphFetch {
         List<Node> reNodes = nodes.stream().distinct().collect(Collectors.toList());
         List<Link> reLinks = links.stream().distinct().collect(Collectors.toList());
 
-        return new GraphVO(id, entityMsg.getConferenceType(), conferenceDao.findById(id).orElseGet(Conference::new).buildName(), reNodes, reLinks);
+        return new GraphVO(id, entityMsg.getConferenceType(), conferenceDao.findById(id).orElseGet(Conference::new).buildName(), reNodes, reLinks,-1.0);
     }
 
     private List<Node> generateAffiliationNode(List<Affiliation> affiliations) {
@@ -192,5 +214,23 @@ public class CompleteGraphFetch {
 
     private boolean isAffiliationInNodes(List<Long> affiIdList, long id){
         return affiIdList.contains(id);
+    }
+
+    private Double addPopInNode(Node node){
+        double pop = -1.0;
+        if(node.getEntityType()==entityMsg.getAuthorType()){
+            Optional<Author.Popularity> authorPop = authorPopDao.findByAuthor_Id(node.getEntityId());
+            if(authorPop.isPresent()) pop = authorPop.get().getPopularity();
+        }else if(node.getEntityType() == entityMsg.getAffiliationType()){
+            Optional<Affiliation.Popularity> affiPop = affiPopDao.findByAffiliation_Id(node.getEntityId());
+            if(affiPop.isPresent()) pop = affiPop.get().getPopularity();
+        }else if(node.getEntityType() == entityMsg.getPaperType()){
+            Optional<Paper.Popularity> paperPop = paperPopDao.findById(node.getEntityId());
+            if(paperPop.isPresent()) pop = paperPop.get().getPopularity();
+        }else if(node.getEntityType() == entityMsg.getTermType()){
+            Optional<Term.Popularity> termPop = termPopDao.getDistinctByTerm_Id(node.getEntityId());
+            if(termPop.isPresent()) pop = termPop.get().getPopularity();
+        }
+        return pop;
     }
 }
