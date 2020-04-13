@@ -67,6 +67,14 @@ public class AuthorDupWorker {
         logger.info("Done generate duplicate authors");
     }
 
+    /**
+     * 判断两个作者名字的中间部分的词组是否相似
+     * 相似的依据是：较短词组中的每个词（有可能是缩写）在较长词组中都有以它开头的词存在
+     *
+     * @param parts 一个词组
+     * @param suspectParts 另一个词组
+     * @return 是否相似
+     */
     private boolean isSimilar(String[] parts, String[] suspectParts) {
         boolean partsIsLess = parts.length < suspectParts.length;
         String[] less = partsIsLess ? parts : suspectParts;
