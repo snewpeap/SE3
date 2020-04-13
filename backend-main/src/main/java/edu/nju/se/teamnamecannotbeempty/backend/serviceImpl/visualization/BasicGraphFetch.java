@@ -207,7 +207,7 @@ public class BasicGraphFetch {
             Optional<Affiliation.Popularity> affiPop = affiPopDao.findByAffiliation_Id(node.getEntityId());
             if(affiPop.isPresent()) pop = affiPop.get().getPopularity();
         }else if(node.getEntityType() == entityMsg.getPaperType()){
-            Optional<Paper.Popularity> paperPop = paperPopDao.findById(node.getEntityId());
+            Optional<Paper.Popularity> paperPop = paperPopDao.getByPaper_Id(node.getEntityId());
             if(paperPop.isPresent()) pop = paperPop.get().getPopularity();
         }else if(node.getEntityType() == entityMsg.getTermType()){
             Optional<Term.Popularity> termPop = termPopDao.getDistinctByTerm_Id(node.getEntityId());
