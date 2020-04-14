@@ -129,7 +129,7 @@ public class CompleteGraphFetch {
             name = affiPopOp.get().getAffiliation().getName();
             pop = affiPopOp.get().getPopularity();
         }
-        return new GraphVO(id,entityMsg.getAffiliationType(),null,nodes,links,pop);
+        return new GraphVO(id,entityMsg.getAffiliationType(),name,nodes,links,pop);
     }
 
     private GraphVO conferenceCompleteGraph(long id) {
@@ -155,9 +155,6 @@ public class CompleteGraphFetch {
 //                                .map(affiliation -> new Link(author_affiliation.getAuthor().getActual().getId(),entityMsg.getAuthorType(),
 //                                        affiliation.getActual().getId(), entityMsg.getAffiliationType(), -1))
 //                )).collect(Collectors.toList());
-
-
-
 
 
 //        List<Author_Affiliation> author_affiliationList = paperPopList.stream().flatMap(

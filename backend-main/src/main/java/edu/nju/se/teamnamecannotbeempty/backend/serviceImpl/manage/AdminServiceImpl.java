@@ -15,6 +15,7 @@ import edu.nju.se.teamnamecannotbeempty.data.repository.duplication.DuplicateAff
 import edu.nju.se.teamnamecannotbeempty.data.repository.duplication.DuplicateAuthorDao;
 import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -76,6 +77,8 @@ public final class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @CacheEvict(value = {"papersByYear", "getRank", "getPopRank","getAcademicEntity","getBasicGraph","getCompleteGraph"},
+            allEntries = true)
     public ResponseVO operateDataAlias(long sonId, long fatherId, int type) {
         ResponseVO responseVO = new ResponseVO(true, "OK", null);
         if (type == entityMsg.getAuthorType() && duplicateAuthorDao.existsByFather_IdAndSon_Id(fatherId, sonId)) {
@@ -104,6 +107,8 @@ public final class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @CacheEvict(value = {"papersByYear", "getRank", "getPopRank","getAcademicEntity","getBasicGraph","getCompleteGraph"},
+            allEntries = true)
     public ResponseVO undoOperate(long sonId, int type) {
         ResponseVO responseVO = new ResponseVO(true, "OK", null);
         if (type == entityMsg.getAuthorType()) {
