@@ -6,10 +6,7 @@ import edu.nju.se.teamnamecannotbeempty.backend.vo.AcademicEntityVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.SimplePaperVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.TermItem;
 import edu.nju.se.teamnamecannotbeempty.data.domain.*;
-import edu.nju.se.teamnamecannotbeempty.data.repository.AffiliationDao;
-import edu.nju.se.teamnamecannotbeempty.data.repository.AuthorDao;
-import edu.nju.se.teamnamecannotbeempty.data.repository.ConferenceDao;
-import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.*;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.PaperPopDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +14,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,11 +29,12 @@ public class AcademicEntityFetch {
     private final TermPopDao termPopDao;
     private final EntityMsg entityMsg;
     private final PaperPopDao paperPopDao;
+    private final TermDao termDao;
 
     @Autowired
     public AcademicEntityFetch(AffiliationDao affiliationDao, AuthorDao authorDao, ConferenceDao conferenceDao,
                                PaperDao paperDao, EntityMsg entityMsg,
-                               TermPopDao termPopDao, PaperPopDao paperPopDao) {
+                               TermPopDao termPopDao, PaperPopDao paperPopDao, TermDao termDao) {
         this.affiliationDao = affiliationDao;
         this.authorDao = authorDao;
         this.conferenceDao = conferenceDao;
@@ -42,6 +42,7 @@ public class AcademicEntityFetch {
         this.entityMsg = entityMsg;
         this.termPopDao = termPopDao;
         this.paperPopDao = paperPopDao;
+        this.termDao = termDao;
     }
 
     @Cacheable(value = "getAcademicEntity", key = "#p0+'_'+#p1")
@@ -55,33 +56,91 @@ public class AcademicEntityFetch {
     }
 
     private AcademicEntityVO authorsEntity(long id) {
-        List<AcademicEntityItem> affiEntityItems = generateAffiEntityItems(affiliationDao.getAffiliationsByAuthor(id));
-        List<AcademicEntityItem> conferenceEntityItems = generateConferenceEntityItems(conferenceDao.getConferencesByAuthor(id));
-        List<Term.Popularity> termPopularityList = termPopDao.getTermPopByAuthorID(id);
-        List<TermItem> termItems = termPopularityList.stream().map(
-                termPopularity -> new TermItem(termPopularity.getTerm().getId(), termPopularity.getTerm().getContent(),
-                        paperPopDao.getWeightByAuthorOnKeyword(id, termPopularity.getTerm().getId()))
+
+        List<Long> aliasIdList = getAllAliasIdsOfAuthor(id, new ArrayList<>()).stream().distinct()
+                .collect(Collectors.toList());
+        List<Affiliation> affiliationList = aliasIdList.stream().flatMap(aliasId -> affiliationDao.getAffiliationsByAuthor(aliasId).stream())
+                .distinct().collect(Collectors.toList());
+        List<Conference> conferenceList = aliasIdList.stream().flatMap(aliasId -> conferenceDao.getConferencesByAuthor(aliasId).stream())
+                .distinct().collect(Collectors.toList());
+
+        List<AcademicEntityItem> affiEntityItems = generateAffiEntityItems(affiliationList);
+        List<AcademicEntityItem> conferenceEntityItems = generateConferenceEntityItems(conferenceList);
+
+        HashMap<Long, Double> termHashMap = new HashMap<>();
+        aliasIdList.forEach(aliasId -> termPopDao.getTermPopByAuthorID(aliasId).forEach(
+                termPop -> {
+                    Long termId = termPop.getTerm().getId();
+                    if (termHashMap.containsKey(termId)) {
+                        Double d = termHashMap.get(termId);
+                        termHashMap.put(termId, d + paperPopDao.getWeightByAuthorOnKeyword(aliasId, termPop.getTerm().getId()));
+                    } else {
+                        termHashMap.put(termId, paperPopDao.getWeightByAuthorOnKeyword(aliasId, termPop.getTerm().getId()));
+                    }
+                }));
+        List<TermItem> termItems = termHashMap.entrySet().stream().map(
+                en -> new TermItem(en.getKey(), termDao.findById(en.getKey()).orElseGet(Term::new).getContent(), en.getValue())
         ).collect(Collectors.toList());
-        List<SimplePaperVO> simplePaperVOS = generateTopPapers(paperPopDao.findTopPapersByAuthorId(id));
+
+//        List<Term.Popularity> termPopularityList = termPopDao.getTermPopByAuthorID(id);
+////        List<TermItem> termItems = termPopularityList.stream().map(
+////                termPopularity -> new TermItem(termPopularity.getTerm().getId(), termPopularity.getTerm().getContent(),
+////                        paperPopDao.getWeightByAuthorOnKeyword(id, termPopularity.getTerm().getId()))
+////        ).collect(Collectors.toList());
+
+        List<Paper.Popularity> paperPopList = aliasIdList.stream().flatMap(aliasId -> paperPopDao.findTopPapersByAuthorId(aliasId).stream())
+                .distinct().collect(Collectors.toList());
+        List<SimplePaperVO> simplePaperVOS = generateTopPapers(paperPopList);
+
+        int sumCitation = aliasIdList.stream().mapToInt(aliasId -> (int) paperDao.getCitationByAuthorId(aliasId)).sum();
 
         return new AcademicEntityVO(entityMsg.getAuthorType(), id, authorDao.findById(id).orElseGet(Author::new).getActual().getName(),
-                (int) paperDao.getCitationByAuthorId(id), null, affiEntityItems, conferenceEntityItems, termItems,
+                sumCitation, null, affiEntityItems, conferenceEntityItems, termItems,
                 simplePaperVOS);
     }
 
     private AcademicEntityVO affiliationEntity(long id) {
-        List<AcademicEntityItem> authorEntityItems = generateAuthorEntityItems(authorDao.getAuthorsByAffiliation(id));
-        List<AcademicEntityItem> conferenceEntityItems = generateConferenceEntityItems(conferenceDao.getConferencesByAffiliation(id));
-        List<Term.Popularity> termPopularityList = termPopDao.getTermPopByAffiID(id);
-        List<TermItem> termItems = termPopularityList.stream().map(
-                termPopularity -> new TermItem(termPopularity.getTerm().getId(), termPopularity.getTerm().getContent(),
-                        paperPopDao.getWeightByAffiOnKeyword(id, termPopularity.getTerm().getId()))
+
+        List<Long> aliasIdList = getAllAliasIdsOfAffi(id, new ArrayList<>()).stream().distinct()
+                .collect(Collectors.toList());
+        List<Author> authorList = aliasIdList.stream().flatMap(aliasId -> authorDao.getAuthorsByAffiliation(aliasId).stream())
+                .distinct().collect(Collectors.toList());
+        List<Conference> conferenceList = aliasIdList.stream().flatMap(aliasId -> conferenceDao.getConferencesByAffiliation(aliasId).stream())
+                .distinct().collect(Collectors.toList());
+
+        List<AcademicEntityItem> authorEntityItems = generateAuthorEntityItems(authorList);
+        List<AcademicEntityItem> conferenceEntityItems = generateConferenceEntityItems(conferenceList);
+
+        HashMap<Long, Double> termHashMap = new HashMap<>();
+        aliasIdList.forEach(aliasId -> termPopDao.getTermPopByAffiID(aliasId).forEach(
+                termPop -> {
+                    Long termId = termPop.getTerm().getId();
+                    if (termHashMap.containsKey(termId)) {
+                        Double d = termHashMap.get(termId);
+                        termHashMap.put(termId, d + paperPopDao.getWeightByAffiOnKeyword(aliasId, termPop.getTerm().getId()));
+                    } else {
+                        termHashMap.put(termId, paperPopDao.getWeightByAffiOnKeyword(aliasId, termPop.getTerm().getId()));
+                    }
+                }));
+        List<TermItem> termItems = termHashMap.entrySet().stream().map(
+                en -> new TermItem(en.getKey(), termDao.findById(en.getKey()).orElseGet(Term::new).getContent(), en.getValue())
         ).collect(Collectors.toList());
-        List<SimplePaperVO> simplePaperVOS = generateTopPapers(paperPopDao.findTopPapersByAffiId(id));
+
+//        List<Term.Popularity> termPopularityList = termPopDao.getTermPopByAffiID(id);
+//        List<TermItem> termItems = termPopularityList.stream().map(
+//                termPopularity -> new TermItem(termPopularity.getTerm().getId(), termPopularity.getTerm().getContent(),
+//                        paperPopDao.getWeightByAffiOnKeyword(id, termPopularity.getTerm().getId()))
+//        ).collect(Collectors.toList());
+
+        List<Paper.Popularity> paperPopList = aliasIdList.stream().flatMap(aliasId -> paperPopDao.findTopPapersByAffiId(aliasId).stream())
+                .distinct().collect(Collectors.toList());
+        List<SimplePaperVO> simplePaperVOS = generateTopPapers(paperPopList);
+
+        int sumCitation = aliasIdList.stream().mapToInt(aliasId -> (int) paperDao.getCitationByAffiId(aliasId)).sum();
 
         return new AcademicEntityVO(entityMsg.getAffiliationType(), id, affiliationDao.findById(id).
                 orElseGet(Affiliation::new).getActual().getName(),
-                (int) paperDao.getCitationByAffiId(id), authorEntityItems, null, conferenceEntityItems, termItems,
+                sumCitation, authorEntityItems, null, conferenceEntityItems, termItems,
                 simplePaperVOS);
     }
 
@@ -114,8 +173,8 @@ public class AcademicEntityFetch {
         List<AcademicEntityItem> academicEntityItems = affiliations.stream()
                 .filter(affiliation -> !affiliation.getActual().getName().equals("NA"))
                 .map(
-                affiliation -> new AcademicEntityItem(entityMsg.getAffiliationType(), affiliation.getActual().getId(),
-                        affiliation.getActual().getName()))
+                        affiliation -> new AcademicEntityItem(entityMsg.getAffiliationType(), affiliation.getActual().getId(),
+                                affiliation.getActual().getName()))
                 .collect(Collectors.toList());
         return academicEntityItems.size() > 15 ? academicEntityItems.subList(0, 15) : academicEntityItems;
     }
@@ -132,6 +191,30 @@ public class AcademicEntityFetch {
                 .map(paprePopularity -> new SimplePaperVO(paprePopularity.getPaper()))
                 .collect(Collectors.toList());
         return simplePaperVOS.size() > 5 ? simplePaperVOS.subList(0, 5) : simplePaperVOS;
+    }
+
+    private List<Long> getAllAliasIdsOfAuthor(long id, List<Long> results) {
+        results.add(id);
+        List<Author> aliasList = authorDao.getByAlias_Id(id);
+        if (aliasList == null || aliasList.isEmpty()) {
+            return results;
+        }
+        for (Author author : aliasList) {
+            results.addAll(getAllAliasIdsOfAffi(author.getId(), new ArrayList<>()));
+        }
+        return results;
+    }
+
+    private List<Long> getAllAliasIdsOfAffi(long id, List<Long> results) {
+        results.add(id);
+        List<Affiliation> aliasList = affiliationDao.getByAlias_Id(id);
+        if (aliasList == null || aliasList.isEmpty()) {
+            return results;
+        }
+        for (Affiliation affiliation : aliasList) {
+            results.addAll(getAllAliasIdsOfAffi(affiliation.getId(), new ArrayList<>()));
+        }
+        return results;
     }
 
 

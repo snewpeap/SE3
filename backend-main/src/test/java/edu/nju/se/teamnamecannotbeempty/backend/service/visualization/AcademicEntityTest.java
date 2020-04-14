@@ -4,10 +4,7 @@ import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.EntityMsg;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.visualization.AcademicEntityFetch;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.AcademicEntityVO;
 import edu.nju.se.teamnamecannotbeempty.data.domain.*;
-import edu.nju.se.teamnamecannotbeempty.data.repository.AffiliationDao;
-import edu.nju.se.teamnamecannotbeempty.data.repository.AuthorDao;
-import edu.nju.se.teamnamecannotbeempty.data.repository.ConferenceDao;
-import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.*;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.PaperPopDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
 import org.junit.Assert;
@@ -48,6 +45,8 @@ public class AcademicEntityTest {
     private EntityMsg entityMsg;
     @Mock
     private PaperPopDao paperPopDao;
+    @Mock
+    private TermDao termDao;
     @InjectMocks
     private AcademicEntityFetch academicEntityFetch;
 
@@ -56,6 +55,8 @@ public class AcademicEntityTest {
         when(entityMsg.getAuthorType()).thenReturn(1);
         when(entityMsg.getAffiliationType()).thenReturn(2);
         when(entityMsg.getConferenceType()).thenReturn(3);
+        when(affiliationDao.getByAlias_Id(anyLong())).thenReturn(new ArrayList<>());
+        when(authorDao.getByAlias_Id(anyLong())).thenReturn(new ArrayList<>());
 
         Author author1 = new Author(); author1.setId(1L); author1.setName("Author1");
         Author author2 = new Author(); author2.setId(2L); author2.setName("Author2");
@@ -130,4 +131,22 @@ public class AcademicEntityTest {
         Assert.assertEquals(academicEntityVO.getType(), 3);
         Assert.assertEquals(academicEntityVO.getName(), "conference1");
     }
+
+//    @Test
+//    public void test1(){
+//        Affiliation affiliation1 = new Affiliation(); affiliation1.setId(1L);
+//        Affiliation affiliation2 = new Affiliation(); affiliation2.setId(2L);
+//        Affiliation affiliation3 = new Affiliation(); affiliation3.setId(3L);
+//        Affiliation affiliation4 = new Affiliation(); affiliation4.setId(4L);
+//        Affiliation affiliation5 = new Affiliation(); affiliation5.setId(5L);
+//        Affiliation affiliation6 = new Affiliation(); affiliation6.setId(6L);
+//        when(affiliationDao.getByAlias_Id(1L)).thenReturn(Arrays.asList(affiliation2,affiliation3,affiliation4,affiliation5));
+//        when(affiliationDao.getByAlias_Id(2L)).thenReturn(Collections.singletonList(affiliation6));
+//        when(affiliationDao.getByAlias_Id(3L)).thenReturn(new ArrayList<>());
+//        when(affiliationDao.getByAlias_Id(4L)).thenReturn(new ArrayList<>());
+//        when(affiliationDao.getByAlias_Id(5L)).thenReturn(new ArrayList<>());
+//        when(affiliationDao.getByAlias_Id(6L)).thenReturn(new ArrayList<>());
+//        List<Long> re = academicEntityFetch.getAllAliasIdsOfAffi(1L,new ArrayList<>());
+//        Assert.assertEquals(re.size(),6);
+//    }
 }
