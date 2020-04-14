@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public final class AdminServiceImpl implements AdminService {
+public class AdminServiceImpl implements AdminService {
     private final DuplicateAuthorDao duplicateAuthorDao;
     private final DuplicateAffiliationDao duplicateAffiliationDao;
     private final AuthorDao authorDao;
