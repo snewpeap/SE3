@@ -84,4 +84,6 @@ public interface AuthorDao extends JpaRepository<Author, Long> {
 
     @Query("select a from Author a")
     Streamable<Author> getAll();
+
+    List<Author> getByAlias_Id(Long id);
 }

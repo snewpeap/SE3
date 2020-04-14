@@ -74,4 +74,6 @@ public interface AffiliationDao extends JpaRepository<Affiliation, Long> {
 
     @Query("select a from Affiliation a")
     Streamable<Affiliation> getAll();
+
+    List<Affiliation> getByAlias_Id(Long id);
 }
