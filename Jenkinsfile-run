@@ -13,7 +13,7 @@ node {
         ])
     }
     stage("package") {
-        sh '. build.sh'
+        sh 'chmod +x ./build.sh && ./build.sh'
         sh "cd backend-main/docker && tar -cvzf se3backend.tar.gz se3.jar Dockerfile run.sh && mv se3backend.tar.gz ../../"
         sh "cd batch/docker && tar -cvzf se3batch.tar.gz se3.jar Dockerfile && mv se3batch.tar.gz ../../"
     }
