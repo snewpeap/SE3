@@ -2,6 +2,9 @@ package edu.nju.se.teamnamecannotbeempty.backend.service.visualization;
 
 import edu.nju.se.teamnamecannotbeempty.backend.vo.AcademicEntityVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.GraphVO;
+import edu.nju.se.teamnamecannotbeempty.backend.vo.SimplePaperVO;
+
+import java.util.List;
 
 public interface EntityService {
 
@@ -28,4 +31,13 @@ public interface EntityService {
      * @return GraphVO 关系图的VO
      */
     GraphVO getCompleteGraph(long id, int type);
+
+    /**
+     * 获取学术实体代表作
+     * @param year 对应的年份或者所有年份
+     * @param term 对应的研究兴趣
+     * @return 代表作列表
+     */
+    List<SimplePaperVO> getSignificantPaper(long id, int type, String year, String term);
+
 }
