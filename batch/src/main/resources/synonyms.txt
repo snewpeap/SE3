@@ -16,7 +16,7 @@ Research Res.
 Laboratory Lab.
 Laboratories Lab.
 National Nat.
-School sch.
+School Sch.
 Centre Center
 Institute Inst.
 Division Div.

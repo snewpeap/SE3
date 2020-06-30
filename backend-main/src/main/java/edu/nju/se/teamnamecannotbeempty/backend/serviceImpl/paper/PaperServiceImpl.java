@@ -84,7 +84,7 @@ public class PaperServiceImpl implements PaperService {
         ieees = termList_IEEE.stream().map(Term::getContent).collect(Collectors.toList());
         controls = termList_control.stream().map(Term::getContent).collect(Collectors.toList());
         noncontrols = termList_noncontrol.stream().map(Term::getContent).collect(Collectors.toList());
-        String pdf = paper.getPdf_link() == null ? null : paper.getPdf_link().toString();
+        String pdf = paper.getPdf_link();
 
         responseVO = ResponseVO.success();
         responseVO.setContent(new PaperVO(paper.getId(), paper.getTitle(), author_affiliationVOS, paper.getConference().getName(),

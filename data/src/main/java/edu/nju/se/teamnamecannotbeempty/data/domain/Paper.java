@@ -1,32 +1,32 @@
 package edu.nju.se.teamnamecannotbeempty.data.domain;
 
+import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.*;
+import org.hibernate.search.bridge.builtin.IntegerBridge;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "papers")
 @Indexed
 @Analyzer(definition = "noStopWords")
 public class Paper {
+    // IEEE论文的id
+    // 即迭代一二中的论文id
+    private Long ieeeId;
     @Id
-    @GeneratedValue(generator = "assigned")
-    @GenericGenerator(name = "assigned", strategy = "org.hibernate.id.Assigned")
-    // 论文的id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // 论文的代理主键
     private Long id;
-    @Column(nullable = false)@Fields({
-            @Field(name = "title", index = org.hibernate.search.annotations.Index.YES, analyze = Analyze.YES, store = Store.NO),
+    @Column(nullable = false, length = 1000)
+    @Fields({
+            @Field(name = "title", index = Index.YES, analyze = Analyze.YES, store = Store.NO),
             @Field(name = "sortTitle", index = Index.NO, analyze = Analyze.NO, store = Store.NO)
     })
     @SortableField(forField = "sortTitle")
@@ -57,33 +57,33 @@ public class Paper {
     private String issn;
     // isbn号
     private String isbn;
-    // doi号，加上
+    // doi号
     private String doi;
     // 资助信息，根据Xplore来看是一串编码
     private String funding_info;
     // pdf原文链接
-    private URL pdf_link;
-    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    private String pdf_link;
+    @ManyToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // 作者给出的关键字
     private List<Term> author_keywords = new ArrayList<>();
-    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // IEEE术语
     private List<Term> ieee_terms = new ArrayList<>();
-    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // INSPEC受控索引，有限集合
     private List<Term> inspec_controlled = new ArrayList<>();
-    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // INSPEC非受控索引，无限集合
     private List<Term> inspec_non_controlled = new ArrayList<>();
-    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     // mesh terms，作用未知
     private List<Term> mesh_terms = new ArrayList<>();
@@ -106,18 +106,32 @@ public class Paper {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "referer", orphanRemoval = true, fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     private List<Ref> refs = new ArrayList<>();
+    @Field(name = "year", store = Store.YES)
+    @NumericField(forField = "year")
+    @SortableField(forField = "year")
+    @Field(
+            name = "search_year",
+            bridge = @FieldBridge(impl = IntegerBridge.class),
+            analyzer = @Analyzer(impl = KeywordAnalyzer.class)
+    )
+    //出版年份
+    private Integer year;
+    @Transient
+    //用于hibernate search高亮年份
+    private String year_highlight;
 
     public Paper() {
     }
 
     @Override
     public String toString() {
-        return "Paper{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", aa=" + aa +
-                ", conference=" + conference +
-                '}';
+        return new StringJoiner(", ", Paper.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("title='" + title + "'")
+                .add("aa=" + aa)
+                .add("conference=" + conference)
+                .add("year=" + year)
+                .toString();
     }
 
     @Entity(name = "paper_popularity")
@@ -181,12 +195,12 @@ public class Paper {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Paper paper = (Paper) o;
-        return id.equals(paper.id);
+        return doi != null && paper.doi != null && Objects.equals(doi, paper.doi);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(doi == null ? UUID.randomUUID() : doi);
     }
 
     public static String getFieldName_title() {
@@ -206,23 +220,11 @@ public class Paper {
     }
 
     public static String getFieldName_searchYear() {
-        return "conference.search_year";
+        return "search_year";
     }
 
     public static String getFieldName_authorKeywords() {
         return "author_keywords.content";
-    }
-
-    public static String getFieldName_ieeeTerms() {
-        return "ieee_terms.content";
-    }
-
-    public static String getFieldName_inspecControlled() {
-        return "inspec_controlled.content";
-    }
-
-    public static String getFieldName_inspecNonControlled() {
-        return "inspec_non_controlled.content";
     }
 
     /**
@@ -243,6 +245,14 @@ public class Paper {
     public void removeRef(Ref ref) {
         refs.remove(ref);
         ref.setReferer(null);
+    }
+
+    public Long getIeeeId() {
+        return ieeeId;
+    }
+
+    public void setIeeeId(Long surrogateId) {
+        this.ieeeId = surrogateId;
     }
 
     public Long getId() {
@@ -349,11 +359,11 @@ public class Paper {
         this.funding_info = funding_info;
     }
 
-    public URL getPdf_link() {
+    public String getPdf_link() {
         return pdf_link;
     }
 
-    public void setPdf_link(URL pdf_link) {
+    public void setPdf_link(String pdf_link) {
         this.pdf_link = pdf_link;
     }
 
@@ -467,5 +477,21 @@ public class Paper {
 
     public void setRefs(List<Ref> refs) {
         this.refs = refs;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public String getYear_highlight() {
+        return year_highlight;
+    }
+
+    public void setYear_highlight(String year_highlight) {
+        this.year_highlight = year_highlight;
     }
 }

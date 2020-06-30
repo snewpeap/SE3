@@ -30,5 +30,5 @@ public class RefreshJob implements IRefreshJob {
         affiDupWorker.refresh(dateToRefresh);
     }
 
-    private static Logger logger = LoggerFactory.getLogger(RefreshJob.class);
+    private static final Logger logger = LoggerFactory.getLogger(RefreshJob.class);
 }

@@ -11,7 +11,7 @@ public class Oldest implements SortMode {
 
     public Oldest() {
         sort = new Sort(
-                new SortField("conference.year", SortField.Type.INT),
+                new SortField("year", SortField.Type.INT),
                 new SortField("sortTitle", SortField.Type.STRING)
         );
     }

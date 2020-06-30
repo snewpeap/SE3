@@ -1,12 +1,15 @@
 package edu.nju.se.teamnamecannotbeempty.data.domain;
 
-import org.apache.lucene.analysis.core.KeywordAnalyzer;
-import org.hibernate.search.annotations.*;
-import org.hibernate.search.bridge.builtin.IntegerBridge;
+import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
 import java.util.Objects;
 
+/**
+ * 在迭代一和迭代二中作为会议PO，在迭代三中统一为出版物PO
+ * 年份因为数据源扩展后数据无法统一，故不再作为论文的发表年份根据
+ * 在论文PO中新增年份属性
+ */
 @Entity
 @Table(name = "conferences")
 public class Conference {
@@ -17,16 +20,9 @@ public class Conference {
     @Field
     private String name;
     @Column(name = "hold_year")
-    @Field(name = "year", store = Store.YES)
-    @NumericField(forField = "year")
-    @SortableField(forField = "year")
-    @Field(
-            name = "search_year",
-            bridge = @FieldBridge(impl = IntegerBridge.class),
-            analyzer = @Analyzer(impl = KeywordAnalyzer.class)
-    )
+    // 出版或会议举办年份，可能为空
     private Integer year;
-    // 届数
+    // 届数，可能为空
     private Integer ordno;
 
     @Transient
@@ -101,6 +97,6 @@ public class Conference {
     }
 
     public String buildName() {
-        return String.valueOf(year) + " " + ordno + " " + name;
+        return year + " " + ordno + " " + name;
     }
 }

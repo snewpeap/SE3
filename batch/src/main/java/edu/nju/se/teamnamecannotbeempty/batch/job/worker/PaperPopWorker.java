@@ -19,10 +19,13 @@ public class PaperPopWorker {
 
     public void generatePaperPop() {
         //TODO PageRank implemented by Spark
-        paperDao.streamAll().forEach(paper -> {
-            Paper.Popularity pop = new Paper.Popularity(paper, paper.getCitation().doubleValue());
-            paperPopDao.save(pop);
-        });
+        paperDao.findAll().parallelStream()
+                .map(paper -> new Paper.Popularity(paper, paper.getCitation().doubleValue()))
+                .forEach(paperPopDao::save);
+//        paperDao.streamAll().forEach(paper -> {
+//            Paper.Popularity pop = new Paper.Popularity(paper, paper.getCitation().doubleValue());
+//            paperPopDao.save(pop);
+//        });
     }
 
     public long count() {

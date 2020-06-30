@@ -19,7 +19,7 @@ public class InitDataSource implements ApplicationListener<ContextRefreshedEvent
     private final IDataImportJob dataImportJob;
     private final SearchServiceHibernateImpl serviceHibernate;
 
-    private static Logger logger = LoggerFactory.getLogger(InitDataSource.class);
+    private static final Logger logger = LoggerFactory.getLogger(InitDataSource.class);
 
     @Autowired
     public InitDataSource(IDataImportJob dataImportJob, SearchServiceHibernateImpl serviceHibernate) {

@@ -16,7 +16,8 @@ import org.springframework.stereotype.Component;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 @Component
@@ -25,7 +26,7 @@ public class FromCSV {
     private final AffiliationDao affiliationDao;
     private final TermDao termDao;
 
-    private static Logger logger = LoggerFactory.getLogger(FromCSV.class);
+    private static final Logger logger = LoggerFactory.getLogger(FromCSV.class);
 
     @Autowired
     public FromCSV(AuthorDao authorDao, AffiliationDao affiliationDao, TermDao termDao) {
@@ -34,21 +35,22 @@ public class FromCSV {
         this.termDao = termDao;
     }
 
-    public List<Paper> convert(InputStream in) {
+    public Collection<Paper> convert(InputStream in) {
         List<PaperDelegation> delegations = new CsvToBeanBuilder<PaperDelegation>(
                 new InputStreamReader(in, StandardCharsets.UTF_8)
         ).withType(PaperDelegation.class).withSkipLines(1).build().parse();
 
-        authorDao.saveAll(ToAuthor.getSaveList());
-        affiliationDao.saveAll(ToAffiliation.getSaveList());
-        termDao.saveAll(ToTerm.getSaveList());
-
-        List<Paper> papers = new ArrayList<>(delegations.size());
+        HashSet<Paper> papers = new HashSet<>(delegations.size());
         for (PaperDelegation delegation : delegations) {
             Paper paper = delegation.toPaper();
-            if (paper != null && paper.getAa() != null)
+            if (paper != null)
                 papers.add(paper);
         }
+
+        termDao.saveAll(ToTerm.getSaveList());
+        affiliationDao.saveAll(ToAffiliation.getSaveList());
+        authorDao.saveAll(ToAuthor.getSaveList());
+
         logger.info("Done convert to paper POs");
         return papers;
     }

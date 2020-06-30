@@ -21,6 +21,8 @@ public interface ConferenceDao extends JpaRepository<Conference, Long> {
      */
     Optional<Conference> findByNameAndYear(String name, Integer year);
 
+    Optional<Conference> findByName(String name);
+
     /**
      * 通过作者的id来获取他参加过的会议
      *

@@ -1,6 +1,5 @@
 package edu.nju.se.teamnamecannotbeempty.batch.job;
 
-import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import edu.nju.se.teamnamecannotbeempty.api.IDataImportJob;
@@ -17,14 +16,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.Future;
 
 @Service
@@ -33,7 +29,7 @@ public class DataImportJob implements IDataImportJob {
     private final Attacher attacher;
     private final BatchGenerator batchGenerator;
 
-    private static Logger logger = LoggerFactory.getLogger(DataImportJob.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataImportJob.class);
 
     @Autowired
     public DataImportJob(FromCSV fromCSV, Attacher attacher, BatchGenerator batchGenerator) {
@@ -44,26 +40,48 @@ public class DataImportJob implements IDataImportJob {
 
     @Override
     public long trigger() {
-        logger.info("Triggered");
+        logger.info("Triggered import job");
         long total = 0;
 
-        String name = "/datasource/ase13_15_16_17_19.csv";
-        InputStream ase_csv = getClass().getResourceAsStream(name);
-        InputStream ase_json = getClass().getResourceAsStream("/datasource/ase_res.json");
-        total += readFile(name, ase_csv, ase_json);
+        try {
+            InputStream ase_csv = getClass().getResourceAsStream("/datasource/ase13_15_16_17_19.csv");
+            InputStream ase_complete = getClass().getResourceAsStream("/datasource/ase_complete_ref.csv");
+            InputStream ase_json = getClass().getResourceAsStream("/datasource/ase_ref.json");
 
-        name = "/datasource/icse15_16_17_18_19.csv";
-        InputStream icse_csv = getClass().getResourceAsStream(name);
-        InputStream icse_json = getClass().getResourceAsStream("/datasource/icse_res.json");
-        total += readFile(name, icse_csv, icse_json);
+            InputStream icse_csv = getClass().getResourceAsStream("/datasource/icse15_16_17_18_19.csv");
+            InputStream icse_complete = getClass().getResourceAsStream("/datasource/icse_complete_ref.csv");
+            InputStream icse_json = getClass().getResourceAsStream("/datasource/icse_ref.json");
 
-        batchGenerator.trigger_init(total);
+            String name = "all together";
+            total += readFile(
+                    name,
+                    mergeCSV(
+                            mergeCSV(ase_csv, ase_complete),
+                            mergeCSV(icse_csv, icse_complete)
+                    ),
+                    new SequenceInputStream(ase_json, icse_json)
+            );
+
+            batchGenerator.trigger_init(total);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return total;
+    }
+
+    private InputStream mergeCSV(InputStream first, InputStream later) throws IOException {
+        //需要把later的表头先读掉
+        int c;
+        do {
+            c = later.read();
+        } while (c != '\n');
+
+        return new SequenceInputStream(first, later);
     }
 
     private long readFile(String name, InputStream csv, InputStream json) {
         logger.info("Start import papers from " + name);
-        List<Paper> papers = fromCSV.convert(csv);
+        Collection<Paper> papers = fromCSV.convert(csv);
         long size = papers.size();
         try {
             csv.close();
@@ -87,12 +105,13 @@ public class DataImportJob implements IDataImportJob {
         小知识：标记了@Async的方法需要在别的类内调用才能生效，猜想是给类做了个代理
          */
         @Async
-        void attachAndSave(List<Paper> papers, InputStream jsonFile, String name) {
+        void attachAndSave(Collection<Paper> papers, InputStream jsonFile, String name) {
             try {
-                paperDao.saveAll(attachJsonInfo(papers, jsonFile));
+                paperDao.saveAll(attachRefs(papers, jsonFile));
                 logger.info("Done Saving data from " + name);
             } catch (Exception e) {
                 logger.error("Error Saving papers.");
+                e.printStackTrace();
             } finally {
                 try {
                     jsonFile.close();
@@ -102,53 +121,50 @@ public class DataImportJob implements IDataImportJob {
             }
         }
 
-        private List<Paper> attachJsonInfo(List<Paper> papers, InputStream jsonFile) {
+        private Iterable<Paper> attachRefs(Collection<Paper> papers, InputStream jsonFile) {
             HashMap<Long, Paper> paperHashMap = new HashMap<>(papers.size());
-            papers.forEach(paper -> paperHashMap.put(paper.getId(), paper));
+            HashMap<String, Paper> doiMap = new HashMap<>(papers.size());
+            papers.forEach(paper -> {
+                if (paper.getIeeeId() != null) {
+                    paperHashMap.put(paper.getIeeeId(), paper);
+                } else if (!StringUtils.isBlank(paper.getDoi())) {
+                    doiMap.put(paper.getDoi(), paper);
+                }
+            });
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(jsonFile, StandardCharsets.UTF_8));
             String line;
-            while (true) {
-                try {
-                    if (!StringUtils.isBlank(line = reader.readLine())) {
-                        JSONObject object = JSONUtil.parseObj(line);
-                        Long id = Long.parseLong(object.getStr("pdf_link").split("=")[1]);
-                        Paper paper = paperHashMap.get(id);
-                        if (paper != null) {
-                            JSONArray refs = object.getJSONArray("ref");
-                            if (!refs.isEmpty()) {
-                                refs.jsonIter().forEach(
-                                        jsonObject -> {
-                                            String title = jsonObject.getStr("title");
-                                            if (!StringUtils.isBlank(title)) {
-                                                String link = jsonObject.getStr("link");
-                                                Ref ref = new Ref(title);
-                                                if (!StringUtils.isEmpty(link)) {
-                                                    Long refereeId = Long.parseLong(
-                                                            link.substring(link.lastIndexOf('/') + 1));
-                                                    ref.setReferee(paperHashMap.get(refereeId));
-                                                }
-                                                paper.addRef(ref);
-                                            }
-                                        }
-                                );
-
+            try {
+                while (!StringUtils.isBlank(line = reader.readLine())) {
+                    JSONObject object = JSONUtil.parseObj(line);
+                    Long id = Long.parseLong(object.getStr("pdf_link").split("=")[1]);
+                    Paper paper = paperHashMap.get(id);
+                    if (paper != null) {
+                        for (JSONObject jsonObject : object.getJSONArray("ref").jsonIter()) {
+                            String title = jsonObject.getStr("title");
+                            if (!StringUtils.isBlank(title)) {
+                                String link = jsonObject.getStr("link");
+                                String doi = jsonObject.getStr("doi");
+                                Ref ref = new Ref(title);
+                                if (!StringUtils.isBlank(link)) {
+                                    Long refereeIeeeId = Long.parseLong(
+                                            link.substring(link.lastIndexOf('/') + 1));
+                                    ref.setReferee(paperHashMap.get(refereeIeeeId));
+                                } else if (!StringUtils.isBlank(doi)) {
+                                    ref.setReferee(doiMap.get(doi));
+                                }
+                                paper.addRef(ref);
                             }
                         }
-                        continue;
                     }
-                    break;
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
-            }
-            try {
                 jsonFile.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
             logger.info("Done attach json");
-            return new ArrayList<>(paperHashMap.values());
+            return papers;
         }
     }
 
@@ -175,7 +191,8 @@ public class DataImportJob implements IDataImportJob {
         @Async
         public void trigger_init(long total) {
             long startTime = System.currentTimeMillis();
-            final long DEADLINE = 1000 * 60 * 5;
+            final long DEADLINE = 1000 * 60 * 10;
+            logger.info("Triggered, expect deadline is " + new Date(startTime + DEADLINE).toString());
             while (paperPopWorker.count() != total) {
                 try {
                     Thread.sleep(2000);

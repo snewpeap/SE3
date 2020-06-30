@@ -8,27 +8,29 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ToAuthor extends AbstractCsvConverter {
-    private static ConcurrentHashMap<String, Author> saveMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Author> saveMap = new ConcurrentHashMap<>();
 
     @Override
     public Object convertToRead(String value) {
+        value = value.trim();
+        if (value.isEmpty()) return null;
         String lowercase = value.toLowerCase();
-        if (lowercase.isEmpty()) return null;
         Author result = saveMap.get(lowercase);
-        if (result != null)
-            return result;
-        Author author = new Author();
-        author.setName(value);
-        author.setLowerCaseName(lowercase);
-        saveMap.put(lowercase, author);
-        return author;
+        if (result == null) {
+            synchronized (saveMap) {
+                if ((result = saveMap.get(lowercase)) == null) {
+                    result = new Author();
+                    result.setName(value);
+                    result.setLowerCaseName(lowercase);
+                    saveMap.put(lowercase, result);
+                }
+            }
+        }
+        return result;
     }
 
     public static List<Author> getSaveList() {
         return new ArrayList<>(saveMap.values());
     }
 
-    public static void clearSave() {
-        saveMap.clear();
-    }
 }

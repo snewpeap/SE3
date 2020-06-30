@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DataRefresh {
     private final IRefreshJob refreshJob;
-    private static Logger logger = LoggerFactory.getLogger(DataRefresh.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataRefresh.class);
 
     @Autowired
     public DataRefresh(IRefreshJob refreshJob) {

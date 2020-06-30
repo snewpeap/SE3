@@ -109,19 +109,14 @@ public abstract class SearchMode {
     }
 
     protected void highlightYear(Paper paper, Highlighter highlighter, Analyzer analyzer) {
-        String hlyear = String.valueOf(paper.getConference().getYear());
-        Conference copy = new Conference();
-        BeanUtils.copyProperties(paper.getConference(), copy);
-        copy.setYear_highlight(hlyear);
-        paper.setConference(copy);
+        String hlyear = String.valueOf(paper.getYear());
         try {
             hlyear = highlighter.getBestFragment(analyzer, Paper.getFieldName_searchYear(), hlyear);
         } catch (IOException | InvalidTokenOffsetsException e) {
             e.printStackTrace();
         } finally {
             if (hlyear != null) {
-                copy.setYear_highlight(hlyear);
-                paper.setConference(copy);
+                paper.setYear_highlight(hlyear);
             }
         }
     }

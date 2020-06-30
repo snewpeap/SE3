@@ -11,32 +11,33 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ToAffiliation extends AbstractCsvConverter {
-    private static ConcurrentHashMap<String, Affiliation> saveMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Affiliation> saveMap = new ConcurrentHashMap<>();
     private static Map<String, String> synonyms = new HashMap<>();
 
     @Override
     public Object convertToRead(String value) {
+        value = value.trim();
         if (value.isEmpty()) return null;
         String formatted = value;
         for (Map.Entry<String, String> entry : synonyms.entrySet()) {
             formatted = formatted.replaceAll(entry.getKey(), entry.getValue());
         }
         Affiliation result = saveMap.get(formatted);
-        if (result != null)
-            return result;
-        Affiliation affiliation = new Affiliation();
-        affiliation.setName(value);
-        affiliation.setFormattedName(formatted);
-        saveMap.put(formatted, affiliation);
-        return affiliation;
+        if (result == null) {
+            synchronized (saveMap) {
+                if ((result = saveMap.get(formatted)) == null) {
+                    result = new Affiliation();
+                    result.setName(value);
+                    result.setFormattedName(formatted);
+                    saveMap.put(formatted, result);
+                }
+            }
+        }
+        return result;
     }
 
     public static List<Affiliation> getSaveList() {
         return new ArrayList<>(saveMap.values());
-    }
-
-    public static void clearSave() {
-        saveMap.clear();
     }
 
     static {

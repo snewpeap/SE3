@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "authors", indexes = {@Index(name = "author_lowercase_name", columnList = "lowerCaseName")})
+@Table(name = "authors")
 public class Author implements Aliasable<Author> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -114,6 +114,9 @@ public class Author implements Aliasable<Author> {
 
     public void setId(Long id) {
         this.id = id;
+        if (id == null) {
+            System.out.println(name + "'s ID set to null");
+        }
     }
 
     @Override

@@ -1,9 +1,9 @@
 package edu.nju.se.teamnamecannotbeempty.batch.parser.csv;
 
 import com.opencsv.bean.CsvBindAndSplitByPosition;
+import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvBindByPosition;
 import com.opencsv.bean.CsvCustomBindByPosition;
-import com.opencsv.bean.CsvDate;
 import edu.nju.se.teamnamecannotbeempty.batch.parser.csv.converters.ToAffiliation;
 import edu.nju.se.teamnamecannotbeempty.batch.parser.csv.converters.ToAuthor;
 import edu.nju.se.teamnamecannotbeempty.batch.parser.csv.converters.ToConference;
@@ -13,20 +13,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 /**
  * Paper PO 在数据转换中的代理对象
  */
+@SuppressWarnings("unused")
 public class PaperDelegation {
-    private static Logger logger = LoggerFactory.getLogger(PaperDelegation.class);
-    public static final String DEFAULT_SPLIT_ON = "; ";
-    private static final String TERMS_SPLIT_ON = ";|, ";
+    public static final Logger logger = LoggerFactory.getLogger(PaperDelegation.class);
+    public static final String DEFAULT_SPLIT_ON = ",|; ";
+    private static final String TERMS_SPLIT_ON = ";|, ?";
 
     @CsvBindByPosition(position = 0)
     private String title;
@@ -55,9 +53,8 @@ public class PaperDelegation {
     )
     private Conference conference;
 
-    @CsvBindByPosition(position = 4)
-    @CsvDate
-    private Date date_added_Xplore;
+    @CsvBindByPosition(position = 5)
+    private Integer year;
     @CsvBindByPosition(position = 6)
     private Integer volume;
     @CsvBindByPosition(position = 8)
@@ -119,55 +116,51 @@ public class PaperDelegation {
     )
     private List<Term> mt;
 
-    @CsvBindByPosition(position = 21)
+    @CsvBindByName(column = "Article Citation Count")
     private Integer citation;
-    @CsvBindByPosition(position = 22)
+    @CsvBindByName(column = "Reference Count")
     private Integer reference;
-    @CsvBindByPosition(position = 23)
-    private String license;
-    @CsvBindByPosition(position = 24)
-    @CsvDate
-    private Date online_date;
-    @CsvBindByPosition(position = 25)
-    @CsvDate
-    private Date issue_date;
-    @CsvBindByPosition(position = 26)
-    @CsvDate
-    private Date meeting_date;
-    @CsvBindByPosition(position = 27)
+    @CsvBindByName(column = "Publisher")
     private String publisher;
-    @CsvBindByPosition(position = 28)
-    private String document_identifier;
 
     Paper toPaper() {
         Paper paper = new Paper();
-        try {
-            paper.setPdf_link(new URL(pdf_link));
-        } catch (MalformedURLException e) {
-            logger.error("Parsing PaperDelegation to Paper error. title: '" + title + "', exception: " + e.getMessage());
+        if (pdf_link != null && pdf_link.contains("arnumber=")) {
+            paper.setIeeeId(Long.parseLong(pdf_link.split("arnumber=")[1]));
+        }
+        if (paper.getIeeeId() == null && StringUtils.isBlank(doi)) {
             return null;
         }
         ArrayList<Author_Affiliation> aas = new ArrayList<>();
+        //有作者或机构为null的都是数据源出错了
+        //因为作者和机构无法对齐了
         for (int i = 0; i < Math.min(authors.size(), affiliations.size()); i++) {
             if (authors.get(i) == null || affiliations.get(i) == null) {
-                aas = null;
-                break;
+                return null;
             }
             aas.add(new Author_Affiliation(authors.get(i), affiliations.get(i)));
         }
         paper.setAa(aas);
+        paper.setDoi(StringUtils.isBlank(doi) ? null : doi.toUpperCase());
+        paper.setPdf_link(pdf_link);
         paper.setTitle(title);
         paper.setConference(conference);
-        paper.setDate_added_Xplore(date_added_Xplore);
         paper.setVolume(volume);
-        if (start_page != null && !start_page.isEmpty() && StringUtils.isNumeric(start_page))
-            paper.setStart_page(Integer.parseInt(start_page));
-        if (end_page != null && !end_page.isEmpty() && StringUtils.isNumeric(end_page))
-            paper.setEnd_page(Integer.parseInt(end_page));
+        if (StringUtils.isNumeric(start_page))
+            try {
+                paper.setStart_page(Integer.parseInt(start_page));
+            } catch (NumberFormatException e) {
+                logger.warn(String.format("Start page of paper %s is %s, cannot parse", title, start_page));
+            }
+        if (StringUtils.isNumeric(end_page))
+            try {
+                paper.setEnd_page(Integer.parseInt(end_page));
+            } catch (NumberFormatException e) {
+                logger.warn(String.format("End page of paper %s is %s, cannot parse", title, start_page));
+            }
         paper.setSummary(summary);
         paper.setIssn(issn);
         paper.setIsbn(isbn);
-        paper.setDoi(doi);
         paper.setFunding_info(funding_info);
         ak.removeIf(Objects::isNull);
         paper.setAuthor_keywords(ak);
@@ -180,17 +173,10 @@ public class PaperDelegation {
         mt.removeIf(Objects::isNull);
         paper.setMesh_terms(mt);
 
-        if (citation == null) paper.setCitation(0);
-        else paper.setCitation(citation);
-        if (reference == null) paper.setReference(0);
-        else paper.setReference(reference);
-        paper.setLicense(license);
-        paper.setOnline_date(online_date);
-        paper.setIssue_date(issue_date);
-        paper.setMeeting_date(meeting_date);
+        paper.setCitation(citation == null ? Integer.valueOf(0) : citation);
+        paper.setReference(reference == null ? Integer.valueOf(0) : reference);
         paper.setPublisher(publisher);
-        paper.setDocument_identifier(document_identifier);
-        paper.setId(Long.parseLong(pdf_link.split("=")[1]));
+        paper.setYear(year);
         return paper;
     }
 
@@ -226,12 +212,12 @@ public class PaperDelegation {
         this.conference = conference;
     }
 
-    public Date getDate_added_Xplore() {
-        return date_added_Xplore;
+    public Integer getYear() {
+        return year;
     }
 
-    public void setDate_added_Xplore(Date date_added_Xplore) {
-        this.date_added_Xplore = date_added_Xplore;
+    public void setYear(Integer year) {
+        this.year = year;
     }
 
     public Integer getVolume() {
@@ -362,52 +348,12 @@ public class PaperDelegation {
         this.reference = reference;
     }
 
-    public String getLicense() {
-        return license;
-    }
-
-    public void setLicense(String license) {
-        this.license = license;
-    }
-
-    public Date getOnline_date() {
-        return online_date;
-    }
-
-    public void setOnline_date(Date online_date) {
-        this.online_date = online_date;
-    }
-
-    public Date getIssue_date() {
-        return issue_date;
-    }
-
-    public void setIssue_date(Date issue_date) {
-        this.issue_date = issue_date;
-    }
-
-    public Date getMeeting_date() {
-        return meeting_date;
-    }
-
-    public void setMeeting_date(Date meeting_date) {
-        this.meeting_date = meeting_date;
-    }
-
     public String getPublisher() {
         return publisher;
     }
 
     public void setPublisher(String publisher) {
         this.publisher = publisher;
-    }
-
-    public String getDocument_identifier() {
-        return document_identifier;
-    }
-
-    public void setDocument_identifier(String document_identifier) {
-        this.document_identifier = document_identifier;
     }
 
     public PaperDelegation() {

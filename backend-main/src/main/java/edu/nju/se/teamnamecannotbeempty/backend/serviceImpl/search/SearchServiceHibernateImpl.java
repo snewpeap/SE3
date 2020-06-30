@@ -117,7 +117,7 @@ public class SearchServiceHibernateImpl implements SearchService {
         @Async
         public void flushIndexes() {
             long startTime = System.currentTimeMillis();
-            final long DEADLINE = 1000 * 60 * 8;
+            final long DEADLINE = 1000 * 60 * 15;
             searchable.startIndexing();
             while (!searchable.importOK()) {
                 try {
@@ -139,6 +139,6 @@ public class SearchServiceHibernateImpl implements SearchService {
                 searchable.endIndexing();
             }
         }
-        private Logger logger = LoggerFactory.getLogger(SearchServiceHibernateImpl.class);
+        private final Logger logger = LoggerFactory.getLogger(SearchServiceHibernateImpl.class);
     }
 }
