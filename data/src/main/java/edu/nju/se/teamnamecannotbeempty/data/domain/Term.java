@@ -42,18 +42,27 @@ public class Term {
     }
 
     @Entity(name = "term_popularity")
+    @PrimaryKeyJoinColumn(foreignKey = @ForeignKey(name = "UK_POP_TERM"))
     public static class Popularity implements Serializable {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
         @OneToOne(optional = false)
+        @JoinColumn(foreignKey = @ForeignKey(name = "FK_POP_TERM"))
         private Term term;
         @ColumnDefault("0.0")
         private Double popularity;
+        private Integer year;
 
         public Popularity(Term term, Double popularity) {
             this.term = term;
             this.popularity = popularity;
+        }
+
+        public Popularity(Term term, Double popularity, Integer year) {
+            this.term = term;
+            this.popularity = popularity;
+            this.year = year;
         }
 
         public Popularity() {
@@ -94,6 +103,14 @@ public class Term {
 
         public void setPopularity(Double popularity) {
             this.popularity = popularity;
+        }
+
+        public Integer getYear() {
+            return year;
+        }
+
+        public void setYear(Integer year) {
+            this.year = year;
         }
     }
 

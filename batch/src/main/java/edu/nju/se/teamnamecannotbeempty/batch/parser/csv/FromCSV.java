@@ -38,7 +38,7 @@ public class FromCSV {
     public Collection<Paper> convert(InputStream in) {
         List<PaperDelegation> delegations = new CsvToBeanBuilder<PaperDelegation>(
                 new InputStreamReader(in, StandardCharsets.UTF_8)
-        ).withType(PaperDelegation.class).withSkipLines(1).build().parse();
+        ).withOrderedResults(false).withType(PaperDelegation.class).build().parse();
 
         HashSet<Paper> papers = new HashSet<>(delegations.size());
         for (PaperDelegation delegation : delegations) {

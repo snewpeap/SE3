@@ -14,9 +14,11 @@ public class DuplicateAffiliation implements IDuplication<Affiliation> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(foreignKey = @ForeignKey(name = "FK_DUP_FATHER_AFFI"))
     //被怀疑有重复的
     private Affiliation father;
     @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(foreignKey = @ForeignKey(name = "FK_DUP_SON_AFFI"))
     //发生重复的对象
     private Affiliation son;
     @ColumnDefault("false")

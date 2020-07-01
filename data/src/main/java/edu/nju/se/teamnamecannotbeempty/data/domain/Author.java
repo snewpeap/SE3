@@ -18,6 +18,7 @@ public class Author implements Aliasable<Author> {
     private String name;
     private String lowerCaseName;
     @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "FK_AUTHOR_ALIAS"))
     //别名，在需要去重的时候为空；去重后，如果没有重复为this，否则为重复对象
     private Author alias;
 
@@ -52,18 +53,27 @@ public class Author implements Aliasable<Author> {
     }
 
     @Entity(name = "author_popularity")
+    @PrimaryKeyJoinColumn(foreignKey = @ForeignKey(name = "UK_POP_AUTHOR"))
     public static class Popularity implements Serializable {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
         @OneToOne(optional = false)
+        @JoinColumn(foreignKey = @ForeignKey(name = "FK_POP_AUTHOR"))
         private Author author;
         @ColumnDefault("0.0")
         private Double popularity;
+        private Integer year;
 
         public Popularity(Author author, Double popularity) {
             this.author = author;
             this.popularity = popularity;
+        }
+
+        public Popularity(Author author, Double popularity, Integer year) {
+            this.author = author;
+            this.popularity = popularity;
+            this.year = year;
         }
 
         public Popularity() {
@@ -74,12 +84,13 @@ public class Author implements Aliasable<Author> {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Popularity that = (Popularity) o;
-            return author.equals(that.author);
+            return Objects.equals(author, that.author) &&
+                    Objects.equals(year, that.year);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(author);
+            return Objects.hash(author, year);
         }
 
         public Long getId() {

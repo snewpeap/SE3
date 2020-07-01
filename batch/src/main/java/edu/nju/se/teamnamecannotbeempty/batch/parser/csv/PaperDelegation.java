@@ -1,9 +1,8 @@
 package edu.nju.se.teamnamecannotbeempty.batch.parser.csv;
 
-import com.opencsv.bean.CsvBindAndSplitByPosition;
+import com.opencsv.bean.CsvBindAndSplitByName;
 import com.opencsv.bean.CsvBindByName;
-import com.opencsv.bean.CsvBindByPosition;
-import com.opencsv.bean.CsvCustomBindByPosition;
+import com.opencsv.bean.CsvCustomBindByName;
 import edu.nju.se.teamnamecannotbeempty.batch.parser.csv.converters.ToAffiliation;
 import edu.nju.se.teamnamecannotbeempty.batch.parser.csv.converters.ToAuthor;
 import edu.nju.se.teamnamecannotbeempty.batch.parser.csv.converters.ToConference;
@@ -24,13 +23,13 @@ import java.util.Objects;
 public class PaperDelegation {
     public static final Logger logger = LoggerFactory.getLogger(PaperDelegation.class);
     public static final String DEFAULT_SPLIT_ON = ",|; ";
-    private static final String TERMS_SPLIT_ON = ";|, ?";
+    public static final String TERMS_SPLIT_ON = ";|, ?";
 
-    @CsvBindByPosition(position = 0)
+    @CsvBindByName(column = "Document Title")
     private String title;
 
-    @CsvBindAndSplitByPosition(
-            position = 1,
+    @CsvBindAndSplitByName(
+            column = "Authors",
             elementType = Author.class,
             splitOn = DEFAULT_SPLIT_ON,
             converter = ToAuthor.class,
@@ -38,8 +37,8 @@ public class PaperDelegation {
     )
     private List<Author> authors;
 
-    @CsvBindAndSplitByPosition(
-            position = 2,
+    @CsvBindAndSplitByName(
+            column = "Author Affiliations",
             elementType = Affiliation.class,
             splitOn = DEFAULT_SPLIT_ON,
             converter = ToAffiliation.class,
@@ -47,35 +46,35 @@ public class PaperDelegation {
     )
     private List<Affiliation> affiliations;
 
-    @CsvCustomBindByPosition(
-            position = 3,
+    @CsvCustomBindByName(
+            column = "Publication Title",
             converter = ToConference.class
     )
     private Conference conference;
 
-    @CsvBindByPosition(position = 5)
+    @CsvBindByName(column = "Publication Year")
     private Integer year;
-    @CsvBindByPosition(position = 6)
+    @CsvBindByName(column = "Volume")
     private Integer volume;
-    @CsvBindByPosition(position = 8)
+    @CsvBindByName(column = "Start Page")
     private String start_page;
-    @CsvBindByPosition(position = 9)
+    @CsvBindByName(column = "End Page")
     private String end_page;
-    @CsvBindByPosition(position = 10)
+    @CsvBindByName(column = "Abstract")
     private String summary;
-    @CsvBindByPosition(position = 11)
+    @CsvBindByName(column = "ISSN")
     private String issn;
-    @CsvBindByPosition(position = 12)
+    @CsvBindByName(column = "ISBNs")
     private String isbn;
-    @CsvBindByPosition(position = 13)
+    @CsvBindByName(column = "DOI")
     private String doi;
-    @CsvBindByPosition(position = 14)
+    @CsvBindByName(column = "Funding Information")
     private String funding_info;
-    @CsvBindByPosition(position = 15)
+    @CsvBindByName(column = "PDF Link")
     private String pdf_link;
 
-    @CsvBindAndSplitByPosition(
-            position = 16,
+    @CsvBindAndSplitByName(
+            column = "Author Keywords",
             elementType = Term.class,
             splitOn = TERMS_SPLIT_ON,
             converter = ToTerm.class,
@@ -83,38 +82,6 @@ public class PaperDelegation {
     )
     //author keywords
     private List<Term> ak;
-    @CsvBindAndSplitByPosition(
-            position = 17,
-            elementType = Term.class,
-            splitOn = TERMS_SPLIT_ON,
-            converter = ToTerm.class,
-            collectionType = ArrayList.class
-    )
-    private List<Term> ie3t;
-    @CsvBindAndSplitByPosition(
-            position = 18,
-            elementType = Term.class,
-            splitOn = TERMS_SPLIT_ON,
-            converter = ToTerm.class,
-            collectionType = ArrayList.class
-    )
-    private List<Term> ict;
-    @CsvBindAndSplitByPosition(
-            position = 19,
-            elementType = Term.class,
-            splitOn = TERMS_SPLIT_ON,
-            converter = ToTerm.class,
-            collectionType = ArrayList.class
-    )
-    private List<Term> inct;
-    @CsvBindAndSplitByPosition(
-            position = 20,
-            elementType = Term.class,
-            splitOn = TERMS_SPLIT_ON,
-            converter = ToTerm.class,
-            collectionType = ArrayList.class
-    )
-    private List<Term> mt;
 
     @CsvBindByName(column = "Article Citation Count")
     private Integer citation;
@@ -164,14 +131,6 @@ public class PaperDelegation {
         paper.setFunding_info(funding_info);
         ak.removeIf(Objects::isNull);
         paper.setAuthor_keywords(ak);
-        ie3t.removeIf(Objects::isNull);
-        paper.setIeee_terms(ie3t);
-        ict.removeIf(Objects::isNull);
-        paper.setInspec_controlled(ict);
-        inct.removeIf(Objects::isNull);
-        paper.setInspec_non_controlled(inct);
-        mt.removeIf(Objects::isNull);
-        paper.setMesh_terms(mt);
 
         paper.setCitation(citation == null ? Integer.valueOf(0) : citation);
         paper.setReference(reference == null ? Integer.valueOf(0) : reference);
@@ -298,38 +257,6 @@ public class PaperDelegation {
 
     public void setAk(List<Term> ak) {
         this.ak = ak;
-    }
-
-    public List<Term> getIe3t() {
-        return ie3t;
-    }
-
-    public void setIe3t(List<Term> ie3t) {
-        this.ie3t = ie3t;
-    }
-
-    public List<Term> getIct() {
-        return ict;
-    }
-
-    public void setIct(List<Term> ict) {
-        this.ict = ict;
-    }
-
-    public List<Term> getInct() {
-        return inct;
-    }
-
-    public void setInct(List<Term> inct) {
-        this.inct = inct;
-    }
-
-    public List<Term> getMt() {
-        return mt;
-    }
-
-    public void setMt(List<Term> mt) {
-        this.mt = mt;
     }
 
     public Integer getCitation() {

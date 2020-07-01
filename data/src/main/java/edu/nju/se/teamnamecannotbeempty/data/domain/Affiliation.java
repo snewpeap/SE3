@@ -21,6 +21,7 @@ public class Affiliation implements Aliasable<Affiliation> {
     // 实际上是地理位置，最精确到市
     private String country;
     @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "FK_AFFI_ALIAS"))
     //别名，在需要去重的时候为空；去重后，如果没有重复为this，否则为重复对象
     private Affiliation alias;
 
@@ -28,18 +29,27 @@ public class Affiliation implements Aliasable<Affiliation> {
     }
 
     @Entity(name = "affi_popularity")
+    @PrimaryKeyJoinColumn(foreignKey = @ForeignKey(name = "UK_POP_AFFI"))
     public static class Popularity implements Serializable {
         @Id
         @GeneratedValue
         private Long id;
         @OneToOne(optional = false)
+        @JoinColumn(foreignKey = @ForeignKey(name = "FK_POP_AFFI"))
         private Affiliation affiliation;
         @ColumnDefault("0.0")
         private Double popularity;
+        private Integer year;
 
         public Popularity(Affiliation affiliation, Double popularity) {
             this.affiliation = affiliation;
             this.popularity = popularity;
+        }
+
+        public Popularity(Affiliation affiliation, Double popularity, Integer year) {
+            this.affiliation = affiliation;
+            this.popularity = popularity;
+            this.year = year;
         }
 
         public Popularity() {
@@ -80,6 +90,14 @@ public class Affiliation implements Aliasable<Affiliation> {
 
         public void setPopularity(Double popularity) {
             this.popularity = popularity;
+        }
+
+        public Integer getYear() {
+            return year;
+        }
+
+        public void setYear(Integer year) {
+            this.year = year;
         }
     }
 

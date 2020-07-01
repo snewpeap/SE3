@@ -9,4 +9,6 @@ public interface RefDao extends JpaRepository<Ref, Long> {
     List<Ref> findByRefereeIsNotNull();
 
     List<Ref> findByLowercaseTitleEqualsAndRefereeIsNull(String lowercaseTitle);
+
+    List<Ref> findByReferee_Id(Long id);
 }

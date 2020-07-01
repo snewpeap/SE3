@@ -33,11 +33,12 @@ public class Paper {
     // 论文的标题
     private String title;
     @ElementCollection(fetch = FetchType.EAGER)
+    @JoinColumn(foreignKey = @ForeignKey(name = "FK_AA_PAPER"))
     @IndexedEmbedded
     // 发表论文的每个作者-机构构成的对象的列表
     private List<Author_Affiliation> aa = new ArrayList<>();
     @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "conference_id", foreignKey = @ForeignKey(name = "FK_PAPER_CONFERENCE"))
+    @JoinColumn(foreignKey = @ForeignKey(name = "FK_PAPER_CONFERENCE"))
     @IndexedEmbedded
     // 会议对象。对应数据中的出版物
     private Conference conference;
@@ -64,26 +65,31 @@ public class Paper {
     // pdf原文链接
     private String pdf_link;
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(foreignKey = @ForeignKey(name = "FK_AUTHOR_KEYWORDS_PAPER"), inverseForeignKey = @ForeignKey(name = "FK_AUTHOR_KEYWORDS_TERM"))
     @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // 作者给出的关键字
     private List<Term> author_keywords = new ArrayList<>();
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(foreignKey = @ForeignKey(name = "FK_IEEE_TERMS_PAPER"), inverseForeignKey = @ForeignKey(name = "FK_IEEE_TERMS_TERM"))
     @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // IEEE术语
     private List<Term> ieee_terms = new ArrayList<>();
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(foreignKey = @ForeignKey(name = "FK_INSPECT_CONTROLLED_PAPER"), inverseForeignKey = @ForeignKey(name = "FK_INSPECT_CONTROLLED_TERM"))
     @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // INSPEC受控索引，有限集合
     private List<Term> inspec_controlled = new ArrayList<>();
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(foreignKey = @ForeignKey(name = "FK_INSPECT_NON_CONTROLLED_PAPER"), inverseForeignKey = @ForeignKey(name = "FK_INSPECT_NON_CONTROLLED_TERM"))
     @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // INSPEC非受控索引，无限集合
     private List<Term> inspec_non_controlled = new ArrayList<>();
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(foreignKey = @ForeignKey(name = "FK_MESH_TERMS_PAPER"), inverseForeignKey = @ForeignKey(name = "FK_MESH_TERMS_TERM"))
     @Fetch(FetchMode.SUBSELECT)
     // mesh terms，作用未知
     private List<Term> mesh_terms = new ArrayList<>();
@@ -135,18 +141,26 @@ public class Paper {
     }
 
     @Entity(name = "paper_popularity")
+    @PrimaryKeyJoinColumn(foreignKey = @ForeignKey(name = "UK_POP_PAPER"))
     public static class Popularity implements Serializable {
         @Id
         @GeneratedValue
         private Long id;
         @OneToOne(optional = false)
+        @JoinColumn(foreignKey = @ForeignKey(name = "FK_POP_PAPER"))
         private Paper paper;
         @ColumnDefault("0.0")
         private Double popularity;
+        private Integer year;
 
         public Popularity(Paper paper, Double popularity) {
+            this(paper, popularity, paper.year);
+        }
+
+        public Popularity(Paper paper, Double popularity, Integer year) {
             this.paper = paper;
             this.popularity = popularity;
+            this.year = year;
         }
 
         public Popularity() {
@@ -157,12 +171,13 @@ public class Paper {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Popularity that = (Popularity) o;
-            return paper.equals(that.paper);
+            return Objects.equals(paper, that.paper) &&
+                    Objects.equals(year, that.year);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(paper);
+            return Objects.hash(paper, year);
         }
 
         public Long getId() {
@@ -187,6 +202,14 @@ public class Paper {
 
         public void setPopularity(Double popularity) {
             this.popularity = popularity;
+        }
+
+        public Integer getYear() {
+            return year;
+        }
+
+        public void setYear(Integer year) {
+            this.year = year;
         }
     }
 

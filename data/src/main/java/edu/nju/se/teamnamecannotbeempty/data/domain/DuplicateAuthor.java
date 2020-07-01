@@ -14,9 +14,11 @@ public class DuplicateAuthor implements IDuplication<Author> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(foreignKey = @ForeignKey(name = "FK_DUP_FATHER_AUTHOR"))
     //被怀疑有重复的
     private Author father;
     @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(foreignKey = @ForeignKey(name = "FK_DUP_SON_AUTHOR"))
     //发生重复的对象
     private Author son;
     //标识是否已经处理了这条

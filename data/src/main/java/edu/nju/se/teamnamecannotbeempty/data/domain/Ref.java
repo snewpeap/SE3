@@ -1,7 +1,5 @@
 package edu.nju.se.teamnamecannotbeempty.data.domain;
 
-import org.hibernate.annotations.NaturalId;
-
 import javax.persistence.*;
 import java.util.StringJoiner;
 
@@ -16,9 +14,6 @@ public class Ref {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NaturalId
-    @Column(unique = true)
-    private String doi;
     @ManyToOne
     @JoinColumn(name = "referer_id", foreignKey = @ForeignKey(name = "FK_REFERER"))
     //引用者
@@ -36,7 +31,6 @@ public class Ref {
     public String toString() {
         return new StringJoiner(", ", Ref.class.getSimpleName() + "[", "]")
                 .add("id=" + id)
-                .add("doi='" + doi + "'")
                 .add("referer=" + referer)
                 .add("refTitle='" + refTitle + "'")
                 .add("lowercaseTitle='" + lowercaseTitle + "'")
@@ -58,14 +52,6 @@ public class Ref {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getDoi() {
-        return doi;
-    }
-
-    public void setDoi(String doi) {
-        this.doi = doi;
     }
 
     public Paper getReferer() {

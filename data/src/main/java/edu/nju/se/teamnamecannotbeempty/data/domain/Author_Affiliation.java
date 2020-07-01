@@ -3,15 +3,19 @@ package edu.nju.se.teamnamecannotbeempty.data.domain;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.Embeddable;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Embeddable
 public class Author_Affiliation {
     @ManyToOne
     @IndexedEmbedded(depth = 1)
+    @JoinColumn(foreignKey = @ForeignKey(name = "FK_AA_AUTHOR"))
     private Author author;
     @ManyToOne
     @IndexedEmbedded(depth = 1)
+    @JoinColumn(foreignKey = @ForeignKey(name = "FK_AA_AFFI"))
     private Affiliation affiliation;
 
     @Override
