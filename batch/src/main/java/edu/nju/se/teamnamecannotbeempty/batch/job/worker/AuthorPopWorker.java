@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 @Component
 public class AuthorPopWorker {
@@ -28,18 +29,18 @@ public class AuthorPopWorker {
 
     @Async
     public Future<?> generateAuthorPop() {
-        authorDao.getAll().forEach(this::generatePop);
+        authorPopDao.saveAll(authorDao.getAll().stream().map(this::generatePop).collect(Collectors.toList()));
         LoggerFactory.getLogger(getClass()).info("Done generate author popularity");
         return new AsyncResult<>(null);
     }
 
-    void generatePop(Author author) {
+    Author.Popularity generatePop(Author author) {
         Author actual = author.getActual();
         Optional<Author.Popularity> result = authorPopDao.findByAuthor_Id(actual.getId());
         Author.Popularity pop = result.orElse(new Author.Popularity(actual, 0.0));
         Double sum = paperPopDao.getPopSumByAuthorId(actual.getId());
         sum = sum == null ? 0.0 : sum;
         pop.setPopularity(pop.getPopularity() + sum);
-        authorPopDao.save(pop);
+        return pop;
     }
 }

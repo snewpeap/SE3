@@ -14,8 +14,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Future;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Component
 public class AuthorDupWorker {
@@ -42,36 +45,69 @@ public class AuthorDupWorker {
                 return;
             }
         }
-        ArrayListValuedHashMap<Author, Author> cache = new ArrayListValuedHashMap<>();
-        authorDao.getAll().forEach(author -> {
-            String authorName = author.getLowerCaseName();
-            String[] parts = authorName.split(" ");
-            if (parts.length >= 2) {
-                String firstPrefix = String.valueOf(parts[0].charAt(0)).toLowerCase();
-                String lastName = parts[parts.length - 1].toLowerCase();
-                List<Author> suspects = // 名的首字母相同且姓相同
-                        authorDao.findByLowerCaseNameIsLikeAndIdIsNot(firstPrefix + "% " + lastName, author.getId());
-                for (Author suspect : suspects) {
-                    String suspectName = suspect.getLowerCaseName();
-                    if (!cache.containsKey(suspect) ||
-                            (cache.containsKey(suspect) && !cache.get(suspect).contains(author))) {
-                        // 如果已经存在a-b，b-a不会被加入以防止成环
-                        if (isSimilar(parts, suspectName.split(" "))) {
-                            cache.put(author, suspect);
-                            duplicateAuthorDao.save(new DuplicateAuthor(author, suspect));
-                        }
-                    }
+        ArrayListValuedHashMap<Long, Long> cache = new ArrayListValuedHashMap<>();
+        class TempAuthor {
+            final Author author;
+            final String[] split_LCN;
+
+            public TempAuthor(Author author, String[] split_LCN) {
+                this.author = author;
+                this.split_LCN = split_LCN;
+                for (int i = 0; i < split_LCN.length; i++) {
+                    split_LCN[i] = split_LCN[i].intern();
                 }
+            }
+        }
+        List<TempAuthor> all = authorDao.findAll().stream()
+                .map(author ->
+                        new TempAuthor(author, author.getLowerCaseName().split(" "))
+                ).collect(Collectors.toList());
+        //名字首字母的映射缓存，搭配下面的方法就不用去数据库查一遍了
+        ArrayListValuedHashMap<Character, TempAuthor> firstLetterMap = new ArrayListValuedHashMap<>();
+        all.parallelStream().collect(Collectors.groupingBy(
+                author -> author.split_LCN[0].charAt(0))
+        ).forEach(firstLetterMap::putAll);
+
+        all.forEach(author -> {
+            String[] parts = author.split_LCN;
+            if (parts.length >= 2) {
+                char firstPrefix = parts[0].charAt(0);
+                String lastName = parts[parts.length - 1];
+                Long authorId = author.author.getId();
+                // 名的首字母相同且姓相同
+                firstLetterMap.get(firstPrefix).parallelStream().filter(
+                        tempAuthor -> nameIsLikeAndIdIsNot(
+                                tempAuthor.author,
+                                String.format("^%c.* %s$", firstPrefix, lastName),
+                                authorId
+                        )
+                ).collect(Collectors.toList()).forEach(
+                        suspect -> {
+                            Long suspectId = suspect.author.getId();
+                            if (!cache.containsKey(suspectId) ||
+                                    (cache.containsKey(suspectId) && !cache.get(suspectId).contains(authorId))) {
+                                // 如果已经存在a-b，b-a不会被加入以防止成环
+                                if (isSimilar(parts, suspect.split_LCN)) {
+                                    cache.put(authorId, suspectId);
+                                    duplicateAuthorDao.save(new DuplicateAuthor(author.author, suspect.author));
+                                }
+                            }
+                        }
+                );
             }
         });
         logger.info("Done generate duplicate authors");
+    }
+
+    private boolean nameIsLikeAndIdIsNot(Author author, String regex, Long id) {
+        return Pattern.matches(regex, author.getLowerCaseName()) && !Objects.equals(author.getId(), id);
     }
 
     /**
      * 判断两个作者名字的中间部分的词组是否相似
      * 相似的依据是：较短词组中的每个词（有可能是缩写）在较长词组中都有以它开头的词存在
      *
-     * @param parts 一个词组
+     * @param parts        一个词组
      * @param suspectParts 另一个词组
      * @return 是否相似
      */
@@ -107,5 +143,5 @@ public class AuthorDupWorker {
         });
     }
 
-    private static Logger logger = LoggerFactory.getLogger(AuthorDupWorker.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthorDupWorker.class);
 }

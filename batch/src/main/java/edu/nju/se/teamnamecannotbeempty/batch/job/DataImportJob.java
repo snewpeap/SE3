@@ -7,17 +7,18 @@ import edu.nju.se.teamnamecannotbeempty.batch.job.worker.*;
 import edu.nju.se.teamnamecannotbeempty.batch.parser.csv.FromCSV;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Ref;
-import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.sql.JDBCType;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -94,11 +95,11 @@ public class DataImportJob implements IDataImportJob {
 
     @Component
     static class Attacher {
-        private final PaperDao paperDao;
+        private final JdbcTemplate jdbcTemplate;
 
         @Autowired
-        public Attacher(PaperDao paperDao) {
-            this.paperDao = paperDao;
+        public Attacher(JdbcTemplate jdbcTemplate) {
+            this.jdbcTemplate = jdbcTemplate;
         }
 
         /*
@@ -107,7 +108,39 @@ public class DataImportJob implements IDataImportJob {
         @Async
         void attachAndSave(Collection<Paper> papers, InputStream jsonFile, String name) {
             try {
-                paperDao.saveAll(attachRefs(papers, jsonFile));
+                jdbcTemplate.batchUpdate(
+                        "insert papers(" +
+                                "id, citation, document_identifier, " +
+                                "doi, end_page, funding_info, " +
+                                "ieee_id, isbn, issn, " +
+                                "license, pdf_link, publisher, " +
+                                "reference, start_page, abstract, " +
+                                "title, volume, year, conference_id) " +
+                                "VALUES (0,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        attachRefs(papers, jsonFile),
+                        500,
+                        (ps, paper) -> {
+                            ps.setObject(1, paper.getCitation(), JDBCType.INTEGER);
+                            ps.setString(2, paper.getDocument_identifier());
+                            ps.setString(3, paper.getDoi());
+                            ps.setObject(4, paper.getEnd_page(), JDBCType.INTEGER);
+                            ps.setString(5, paper.getFunding_info());
+                            ps.setObject(6, paper.getIeeeId(), JDBCType.BIGINT);
+                            ps.setString(7, paper.getIsbn());
+                            ps.setString(8, paper.getIssn());
+                            ps.setString(9, paper.getLicense());
+                            ps.setString(10, paper.getPdf_link());
+                            ps.setString(11, paper.getPublisher());
+                            ps.setObject(12, paper.getReference(), JDBCType.INTEGER);
+                            ps.setObject(13, paper.getStart_page(), JDBCType.INTEGER);
+                            ps.setString(14, paper.getSummary());
+                            ps.setString(15, paper.getTitle());
+                            ps.setObject(16, paper.getVolume(), JDBCType.INTEGER);
+                            ps.setObject(17, paper.getYear(), JDBCType.INTEGER);
+                            Long conferenceId = paper.getConference() == null ? null : paper.getConference().getId();
+                            ps.setObject(18, conferenceId, JDBCType.BIGINT);
+                        }
+                );
                 logger.info("Done Saving data from " + name);
             } catch (Exception e) {
                 logger.error("Error Saving papers.");
@@ -121,7 +154,7 @@ public class DataImportJob implements IDataImportJob {
             }
         }
 
-        private Iterable<Paper> attachRefs(Collection<Paper> papers, InputStream jsonFile) {
+        private Collection<Paper> attachRefs(Collection<Paper> papers, InputStream jsonFile) {
             HashMap<Long, Paper> paperHashMap = new HashMap<>(papers.size());
             HashMap<String, Paper> doiMap = new HashMap<>(papers.size());
             papers.forEach(paper -> {
@@ -205,6 +238,7 @@ public class DataImportJob implements IDataImportJob {
                 }
             }
             logger.info("Done import papers. Start generating paper popularity...");
+            System.gc();
             paperPopWorker.generatePaperPop();
             logger.info("Done generate paper popularity");
             Future<?> authorFuture = authorPopWorker.generateAuthorPop();

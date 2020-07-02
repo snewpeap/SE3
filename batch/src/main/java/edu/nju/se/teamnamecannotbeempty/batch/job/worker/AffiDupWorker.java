@@ -62,6 +62,7 @@ public class AffiDupWorker {
             }
         });
         ArrayListValuedHashMap<Affiliation, Affiliation> cache = new ArrayListValuedHashMap<>();
+        List<DuplicateAffiliation> dups = new ArrayList<>(affis.size());
         for (Affiliation affi : affis) {
             //两两对比
             HashSet<String> affiSet = tokenSetMap.get(affi);
@@ -77,12 +78,13 @@ public class AffiDupWorker {
                     if (compareSet != null && affiSet.containsAll(compareSet) && notBelongsTo(affiSet, compareSet)) {
                         //判断全包含，但是没有考虑到词序，所以有可能误杀 //TODO
                         cache.put(affi, compare);
-                        duplicateAffiliationDao.save(new DuplicateAffiliation(affi, compare));
+                        dups.add(new DuplicateAffiliation(affi, compare));
                     }
                 }
             }
         }
         analyzer.close();
+        duplicateAffiliationDao.saveAll(dups);
         logger.info("Done generate duplicate affiliations");
     }
 
@@ -139,5 +141,5 @@ public class AffiDupWorker {
         });
     }
 
-    private static Logger logger = LoggerFactory.getLogger(AffiDupWorker.class);
+    private static final Logger logger = LoggerFactory.getLogger(AffiDupWorker.class);
 }

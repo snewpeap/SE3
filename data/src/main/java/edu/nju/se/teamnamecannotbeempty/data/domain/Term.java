@@ -1,11 +1,15 @@
 package edu.nju.se.teamnamecannotbeempty.data.domain;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "terms")
@@ -16,6 +20,9 @@ public class Term {
     @Column(nullable = false)
     @Field
     private String content;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "term")
+    @Fetch(FetchMode.SUBSELECT)
+    private Set<Popularity> pops = new HashSet<>();
 
     public Term() {
     }
@@ -42,12 +49,11 @@ public class Term {
     }
 
     @Entity(name = "term_popularity")
-    @PrimaryKeyJoinColumn(foreignKey = @ForeignKey(name = "UK_POP_TERM"))
     public static class Popularity implements Serializable {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
-        @OneToOne(optional = false)
+        @ManyToOne(optional = false)
         @JoinColumn(foreignKey = @ForeignKey(name = "FK_POP_TERM"))
         private Term term;
         @ColumnDefault("0.0")
@@ -128,5 +134,13 @@ public class Term {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Set<Popularity> getPops() {
+        return pops;
+    }
+
+    public void setPops(Set<Popularity> pops) {
+        this.pops = pops;
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 @Component
 public class AffiPopWorker {
@@ -28,12 +29,12 @@ public class AffiPopWorker {
 
     @Async
     public Future<?> generateAffiPop() {
-        affiliationDao.getAll().forEach(this::generatePop);
+        affiPopDao.saveAll(affiliationDao.getAll().stream().map(this::generatePop).collect(Collectors.toList()));
         LoggerFactory.getLogger(getClass()).info("Done generate affiliation popularity");
         return new AsyncResult<>(null);
     }
 
-    void generatePop(Affiliation affi) {
+    Affiliation.Popularity generatePop(Affiliation affi) {
         Affiliation actual = affi.getActual();
         Optional<Affiliation.Popularity> result = affiPopDao.findByAffiliation_Id(actual.getId());
         Affiliation.Popularity pop = result.orElse(new Affiliation.Popularity(actual, 0.0));
@@ -42,6 +43,6 @@ public class AffiPopWorker {
             sum = sum == null ? 0.0 : sum;
             pop.setPopularity(pop.getPopularity() + sum);
         }
-        affiPopDao.save(pop);
+        return pop;
     }
 }

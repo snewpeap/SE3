@@ -71,17 +71,6 @@ public interface AuthorDao extends JpaRepository<Author, Long> {
             "where exists (select 1 from p.author_keywords ak where ak.id = ?1)")
     List<Author> getAuthorsByKeyword(Long id);
 
-    /**
-     * 查询名字相似但不是本人的作者
-     *
-     * @param like 作者名字模板
-     * @param id 排除掉该作者id
-     * @return 与该作者名字相似的其他作者
-     * @前置条件 参数都不为null
-     * @后置条件 无
-     */
-    List<Author> findByLowerCaseNameIsLikeAndIdIsNot(String like, Long id);
-
     @Query("select a from Author a")
     Streamable<Author> getAll();
 

@@ -16,6 +16,7 @@ import java.util.*;
 @Table(name = "papers")
 @Indexed
 @Analyzer(definition = "noStopWords")
+@SuppressWarnings("unused")
 public class Paper {
     // IEEE论文的id
     // 即迭代一二中的论文id
@@ -125,6 +126,9 @@ public class Paper {
     @Transient
     //用于hibernate search高亮年份
     private String year_highlight;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "paper")
+    @Fetch(FetchMode.SUBSELECT)
+    private Set<Popularity> pops = new HashSet<>();
 
     public Paper() {
     }
@@ -141,12 +145,11 @@ public class Paper {
     }
 
     @Entity(name = "paper_popularity")
-    @PrimaryKeyJoinColumn(foreignKey = @ForeignKey(name = "UK_POP_PAPER"))
     public static class Popularity implements Serializable {
         @Id
-        @GeneratedValue
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
-        @OneToOne(optional = false)
+        @ManyToOne(optional = false)
         @JoinColumn(foreignKey = @ForeignKey(name = "FK_POP_PAPER"))
         private Paper paper;
         @ColumnDefault("0.0")
@@ -516,5 +519,14 @@ public class Paper {
 
     public void setYear_highlight(String year_highlight) {
         this.year_highlight = year_highlight;
+    }
+
+
+    public Set<Popularity> getPops() {
+        return pops;
+    }
+
+    public void setPops(Set<Popularity> pops) {
+        this.pops = pops;
     }
 }

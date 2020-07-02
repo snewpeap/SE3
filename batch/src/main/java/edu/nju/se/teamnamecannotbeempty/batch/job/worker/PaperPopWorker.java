@@ -2,30 +2,38 @@ package edu.nju.se.teamnamecannotbeempty.batch.job.worker;
 
 import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
 import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
-import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.PaperPopDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Component
 public class PaperPopWorker {
     private final PaperDao paperDao;
-    private final PaperPopDao paperPopDao;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public PaperPopWorker(PaperDao paperDao, PaperPopDao paperPopDao) {
+    public PaperPopWorker(PaperDao paperDao, JdbcTemplate jdbcTemplate) {
         this.paperDao = paperDao;
-        this.paperPopDao = paperPopDao;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     public void generatePaperPop() {
         //TODO PageRank implemented by Spark
-        paperDao.findAll().parallelStream()
+        Collection<Paper.Popularity> pops = paperDao.findAll().parallelStream()
                 .map(paper -> new Paper.Popularity(paper, paper.getCitation().doubleValue()))
-                .forEach(paperPopDao::save);
-//        paperDao.streamAll().forEach(paper -> {
-//            Paper.Popularity pop = new Paper.Popularity(paper, paper.getCitation().doubleValue());
-//            paperPopDao.save(pop);
-//        });
+                .collect(Collectors.toSet());
+        jdbcTemplate.batchUpdate(
+                "insert paper_popularity(id, popularity, year, paper_id) VALUES (0,?,?,?)",
+                pops,
+                500,
+                (ps, pop) -> {
+                    ps.setDouble(1, pop.getPopularity());
+                    ps.setInt(2, pop.getYear());
+                    ps.setLong(3, pop.getPaper().getId());
+                });
     }
 
     public long count() {
