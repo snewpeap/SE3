@@ -14,10 +14,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Future;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Component
@@ -69,25 +67,32 @@ public class AuthorDupWorker {
         ).forEach(firstLetterMap::putAll);
 
         all.forEach(author -> {
-            String[] parts = author.split_LCN;
-            if (parts.length >= 2) {
-                char firstPrefix = parts[0].charAt(0);
-                String lastName = parts[parts.length - 1];
+            String[] split_LCN = author.split_LCN;
+            if (split_LCN.length > 1) {
                 Long authorId = author.author.getId();
                 // 名的首字母相同且姓相同
-                firstLetterMap.get(firstPrefix).parallelStream().filter(
-                        tempAuthor -> nameIsLikeAndIdIsNot(
-                                tempAuthor.author,
-                                String.format("^%c.* %s$", firstPrefix, lastName),
-                                authorId
-                        )
+                firstLetterMap.get(split_LCN[0].charAt(0)).parallelStream().filter(
+                        tempAuthor -> {
+                            String lastName = split_LCN[split_LCN.length - 1];
+                            return tempAuthor.split_LCN[tempAuthor.split_LCN.length - 1].equals(lastName) &&
+                                    !tempAuthor.author.getId().equals(authorId);
+                        }
+                        // 被注释掉的方法性能太差
+                        // 一是String.format性能差
+                        // 二是Pattern.matches性能也差，而且大材小用
+//                        nameIsLikeAndIdIsNot(
+//                                tempAuthor.author,
+//                                //String.format("^%c.* %s$", firstPrefix, lastName)
+//                                "^" + firstPrefix + ".* " + lastName + "$",
+//                                authorId
+//                        )
                 ).collect(Collectors.toList()).forEach(
                         suspect -> {
                             Long suspectId = suspect.author.getId();
                             if (!cache.containsKey(suspectId) ||
                                     (cache.containsKey(suspectId) && !cache.get(suspectId).contains(authorId))) {
                                 // 如果已经存在a-b，b-a不会被加入以防止成环
-                                if (isSimilar(parts, suspect.split_LCN)) {
+                                if (isSimilar(split_LCN, suspect.split_LCN)) {
                                     cache.put(authorId, suspectId);
                                     duplicateAuthorDao.save(new DuplicateAuthor(author.author, suspect.author));
                                 }
@@ -99,9 +104,9 @@ public class AuthorDupWorker {
         logger.info("Done generate duplicate authors");
     }
 
-    private boolean nameIsLikeAndIdIsNot(Author author, String regex, Long id) {
-        return Pattern.matches(regex, author.getLowerCaseName()) && !Objects.equals(author.getId(), id);
-    }
+//    private boolean nameIsLikeAndIdIsNot(Author author, String regex, Long id) {
+//        return Pattern.matches(regex, author.getLowerCaseName()) && !Objects.equals(author.getId(), id);
+//    }
 
     /**
      * 判断两个作者名字的中间部分的词组是否相似
