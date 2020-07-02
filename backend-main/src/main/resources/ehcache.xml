@@ -8,42 +8,49 @@
         />
 
     <cache name="papersByYear"
-           maxElementsInmemory="10000"
+           maxElementsInmemory="1000"
            eternal="true"
            overflowToDisk="true"
            diskPersistent="false">
     </cache>
 
     <cache name="getRank"
-           maxElementsInmemory="10000"
+           maxElementsInmemory="1000"
            eternal="true"
            overflowToDisk="true"
            diskPersistent="false">
     </cache>
 
     <cache name="getPopRank"
-           maxElementsInmemory="10000"
+           maxElementsInmemory="1000"
            eternal="true"
            overflowToDisk="true"
            diskPersistent="false">
     </cache>
 
     <cache name="getAcademicEntity"
-           maxElementsInmemory="10000"
+           maxElementsInmemory="1000"
            eternal="true"
            overflowToDisk="true"
            diskPersistent="false">
     </cache>
 
     <cache name="getBasicGraph"
-           maxElementsInmemory="10000"
+           maxElementsInmemory="1000"
            eternal="true"
            overflowToDisk="true"
            diskPersistent="false">
     </cache>
 
     <cache name="getCompleteGraph"
-           maxElementsInmemory="10000"
+           maxElementsInmemory="1000"
+           eternal="true"
+           overflowToDisk="true"
+           diskPersistent="false">
+    </cache>
+
+    <cache name="getTermPopByPaperID"
+           maxElementsInmemory="1000"
            eternal="true"
            overflowToDisk="true"
            diskPersistent="false">

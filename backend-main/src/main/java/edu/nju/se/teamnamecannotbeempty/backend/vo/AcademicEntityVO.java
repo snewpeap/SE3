@@ -12,10 +12,13 @@ public class AcademicEntityVO {
     private List<AcademicEntityItem> affiliations;
     private List<AcademicEntityItem> conferences;
     private List<TermItem> terms;
+    private List<YearlyTerm> yearlyTerms;
     private List<SimplePaperVO> significantPapers;
 
-
-    public AcademicEntityVO(int type, long id, String name, int refSum, List<AcademicEntityItem> authors, List<AcademicEntityItem> affiliations, List<AcademicEntityItem> conferences, List<TermItem> terms, List<SimplePaperVO> significantPapers) {
+    public AcademicEntityVO(int type, long id, String name, int refSum,
+                            List<AcademicEntityItem> authors, List<AcademicEntityItem> affiliations,
+                            List<AcademicEntityItem> conferences, List<TermItem> terms,
+                            List<SimplePaperVO> significantPapers, List<YearlyTerm> yearlyTerms) {
         this.type = type;
         this.id = id;
         this.name = name;
@@ -25,6 +28,7 @@ public class AcademicEntityVO {
         this.conferences = conferences;
         this.terms = terms;
         this.significantPapers = significantPapers;
+        this.yearlyTerms = yearlyTerms;
     }
 
     public int getType() {
@@ -95,6 +99,14 @@ public class AcademicEntityVO {
         return significantPapers;
     }
 
+    public List<YearlyTerm> getYearlyTerms() {
+        return yearlyTerms;
+    }
+
+    public void setYearlyTerms(List<YearlyTerm> yearlyTerms) {
+        this.yearlyTerms = yearlyTerms;
+    }
+
     public void setSignificantPapers(List<SimplePaperVO> significantPapers) {
         this.significantPapers = significantPapers;
     }
@@ -106,16 +118,18 @@ public class AcademicEntityVO {
         AcademicEntityVO that = (AcademicEntityVO) o;
         return type == that.type &&
                 id == that.id &&
+                refSum == that.refSum &&
+                Objects.equals(name, that.name) &&
                 Objects.equals(authors, that.authors) &&
                 Objects.equals(affiliations, that.affiliations) &&
                 Objects.equals(conferences, that.conferences) &&
                 Objects.equals(terms, that.terms) &&
+                Objects.equals(yearlyTerms, that.yearlyTerms) &&
                 Objects.equals(significantPapers, that.significantPapers);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(type, id, authors, affiliations, conferences, terms, significantPapers);
+        return Objects.hash(type, id, name, refSum, authors, affiliations, conferences, terms, yearlyTerms, significantPapers);
     }
 }
