@@ -82,4 +82,25 @@ public interface PaperDao extends JpaRepository<Paper, Long> {
      */
     @Query("select p from Paper p where exists (select 1 from p.author_keywords ak where ak.id = ?1)")
     List<Paper> getPapersByKeyword(Long id);
+
+    /**
+     * TODO
+     * @param id
+     * @return
+     */
+    List<Paper> findByAuthorId(Long id);
+
+    /**
+     * TODO
+     * @param id
+     * @return
+     */
+    List<Paper> findByAffiId(Long id);
+
+    /**
+     * TODO
+     * @param id
+     * @return
+     */
+    List<Paper> findByConferenceID(Long id);
 }

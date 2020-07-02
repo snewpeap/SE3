@@ -24,6 +24,11 @@ public class YearlyTerm {
         this.termItemList = termItemList;
     }
 
+    public YearlyTerm(int year, List<TermItem> termItemList) {
+        this.year = year;
+        this.termItemList = termItemList;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
