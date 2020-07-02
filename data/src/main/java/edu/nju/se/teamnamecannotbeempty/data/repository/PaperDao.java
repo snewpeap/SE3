@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -44,11 +43,9 @@ public interface PaperDao extends JpaRepository<Paper, Long> {
      * @throws org.springframework.dao.InvalidDataAccessApiUsageException，如果任意参数为null
      * @apiNote 如果from大于true，不会抛出异常，会返回空列表
      */
+    @SuppressWarnings("SpringCacheAnnotationsOnInterfaceInspection")
     @Cacheable(value = "papersByYear", key = "#root.args[0]+'_'+#root.args[1]", unless = "#result = null")
     List<Paper> findAllByConference_YearBetween(Integer from, Integer to);
-
-    @Query("select p from Paper p")
-    Streamable<Paper> streamAll();
 
     /**
      * 获得作者的被引总数
@@ -84,23 +81,29 @@ public interface PaperDao extends JpaRepository<Paper, Long> {
     List<Paper> getPapersByKeyword(Long id);
 
     /**
-     * TODO
-     * @param id
-     * @return
+     * 获得作者的论文
+     *
+     * @param id 作者Id
+     * @return 论文集合
      */
+    @Query("select p from Paper p inner join p.aa aa where aa.author.id = ?1")
     List<Paper> findByAuthorId(Long id);
 
     /**
-     * TODO
-     * @param id
-     * @return
+     * 获得机构的论文
+     *
+     * @param id 机构Id
+     * @return 论文集合
      */
+    @Query("select p from Paper p inner join p.aa aa where aa.affiliation.id = ?1")
     List<Paper> findByAffiId(Long id);
 
     /**
-     * TODO
-     * @param id
-     * @return
+     * 获得会议或出版物的论文
+     *
+     * @param id 会议或出版物Id
+     * @return 论文集合
      */
+    @Query("select p from Paper p where p.conference.id = ?1")
     List<Paper> findByConferenceID(Long id);
 }
