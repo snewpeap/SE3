@@ -55,4 +55,11 @@
            overflowToDisk="true"
            diskPersistent="false">
     </cache>
+
+    <cache name="getSignificantPaper"
+           maxElementsInmemory="1000"
+           eternal="true"
+           overflowToDisk="true"
+           diskPersistent="false">
+    </cache>
 </ehcache>

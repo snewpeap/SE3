@@ -8,7 +8,7 @@ import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.PaperPopDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Service
+@Component
 public class AcademicEntityFetch {
 
     private final AffiliationDao affiliationDao;
@@ -87,7 +87,7 @@ public class AcademicEntityFetch {
         ).collect(Collectors.toList());
 
         //生成按年份的研究方向列表
-        List<Paper> allPapers=paperDao.findByAuthorId(id);
+        List<Paper> allPapers=new ArrayList<>();
         aliasIdList.forEach(aliasId-> allPapers.addAll(paperDao.findByAuthorId(aliasId)));
         List<YearlyTerm> yearlyTerms=getYearlyTermList(allPapers);
 
@@ -133,7 +133,7 @@ public class AcademicEntityFetch {
         ).collect(Collectors.toList());
 
         //生成按年份的研究方向列表
-        List<Paper> allPapers=paperDao.findByAffiId(id);
+        List<Paper> allPapers=new ArrayList<>();
         aliasIdList.forEach(aliasId-> allPapers.addAll(paperDao.findByAffiId(aliasId)));
         List<YearlyTerm> yearlyTerms=getYearlyTermList(allPapers);
 
@@ -202,7 +202,7 @@ public class AcademicEntityFetch {
         return simplePaperVOS.size() > 5 ? simplePaperVOS.subList(0, 5) : simplePaperVOS;
     }
 
-    private List<Long> getAllAliasIdsOfAuthor(long id, List<Long> results) {
+    public List<Long> getAllAliasIdsOfAuthor(long id, List<Long> results) {
         results.add(id);
         List<Author> aliasList = authorDao.getByAlias_Id(id);
         if (aliasList == null || aliasList.isEmpty()) {
@@ -214,7 +214,7 @@ public class AcademicEntityFetch {
         return results;
     }
 
-    private List<Long> getAllAliasIdsOfAffi(long id, List<Long> results) {
+    public List<Long> getAllAliasIdsOfAffi(long id, List<Long> results) {
         results.add(id);
         List<Affiliation> aliasList = affiliationDao.getByAlias_Id(id);
         if (aliasList == null || aliasList.isEmpty()) {
@@ -227,10 +227,10 @@ public class AcademicEntityFetch {
     }
 
     private List<YearlyTerm> getYearlyTermList(List<Paper> allPapers){
-        Map<Integer, List<Paper>> paperByYear = allPapers.stream().collect(
+        Map<Integer, List<Paper>> paperByYear = allPapers.stream().distinct().collect(
                 Collectors.groupingBy(Paper::getYear));
         return paperByYear.entrySet().stream().map(
-                en -> new YearlyTerm(en.getKey(),en.getValue().stream().distinct().flatMap(
+                en -> new YearlyTerm(en.getKey(),en.getValue().stream().flatMap(
                         paper-> fetchForCache.getTermPopByPaperID(paper.getId()).stream().map(
                                 termPop-> new TermItem(termPop.getTerm().getId(),
                                         termPop.getTerm().getContent(), -1)
