@@ -1,6 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.data.domain;
 
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -34,6 +35,7 @@ public class Paper {
     // 论文的标题
     private String title;
     @ElementCollection(fetch = FetchType.EAGER)
+    @Cascade(org.hibernate.annotations.CascadeType.DETACH)
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_AA_PAPER"))
     @IndexedEmbedded
     // 发表论文的每个作者-机构构成的对象的列表
@@ -65,31 +67,31 @@ public class Paper {
     private String funding_info;
     // pdf原文链接
     private String pdf_link;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinTable(foreignKey = @ForeignKey(name = "FK_AUTHOR_KEYWORDS_PAPER"), inverseForeignKey = @ForeignKey(name = "FK_AUTHOR_KEYWORDS_TERM"))
     @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // 作者给出的关键字
     private List<Term> author_keywords = new ArrayList<>();
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinTable(foreignKey = @ForeignKey(name = "FK_IEEE_TERMS_PAPER"), inverseForeignKey = @ForeignKey(name = "FK_IEEE_TERMS_TERM"))
     @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // IEEE术语
     private List<Term> ieee_terms = new ArrayList<>();
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinTable(foreignKey = @ForeignKey(name = "FK_INSPECT_CONTROLLED_PAPER"), inverseForeignKey = @ForeignKey(name = "FK_INSPECT_CONTROLLED_TERM"))
     @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // INSPEC受控索引，有限集合
     private List<Term> inspec_controlled = new ArrayList<>();
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinTable(foreignKey = @ForeignKey(name = "FK_INSPECT_NON_CONTROLLED_PAPER"), inverseForeignKey = @ForeignKey(name = "FK_INSPECT_NON_CONTROLLED_TERM"))
     @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // INSPEC非受控索引，无限集合
     private List<Term> inspec_non_controlled = new ArrayList<>();
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinTable(foreignKey = @ForeignKey(name = "FK_MESH_TERMS_PAPER"), inverseForeignKey = @ForeignKey(name = "FK_MESH_TERMS_TERM"))
     @Fetch(FetchMode.SUBSELECT)
     // mesh terms，作用未知

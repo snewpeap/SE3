@@ -141,9 +141,9 @@ public class DataImportJob implements IDataImportJob {
                             ps.setObject(18, conferenceId, JDBCType.BIGINT);
                         }
                 );
-                logger.info("Done Saving data from " + name);
+                logger.info("Done saving data from " + name);
             } catch (Exception e) {
-                logger.error("Error Saving papers.");
+                logger.error("Fatal saving papers.");
                 e.printStackTrace();
             } finally {
                 try {
@@ -226,14 +226,16 @@ public class DataImportJob implements IDataImportJob {
             long startTime = System.currentTimeMillis();
             final long DEADLINE = 1000 * 60 * 10;
             logger.info("Triggered, expect deadline is " + new Date(startTime + DEADLINE).toString());
-            while (paperPopWorker.count() != total) {
+            long count;
+            while ((count = paperPopWorker.count()) != total) {
                 try {
+                    //noinspection BusyWait
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     logger.warn(e.getMessage());
                 }
                 if (System.currentTimeMillis() - startTime > DEADLINE) {
-                    logger.error("Data Import time exceed " + DEADLINE / 1000 + " second, and current count is " + paperPopWorker.count() + ". Abort it");
+                    logger.error("Data import time exceed " + DEADLINE / 1000 + " second, and current count is " + count + ". Abort it");
                     return;
                 }
             }

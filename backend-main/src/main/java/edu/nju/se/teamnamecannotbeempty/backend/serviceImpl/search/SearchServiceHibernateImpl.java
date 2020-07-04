@@ -27,10 +27,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Service
 public class SearchServiceHibernateImpl implements SearchService {
+    @PersistenceContext
     private final EntityManager entityManager;
     private final Indexer indexer;
 
@@ -86,15 +88,16 @@ public class SearchServiceHibernateImpl implements SearchService {
         SimpleHTMLFormatter formatter = new SimpleHTMLFormatter("<b><span style=\"color: #b04c50; \">", "</span></b>");
         Highlighter highlighter = new Highlighter(formatter, new QueryScorer(luceneQuery));
 
+        //noinspection unchecked
         List<Paper> result = fullTextQuery.getResultList();
 
         for (Paper paper : result) {
+            entityManager.unwrap(Session.class).evict(paper);
             mode.highlight(
                     highlighter,
-                    Search.getFullTextEntityManager(entityManager).getSearchFactory().getAnalyzer("noStopWords"),
+                    fullTextEntityManager.getSearchFactory().getAnalyzer("noStopWords"),
                     paper
             );
-            entityManager.unwrap(Session.class).evict(paper);
         }
 
         return new PageImpl<>(result, pageable, total);
@@ -121,6 +124,7 @@ public class SearchServiceHibernateImpl implements SearchService {
             searchable.startIndexing();
             while (!searchable.importOK()) {
                 try {
+                    //noinspection BusyWait
                     Thread.sleep(4000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();

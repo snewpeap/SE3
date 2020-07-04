@@ -7,10 +7,11 @@ import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.search.query.dsl.SimpleQueryStringMatchingContext;
 import org.hibernate.search.query.dsl.TermMatchingContext;
-import org.springframework.beans.BeanUtils;
 
 import java.io.IOException;
 import java.util.List;
+
+//import org.springframework.beans.BeanUtils;
 
 public abstract class SearchMode {
 
@@ -37,17 +38,19 @@ public abstract class SearchMode {
         List<Author_Affiliation> paperAa = paper.getAa();
         for (Author_Affiliation aa : paperAa) {
             Author author = aa.getAuthor();
-            Author copy = new Author();
-            BeanUtils.copyProperties(author, copy);
+//            Author copy = new Author();
+//            BeanUtils.copyProperties(author, copy);
             String hl = null;
             try {
-                hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_author(), copy.getName());
+//                hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_author(), copy.getName());
+                hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_author(), author.getName());
             } catch (IOException | InvalidTokenOffsetsException e) {
                 e.printStackTrace();
             } finally {
                 if (hl != null) {
-                    copy.setName(hl);
-                    aa.setAuthor(copy);
+                    author.setName(hl);
+//                    copy.setName(hl);
+//                    aa.setAuthor(copy);
                 }
             }
         }
@@ -56,53 +59,62 @@ public abstract class SearchMode {
     protected void highlightAffiliation(Paper paper, Highlighter highlighter, Analyzer analyzer) {
         for (Author_Affiliation aa : paper.getAa()) {
             Affiliation affiliation = aa.getAffiliation();
-            Affiliation copy = new Affiliation();
-            BeanUtils.copyProperties(affiliation, copy);
+//            Affiliation copy = new Affiliation();
+//            BeanUtils.copyProperties(affiliation, copy);
             String hl = null;
             try {
-                hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_affiliation(), copy.getName());
+//                hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_affiliation(), copy.getName());
+                hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_affiliation(), affiliation.getName());
             } catch (IOException | InvalidTokenOffsetsException e) {
                 e.printStackTrace();
             } finally {
                 if (hl != null) {
-                    copy.setName(hl);
-                    aa.setAffiliation(copy);
+//                    copy.setName(hl);
+//                    aa.setAffiliation(copy);
+                    affiliation.setName(hl);
                 }
             }
         }
     }
 
     protected void highlightConference(Paper paper, Highlighter highlighter, Analyzer analyzer) {
+        Conference conference = paper.getConference();
+        if (conference == null) return;
         String hl = null;
-        Conference copy = new Conference();
-        BeanUtils.copyProperties(paper.getConference(), copy);
+//        Conference copy = new Conference();
+//        BeanUtils.copyProperties(paper.getConference(), copy);
         try {
-            hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_conference(), copy.getName());
+//            hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_conference(), copy.getName());
+            hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_conference(), conference.getName());
         } catch (IOException | InvalidTokenOffsetsException e) {
             e.printStackTrace();
         } finally {
             if (hl != null) {
-                copy.setName(hl);
+//                copy.setName(hl);
+                conference.setName(hl);
             }
-            paper.setConference(copy);
+//            paper.setConference(copy);
         }
     }
 
     protected void highlightKeyword(Paper paper, Highlighter highlighter, Analyzer analyzer) {
         List<Term> author_keywords = paper.getAuthor_keywords();
+        //noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < author_keywords.size(); i++) {
             Term term = author_keywords.get(i);
-            Term copy = new Term();
-            BeanUtils.copyProperties(term, copy);
+//            Term copy = new Term();
+//            BeanUtils.copyProperties(term, copy);
             String hl = null;
             try {
-                hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_authorKeywords(), copy.getContent());
+//                hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_authorKeywords(), copy.getContent());
+                hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_authorKeywords(), term.getContent());
             } catch (IOException | InvalidTokenOffsetsException e) {
                 e.printStackTrace();
             } finally {
                 if (hl != null) {
-                    copy.setContent(hl);
-                    author_keywords.set(i, copy);
+//                    copy.setContent(hl);
+//                    author_keywords.set(i, copy);
+                    term.setContent(hl);
                 }
             }
         }

@@ -2,18 +2,15 @@ package edu.nju.se.teamnamecannotbeempty.data.domain;
 
 import org.hibernate.search.annotations.IndexedEmbedded;
 
-import javax.persistence.Embeddable;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Embeddable
 public class Author_Affiliation {
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     @IndexedEmbedded(depth = 1)
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_AA_AUTHOR"))
     private Author author;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     @IndexedEmbedded(depth = 1)
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_AA_AFFI"))
     private Affiliation affiliation;
