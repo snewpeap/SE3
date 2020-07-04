@@ -20,7 +20,8 @@ public class DataRefresh {
 
     @Scheduled(cron = "0 0 4 * * ?")
     @CacheEvict(value = {"papersByYear", "getRank", "getPopRank","getAcademicEntity",
-            "getBasicGraph","getCompleteGraph","getTermPopByPaperID", "getSignificantPaper"},
+            "getBasicGraph","getCompleteGraph","getTermPopByPaperID", "getSignificantPaper",
+            "getAllPapersByAuthor","getAllPapersByAffi","getAllPapersByConference"},
             allEntries = true)
     public void refresh() {
         logger.info("Start daily refresh");

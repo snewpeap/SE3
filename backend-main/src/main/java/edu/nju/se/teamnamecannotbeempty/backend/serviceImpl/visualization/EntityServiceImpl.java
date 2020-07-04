@@ -15,13 +15,16 @@ public class EntityServiceImpl implements EntityService {
     private final AcademicEntityFetch academicEntityFetch;
     private final BasicGraphFetch basicGraphFetch;
     private final CompleteGraphFetch completeGraphFetch;
+    private final SignificantPaperFetch significantPaperFetch;
 
     @Autowired
     public EntityServiceImpl(AcademicEntityFetch academicEntityFetch, BasicGraphFetch basicGraphFetch,
-                             CompleteGraphFetch completeGraphFetch) {
+                             CompleteGraphFetch completeGraphFetch, SignificantPaperFetch significantPaperFetch) {
         this.academicEntityFetch = academicEntityFetch;
         this.basicGraphFetch = basicGraphFetch;
         this.completeGraphFetch = completeGraphFetch;
+        this.significantPaperFetch = significantPaperFetch;
+
     }
 
     @Override
@@ -41,6 +44,6 @@ public class EntityServiceImpl implements EntityService {
 
     @Override
     public List<SimplePaperVO> getSignificantPaper(long id, int type, int year, long termId) {
-        return null;
+        return significantPaperFetch.getSignificantPaper(id, type, year, termId);
     }
 }

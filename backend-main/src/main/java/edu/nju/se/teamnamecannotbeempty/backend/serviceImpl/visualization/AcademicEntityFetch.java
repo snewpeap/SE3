@@ -85,7 +85,7 @@ public class AcademicEntityFetch {
 
         //生成按年份的研究方向列表
         List<Paper> allPapers=new ArrayList<>();
-        aliasIdList.forEach(aliasId-> allPapers.addAll(paperDao.findByAuthorId(aliasId)));
+        aliasIdList.forEach(aliasId-> allPapers.addAll(fetchForCache.getAllPapersByAuthor(aliasId)));
         List<YearlyTerm> yearlyTerms=getYearlyTermList(allPapers);
 
         //生成代表作
@@ -135,7 +135,7 @@ public class AcademicEntityFetch {
 
         //生成按年份的研究方向列表
         List<Paper> allPapers=new ArrayList<>();
-        aliasIdList.forEach(aliasId-> allPapers.addAll(paperDao.findByAffiId(aliasId)));
+        aliasIdList.forEach(aliasId-> allPapers.addAll(fetchForCache.getAllPapersByAffi(aliasId)));
         List<YearlyTerm> yearlyTerms=getYearlyTermList(allPapers);
 
         //生成代表作
@@ -166,7 +166,7 @@ public class AcademicEntityFetch {
                         paperPopDao.getWeightByConferenceOnKeyword(id, termPopularity.getTerm().getId()))
         ).collect(Collectors.toList());
 
-        List<Paper> allPapers=paperDao.findByConferenceID(id);
+        List<Paper> allPapers=fetchForCache.getAllPapersByConference(id);
         List<YearlyTerm> yearlyTerms=getYearlyTermList(allPapers);
 
         List<SimplePaperVO> simplePaperVOS = generateTopPapers(paperPopDao.findTopPapersByConferenceId(id));
