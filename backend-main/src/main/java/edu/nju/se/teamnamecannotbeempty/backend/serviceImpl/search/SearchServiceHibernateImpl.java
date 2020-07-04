@@ -27,12 +27,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Service
 public class SearchServiceHibernateImpl implements SearchService {
-    @PersistenceContext
     private final EntityManager entityManager;
     private final Indexer indexer;
 

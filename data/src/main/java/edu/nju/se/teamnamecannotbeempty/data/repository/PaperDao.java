@@ -55,7 +55,7 @@ public interface PaperDao extends JpaRepository<Paper, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select sum(p.citation) from Paper p inner join p.aa aa where aa.author.id = ?1")
+    @Query("select coalesce(sum(p.citation),0) from Paper p inner join p.aa aa where aa.author.id = ?1")
     long getCitationByAuthorId(Long id);
 
     /**
@@ -66,7 +66,7 @@ public interface PaperDao extends JpaRepository<Paper, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select sum(p.citation) from Paper p inner join p.aa aa where aa.affiliation.id = ?1")
+    @Query("select coalesce(sum(p.citation),0) from Paper p inner join p.aa aa where aa.affiliation.id = ?1")
     long getCitationByAffiId(Long id);
 
     /**
