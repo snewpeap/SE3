@@ -2,6 +2,7 @@ package edu.nju.se.teamnamecannotbeempty.backend.service.visualization;
 
 import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.EntityMsg;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.visualization.BasicGraphFetch;
+import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.visualization.FetchForCache;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.GraphVO;
 import edu.nju.se.teamnamecannotbeempty.data.domain.*;
 import edu.nju.se.teamnamecannotbeempty.data.repository.*;
@@ -50,6 +51,8 @@ public class BasicGraphTest {
     private AuthorPopDao authorPopDao;
     @Mock
     private AffiPopDao affiPopDao;
+    @Mock
+    private FetchForCache fetchForCache;
     @InjectMocks
     private BasicGraphFetch basicGraphFetch;
 
@@ -77,7 +80,7 @@ public class BasicGraphTest {
         when(paperPopDao.findTopPapersByAuthorId(1L)).thenReturn(Collections.singletonList(paperPop));
         when(affiliationDao.getAffiliationsByAuthor(1L)).thenReturn(Collections.singletonList(affiliation1));
         when(termPopDao.getTermPopByAuthorID(1L)).thenReturn(Collections.singletonList(termPop));
-        when(termPopDao.getTermPopByPaperID(1L)).thenReturn(Collections.singletonList(termPop));
+        when(fetchForCache.getTermPopByPaperID(1L)).thenReturn(Collections.singletonList(termPop));
         when(paperPopDao.getWeightByAuthorOnKeyword(1L,1L)).thenReturn(1.0);
         GraphVO graphVO = basicGraphFetch.getBasicGraph(1L,1);
         Assert.assertEquals(graphVO.getNodes().size(),4);
@@ -112,8 +115,7 @@ public class BasicGraphTest {
     @Test
     public void conferenceBasicGraph(){
         Paper paper = new Paper(); paper.setId(1L); paper.setTitle("paper1");
-        Paper.Popularity paperPop = new Paper.Popularity(); paperPop.setPaper(paper);
-        when(paperPopDao.findTopPapersByConferenceId(1L)).thenReturn(Collections.singletonList(paperPop));
+        when(fetchForCache.getAllPapersByConference(1L)).thenReturn(Collections.singletonList(paper));
 
         Conference conference1 = new Conference(); conference1.setId(1L);
         Optional<Conference> optionalConference = Optional.of(conference1);

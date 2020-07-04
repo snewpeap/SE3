@@ -32,10 +32,14 @@ public class CompleteGraphFetch {
     private final PaperPopDao paperPopDao;
     private final AuthorPopDao authorPopDao;
     private final AffiPopDao affiPopDao;
+    private final FetchForCache fetchForCache;
 
     @Autowired
-    public CompleteGraphFetch(AffiliationDao affiliationDao, AuthorDao authorDao, ConferenceDao conferenceDao, EntityMsg entityMsg,
-                              TermPopDao termPopDao, PaperPopDao paperPopDao, AffiPopDao affiPopDao, AuthorPopDao authorPopDao) {
+    public CompleteGraphFetch(AffiliationDao affiliationDao, AuthorDao authorDao,
+                              ConferenceDao conferenceDao, EntityMsg entityMsg,
+                              TermPopDao termPopDao, PaperPopDao paperPopDao,
+                              AffiPopDao affiPopDao, AuthorPopDao authorPopDao,
+                              FetchForCache fetchForCache) {
         this.affiliationDao = affiliationDao;
         this.authorDao = authorDao;
         this.conferenceDao = conferenceDao;
@@ -44,6 +48,7 @@ public class CompleteGraphFetch {
         this.paperPopDao = paperPopDao;
         this.affiPopDao = affiPopDao;
         this.authorPopDao = authorPopDao;
+        this.fetchForCache = fetchForCache;
     }
 
     @Cacheable(value = "getCompleteGraph", key = "#p0+'_'+#p1", unless = "#result=null")
@@ -56,13 +61,13 @@ public class CompleteGraphFetch {
     }
 
     private GraphVO authorCompleteGraph(long id) {
-        List<Paper.Popularity> paperPopList = paperPopDao.findTopPapersByAuthorId(id);
-        List<Author> authorList = paperPopList.stream().flatMap(paperPop -> paperPop.getPaper().getAa().stream().map(
+        List<Paper> paperList = fetchForCache.getAllPapersByAuthor(id);
+        List<Author> authorList = paperList.stream().flatMap(paper -> paper.getAa().stream().map(
                 Author_Affiliation::getAuthor)).collect(Collectors.toList());
         List<Node> nodes = generateAuthorNode(authorList);
-        List<Link> links = paperPopList.stream().flatMap(paperPop -> paperPop.getPaper().getAa().stream()
+        List<Link> links = paperList.stream().flatMap(paper -> paper.getAa().stream()
                 .filter(author_affiliation -> id != author_affiliation.getAuthor().getActual().getId()).map(
-                        author_affiliation -> new Link(paperPop.getPaper().getId(), entityMsg.getPaperType(),
+                        author_affiliation -> new Link(paper.getId(), entityMsg.getPaperType(),
                                 author_affiliation.getAuthor().getActual().getId(), entityMsg.getAuthorType(), -1)
                 )).collect(Collectors.toList());
         //去NA
@@ -133,39 +138,23 @@ public class CompleteGraphFetch {
     }
 
     private GraphVO conferenceCompleteGraph(long id) {
-        List<Paper.Popularity> paperPopList = paperPopDao.findTopPapersByConferenceId(id);
-        List<Link> links = paperPopList.stream().map(paperPop->
-                new Link(paperPop.getPaper().getId(), entityMsg.getPaperType(),
-                        paperPop.getPaper().getAa().get(0).getAuthor().getActual().getId(), entityMsg.getAuthorType(), -1))
+        List<Paper> paperList = fetchForCache.getAllPapersByConference(id);
+        List<Link> links = paperList.stream().map(paper->
+                new Link(paper.getId(), entityMsg.getPaperType(),
+                        paper.getAa().get(0).getAuthor().getActual().getId(), entityMsg.getAuthorType(), -1))
                 .collect(Collectors.toList());
 
-        List<Link> links1 = paperPopList.stream()
+        List<Link> links1 = paperList.stream()
                 //去NA
-                .filter(paperPop -> !paperPop.getPaper().getAa().get(0).getAffiliation().getActual().getName().equals("NA"))
-                .map(paperPop->
-                new Link(paperPop.getPaper().getId(), entityMsg.getPaperType(),
-                        paperPop.getPaper().getAa().get(0).getAffiliation().getActual().getId(), entityMsg.getAffiliationType(), -1))
+                .filter(paper -> !paper.getAa().get(0).getAffiliation().getActual().getName().equals("NA"))
+                .map(paper->
+                new Link(paper.getId(), entityMsg.getPaperType(),
+                        paper.getAa().get(0).getAffiliation().getActual().getId(), entityMsg.getAffiliationType(), -1))
                 .collect(Collectors.toList());
         links.addAll(links1);
 
-//        List<Link> links2 = paperPopList.stream().flatMap(
-//                paperPop -> paperPop.getPaper().getAa().stream().flatMap(
-//                        author_affiliation -> affiliationDao.getAffiliationsByAuthor(author_affiliation.getAuthor().getActual().getId())
-//                        .stream().filter(affiliation -> havePaperInTheConferenceByAffi(affiliation.getActual().getId(),id))
-//                                .map(affiliation -> new Link(author_affiliation.getAuthor().getActual().getId(),entityMsg.getAuthorType(),
-//                                        affiliation.getActual().getId(), entityMsg.getAffiliationType(), -1))
-//                )).collect(Collectors.toList());
-
-
-//        List<Author_Affiliation> author_affiliationList = paperPopList.stream().flatMap(
-//                paperPop-> paperPop.getPaper().getAa().stream()).collect(Collectors.toList());
-//        List<Author> authorList = author_affiliationList.stream().map(Author_Affiliation::getAuthor).collect(Collectors.toList());
-//        List<Node> nodes = generateAuthorNode(authorList);
-//        List<Affiliation> affiliationList = author_affiliationList.stream().map(Author_Affiliation::getAffiliation).collect(Collectors.toList());
-//        nodes.addAll(generateAffiliationNode(affiliationList));
-
-        List<Author_Affiliation> author_affiliationList = paperPopList.stream().map(
-                paperPop-> paperPop.getPaper().getAa().get(0)).collect(Collectors.toList());
+        List<Author_Affiliation> author_affiliationList = paperList.stream().map(
+                paper-> paper.getAa().get(0)).collect(Collectors.toList());
         List<Author> authorList = author_affiliationList.stream().map(Author_Affiliation::getAuthor).collect(Collectors.toList());
         List<Node> nodes = generateAuthorNode(authorList);
         List<Affiliation> affiliationList = author_affiliationList.stream()
@@ -176,10 +165,10 @@ public class CompleteGraphFetch {
         List<Long> affiIdList = affiliationList.stream().map(affiliation -> affiliation.getActual().getId()).
                 distinct().collect(Collectors.toList());
 
-        List<Link> links2 = paperPopList.stream().flatMap(paperPop->
-                affiliationDao.getAffiliationsByAuthor(paperPop.getPaper().getAa().get(0).getAuthor().getActual().getId())
+        List<Link> links2 = paperList.stream().flatMap(paper->
+                affiliationDao.getAffiliationsByAuthor(paper.getAa().get(0).getAuthor().getActual().getId())
                         .stream().filter(affiliation -> isAffiliationInNodes(affiIdList,affiliation.getActual().getId()))
-                        .map(affiliation -> new Link(paperPop.getPaper().getAa().get(0).getAuthor().getActual().getId(),entityMsg.getAuthorType(),
+                        .map(affiliation -> new Link(paper.getAa().get(0).getAuthor().getActual().getId(),entityMsg.getAuthorType(),
                                 affiliation.getActual().getId(), entityMsg.getAffiliationType(), -1))
         ).collect(Collectors.toList());
 
@@ -202,12 +191,6 @@ public class CompleteGraphFetch {
                 author -> new Node(author.getActual().getId(), author.getActual().getName(), entityMsg.getAuthorType()))
                 .collect(Collectors.toList());
     }
-
-//    private boolean isConferenceInNodes(long id, long conferenceId){
-//        List<Paper.Popularity> paperPops = paperPopDao.findTopPapersByConferenceId(id);
-//
-//        return paperPops.stream().anyMatch(paperPop->paperPop.getPaper().getConference().getId() == conferenceId);
-//    }
 
     private boolean isAffiliationInNodes(List<Long> affiIdList, long id){
         return affiIdList.contains(id);

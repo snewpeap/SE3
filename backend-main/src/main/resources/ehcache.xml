@@ -8,42 +8,42 @@
         />
 
     <cache name="papersByYear"
-           maxElementsInmemory="1000"
+           maxElementsInmemory="100"
            eternal="true"
            overflowToDisk="true"
            diskPersistent="false">
     </cache>
 
     <cache name="getRank"
-           maxElementsInmemory="1000"
+           maxElementsInmemory="100"
            eternal="true"
            overflowToDisk="true"
            diskPersistent="false">
     </cache>
 
     <cache name="getPopRank"
-           maxElementsInmemory="1000"
+           maxElementsInmemory="100"
            eternal="true"
            overflowToDisk="true"
            diskPersistent="false">
     </cache>
 
     <cache name="getAcademicEntity"
-           maxElementsInmemory="1000"
+           maxElementsInmemory="100"
            eternal="true"
            overflowToDisk="true"
            diskPersistent="false">
     </cache>
 
     <cache name="getBasicGraph"
-           maxElementsInmemory="1000"
+           maxElementsInmemory="100"
            eternal="true"
            overflowToDisk="true"
            diskPersistent="false">
     </cache>
 
     <cache name="getCompleteGraph"
-           maxElementsInmemory="1000"
+           maxElementsInmemory="100"
            eternal="true"
            overflowToDisk="true"
            diskPersistent="false">
@@ -57,6 +57,27 @@
     </cache>
 
     <cache name="getSignificantPaper"
+           maxElementsInmemory="100"
+           eternal="true"
+           overflowToDisk="true"
+           diskPersistent="false">
+    </cache>
+
+    <cache name="getAllPapersByAuthor"
+           maxElementsInmemory="1000"
+           eternal="true"
+           overflowToDisk="true"
+           diskPersistent="false">
+    </cache>
+
+    <cache name="getAllPapersByAffi"
+           maxElementsInmemory="1000"
+           eternal="true"
+           overflowToDisk="true"
+           diskPersistent="false">
+    </cache>
+
+    <cache name="getAllPapersByConference"
            maxElementsInmemory="1000"
            eternal="true"
            overflowToDisk="true"

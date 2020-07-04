@@ -32,12 +32,13 @@ public class BasicGraphFetch {
     private final PaperPopDao paperPopDao;
     private final AuthorPopDao authorPopDao;
     private final AffiPopDao affiPopDao;
+    private final FetchForCache fetchForCache;
 
     @Autowired
     public BasicGraphFetch(AffiliationDao affiliationDao, AuthorDao authorDao, ConferenceDao conferenceDao,
                            PaperDao paperDao, TermDao termDao, EntityMsg entityMsg,
                            TermPopDao termPopDao, PaperPopDao paperPopDao, AuthorPopDao authorPopDao,
-                           AffiPopDao affiPopDao) {
+                           AffiPopDao affiPopDao, FetchForCache fetchForCache) {
         this.affiliationDao = affiliationDao;
         this.authorDao = authorDao;
         this.conferenceDao = conferenceDao;
@@ -48,6 +49,7 @@ public class BasicGraphFetch {
         this.paperPopDao = paperPopDao;
         this.authorPopDao = authorPopDao;
         this.affiPopDao = affiPopDao;
+        this.fetchForCache = fetchForCache;
     }
 
     @Cacheable(value = "getBasicGraph", key = "#p0+'_'+#p1", unless = "#result=null")
@@ -73,7 +75,7 @@ public class BasicGraphFetch {
         nodes.addAll(generateTermNode(termPopularities));
         links.addAll(generateLinksWithWeightInAuthor(id, termPopularities));
         List<Link> links1 = paperPopList.stream().flatMap(paperPop->
-                termPopDao.getTermPopByPaperID(paperPop.getPaper().getId()).stream()
+                fetchForCache.getTermPopByPaperID(paperPop.getPaper().getId()).stream()
         .map(termPop->new Link(paperPop.getPaper().getId(), entityMsg.getPaperType(), termPop.getTerm().getId(),
                 entityMsg.getTermType(),paperPop.getPopularity()))).collect(Collectors.toList());
         links.addAll(links1);
@@ -107,7 +109,9 @@ public class BasicGraphFetch {
     }
 
     private GraphVO conferenceBasicGraph(long id) {
-        List<Node> nodes = generatePaperNode(paperPopDao.findTopPapersByConferenceId(id));
+        List<Node> nodes = fetchForCache.getAllPapersByConference(id).stream().map(
+                paper-> new Node(paper.getId(), paper.getTitle(), entityMsg.getPaperType())
+        ).collect(Collectors.toList());
         List<Link> links = generateLinksWithoutWeight(id, entityMsg.getConferenceType(), nodes);
         String centerName = conferenceDao.findById(id).orElseGet(Conference::new).buildName();
         Node centerNode = new Node(id,centerName,entityMsg.getConferenceType());

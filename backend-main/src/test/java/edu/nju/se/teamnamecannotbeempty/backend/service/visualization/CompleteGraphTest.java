@@ -2,11 +2,14 @@ package edu.nju.se.teamnamecannotbeempty.backend.service.visualization;
 
 import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.EntityMsg;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.visualization.CompleteGraphFetch;
+import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.visualization.FetchForCache;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.GraphVO;
 import edu.nju.se.teamnamecannotbeempty.data.domain.*;
 import edu.nju.se.teamnamecannotbeempty.data.repository.AffiliationDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.AuthorDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.ConferenceDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.AffiPopDao;
+import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.AuthorPopDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.PaperPopDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
 import org.junit.Assert;
@@ -43,6 +46,12 @@ public class CompleteGraphTest {
     private EntityMsg entityMsg;
     @Mock
     private PaperPopDao paperPopDao;
+    @Mock
+    private FetchForCache fetchForCache;
+    @Mock
+    private AuthorPopDao authorPopDao;
+    @Mock
+    private AffiPopDao affiPopDao;
     @InjectMocks
     private CompleteGraphFetch completeGraphFetch;
 
@@ -80,8 +89,11 @@ public class CompleteGraphTest {
         when(authorDao.getAuthorsByKeyword(1L)).thenReturn(Arrays.asList(author2,author3));
         when(paperPopDao.getWeightByAuthorOnKeyword(anyLong(),anyLong())).thenReturn(4.0);
         GraphVO graphVO = completeGraphFetch.getCompleteGraph(1L, 1);
+        Author.Popularity apop = new Author.Popularity(); apop.setAuthor(author1); apop.setPopularity(1.0);
+        when(authorPopDao.findByAuthor_Id(anyLong())).thenReturn(Optional.of(apop));
+
         Assert.assertEquals(3,graphVO.getNodes().size());
-        Assert.assertEquals(6,graphVO.getLinks().size());
+        Assert.assertEquals(4,graphVO.getLinks().size());
     }
 
     @Test
@@ -98,6 +110,7 @@ public class CompleteGraphTest {
         when(affiliationDao.getAffiliationsByKeyword(1L)).thenReturn(Arrays.asList(affiliation1,affiliation2));
         when(paperPopDao.getWeightByAffiOnKeyword(2L,1L)).thenReturn(2.0);
         GraphVO graphVO = completeGraphFetch.getCompleteGraph(1L, 2);
+        when(affiPopDao.findByAffiliation_Id(anyLong())).thenReturn(Optional.empty());
         Assert.assertEquals(1,graphVO.getNodes().size());
         Assert.assertEquals(1,graphVO.getLinks().size());
     }
@@ -109,7 +122,7 @@ public class CompleteGraphTest {
         when(conferenceDao.findById(1L)).thenReturn(optionalConference);
         Paper paper = new Paper(); paper.setId(1L); paper.setTitle("paper1"); paper.setConference(conference1);
         Paper.Popularity paperPop = new Paper.Popularity(); paperPop.setPaper(paper);
-        when(paperPopDao.findTopPapersByConferenceId(1L)).thenReturn(Collections.singletonList(paperPop));
+        when(fetchForCache.getAllPapersByConference(1L)).thenReturn(Collections.singletonList(paper));
         Author author1 = new Author(); author1.setId(1L); author1.setName("author1");
         Affiliation affiliation1 = new Affiliation(); affiliation1.setId(1L); affiliation1.setName("affiliation1");
         Author_Affiliation aa1 = new Author_Affiliation(); aa1.setAuthor(author1); aa1.setAffiliation(affiliation1);

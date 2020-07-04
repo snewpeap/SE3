@@ -3,7 +3,6 @@ package edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.visualization;
 import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.EntityMsg;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.SimplePaperVO;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
-import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -15,16 +14,14 @@ import java.util.stream.Collectors;
 @Component
 public class SignificantPaperFetch {
 
-    private final PaperDao paperDao;
     private final EntityMsg entityMsg;
     private final FetchForCache fetchForCache;
     private final AcademicEntityFetch academicEntityFetch;
 
     @Autowired
-    public SignificantPaperFetch(PaperDao paperDao, EntityMsg entityMsg,
+    public SignificantPaperFetch(EntityMsg entityMsg,
                                  FetchForCache fetchForCache,
                                  AcademicEntityFetch academicEntityFetch) {
-        this.paperDao = paperDao;
         this.entityMsg = entityMsg;
         this.fetchForCache = fetchForCache;
         this.academicEntityFetch = academicEntityFetch;
@@ -45,7 +42,7 @@ public class SignificantPaperFetch {
                 .collect(Collectors.toList());
         //获取作者的全部论文
         List<Paper> allPapers=new ArrayList<>();
-        aliasIdList.forEach(aliasId-> allPapers.addAll(paperDao.findByAuthorId(aliasId)));
+        aliasIdList.forEach(aliasId-> allPapers.addAll(fetchForCache.getAllPapersByAuthor(aliasId)));
         return convertPaper(allPapers,year,termId);
     }
 
@@ -55,12 +52,12 @@ public class SignificantPaperFetch {
                 .collect(Collectors.toList());
         //获取机构的全部论文
         List<Paper> allPapers=new ArrayList<>();
-        aliasIdList.forEach(aliasId-> allPapers.addAll(paperDao.findByAffiId(aliasId)));
+        aliasIdList.forEach(aliasId-> allPapers.addAll(fetchForCache.getAllPapersByAffi(aliasId)));
         return convertPaper(allPapers,year,termId);
     }
 
     private List<SimplePaperVO> getPapersOfConference(long id, int year, long termId){
-        return convertPaper(paperDao.findByConferenceID(id),year,termId);
+        return convertPaper(fetchForCache.getAllPapersByConference(id),year,termId);
     }
 
     private List<SimplePaperVO> convertPaper(List<Paper> allPapers, int year, long termId){

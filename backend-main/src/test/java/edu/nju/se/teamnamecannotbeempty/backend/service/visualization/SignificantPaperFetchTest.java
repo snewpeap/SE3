@@ -53,9 +53,9 @@ public class SignificantPaperFetchTest {
         Paper paper11=new Paper(); paper11.setYear(1); paper11.setId(11L);
         Paper paper2=new Paper(); paper2.setYear(2); paper2.setId(2L);
         Paper paper22=new Paper(); paper22.setYear(2); paper22.setId(22L);
-        when(paperDao.findByAuthorId(1L)).thenReturn(Arrays.asList(paper1,paper2,paper11,paper22));
-        when(paperDao.findByAffiId(1L)).thenReturn(Arrays.asList(paper1,paper2,paper11,paper22));
-        when(paperDao.findByConferenceID(1L)).thenReturn(Arrays.asList(paper1,paper2,paper11,paper22));
+        when(fetchForCache.getAllPapersByAuthor(1L)).thenReturn(Arrays.asList(paper1,paper2,paper11,paper22));
+        when(fetchForCache.getAllPapersByAffi(1L)).thenReturn(Arrays.asList(paper1,paper2,paper11,paper22));
+        when(fetchForCache.getAllPapersByConference(1L)).thenReturn(Arrays.asList(paper1,paper2,paper11,paper22));
         Term term1 = new Term(); term1.setId(1L);
         Term.Popularity tPop1 = new Term.Popularity(); tPop1.setTerm(term1);
         Term term2 = new Term(); term2.setId(2L);
