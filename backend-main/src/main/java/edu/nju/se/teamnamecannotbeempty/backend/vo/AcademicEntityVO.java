@@ -14,11 +14,14 @@ public class AcademicEntityVO {
     private List<TermItem> terms;
     private List<YearlyTerm> yearlyTerms;
     private List<SimplePaperVO> significantPapers;
+    //以空格隔开的字符串，n个数字，第一个数字是年份
+    private String popTrend;
 
     public AcademicEntityVO(int type, long id, String name, int refSum,
                             List<AcademicEntityItem> authors, List<AcademicEntityItem> affiliations,
                             List<AcademicEntityItem> conferences, List<TermItem> terms,
-                            List<SimplePaperVO> significantPapers, List<YearlyTerm> yearlyTerms) {
+                            List<SimplePaperVO> significantPapers, List<YearlyTerm> yearlyTerms,
+                            String popTrend) {
         this.type = type;
         this.id = id;
         this.name = name;
@@ -29,6 +32,7 @@ public class AcademicEntityVO {
         this.terms = terms;
         this.significantPapers = significantPapers;
         this.yearlyTerms = yearlyTerms;
+        this.popTrend = popTrend;
     }
 
     public int getType() {
@@ -111,6 +115,14 @@ public class AcademicEntityVO {
         this.significantPapers = significantPapers;
     }
 
+    public String getPopTrend() {
+        return popTrend;
+    }
+
+    public void setPopTrend(String popTrend) {
+        this.popTrend = popTrend;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -125,11 +137,13 @@ public class AcademicEntityVO {
                 Objects.equals(conferences, that.conferences) &&
                 Objects.equals(terms, that.terms) &&
                 Objects.equals(yearlyTerms, that.yearlyTerms) &&
-                Objects.equals(significantPapers, that.significantPapers);
+                Objects.equals(significantPapers, that.significantPapers)&&
+                Objects.equals(popTrend,that.popTrend);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, id, name, refSum, authors, affiliations, conferences, terms, yearlyTerms, significantPapers);
+        return Objects.hash(type, id, name, refSum, authors, affiliations,
+                conferences, terms, yearlyTerms, significantPapers,popTrend);
     }
 }

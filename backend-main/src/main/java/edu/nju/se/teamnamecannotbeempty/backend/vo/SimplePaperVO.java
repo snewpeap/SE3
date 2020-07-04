@@ -114,9 +114,9 @@ public class SimplePaperVO {
         this.id = paper.getId();
         this.title = paper.getTitle();
         this.author_simpleAffiliationVOS = author_simpleAffiliationVOS;
-        this.publicationTitle = paper.getConference().getName();
-        this.conferenceId = paper.getConference().getId();
-        this.publicationYear = paper.getConference().getYear_highlight();
+        this.publicationTitle = paper.getConference()==null? "":paper.getConference().getName();
+        this.conferenceId = paper.getConference()==null? -1:paper.getConference().getId();
+        this.publicationYear = paper.getYear_highlight();
         this.keywords = keywords;
     }
 

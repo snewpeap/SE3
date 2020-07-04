@@ -34,10 +34,10 @@ public interface EntityService {
 
     /**
      * 获取学术实体代表作
-     * @param year 对应的年份或者所有年份
-     * @param term 对应的研究兴趣
+     * @param year 对应的年份或者所有年份, -1代表全部年份
+     * @param termId 对应的研究兴趣ID， -1l代表全部研究兴趣
      * @return 代表作列表
      */
-    List<SimplePaperVO> getSignificantPaper(long id, int type, String year, String term);
+    List<SimplePaperVO> getSignificantPaper(long id, int type, int year, long termId);
 
 }

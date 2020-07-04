@@ -8,16 +8,13 @@ import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.PaperPopDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
+@Component
 public class AcademicEntityFetch {
 
     private final AffiliationDao affiliationDao;
@@ -87,7 +84,7 @@ public class AcademicEntityFetch {
         ).collect(Collectors.toList());
 
         //生成按年份的研究方向列表
-        List<Paper> allPapers=paperDao.findByAuthorId(id);
+        List<Paper> allPapers=new ArrayList<>();
         aliasIdList.forEach(aliasId-> allPapers.addAll(paperDao.findByAuthorId(aliasId)));
         List<YearlyTerm> yearlyTerms=getYearlyTermList(allPapers);
 
@@ -96,11 +93,15 @@ public class AcademicEntityFetch {
                 .distinct().collect(Collectors.toList());
         List<SimplePaperVO> simplePaperVOS = generateTopPapers(paperPopList);
 
+        //生成总引用数
         int sumCitation = aliasIdList.stream().mapToInt(aliasId -> (int) paperDao.getCitationByAuthorId(aliasId)).sum();
+
+        //生成年度热度变化
+        String popTrend = getPopTrend(allPapers);
 
         return new AcademicEntityVO(entityMsg.getAuthorType(), id, authorDao.findById(id).orElseGet(Author::new).getActual().getName(),
                 sumCitation, null, affiEntityItems, conferenceEntityItems, termItems,
-                simplePaperVOS, yearlyTerms);
+                simplePaperVOS, yearlyTerms, popTrend);
     }
 
     private AcademicEntityVO affiliationEntity(long id) {
@@ -133,7 +134,7 @@ public class AcademicEntityFetch {
         ).collect(Collectors.toList());
 
         //生成按年份的研究方向列表
-        List<Paper> allPapers=paperDao.findByAffiId(id);
+        List<Paper> allPapers=new ArrayList<>();
         aliasIdList.forEach(aliasId-> allPapers.addAll(paperDao.findByAffiId(aliasId)));
         List<YearlyTerm> yearlyTerms=getYearlyTermList(allPapers);
 
@@ -142,12 +143,16 @@ public class AcademicEntityFetch {
                 .distinct().collect(Collectors.toList());
         List<SimplePaperVO> simplePaperVOS = generateTopPapers(paperPopList);
 
+        //生成总引用数
         int sumCitation = aliasIdList.stream().mapToInt(aliasId -> (int) paperDao.getCitationByAffiId(aliasId)).sum();
+
+        //生成年度热度变化
+        String popTrend = getPopTrend(allPapers);
 
         return new AcademicEntityVO(entityMsg.getAffiliationType(), id, affiliationDao.findById(id).
                 orElseGet(Affiliation::new).getActual().getName(),
                 sumCitation, authorEntityItems, null, conferenceEntityItems, termItems,
-                simplePaperVOS, yearlyTerms);
+                simplePaperVOS, yearlyTerms, popTrend);
     }
 
     private AcademicEntityVO conferenceEntity(long id) {
@@ -166,9 +171,12 @@ public class AcademicEntityFetch {
 
         List<SimplePaperVO> simplePaperVOS = generateTopPapers(paperPopDao.findTopPapersByConferenceId(id));
 
+        String popTrend = getPopTrend(allPapers);
+
         return new AcademicEntityVO(entityMsg.getConferenceType(), id, conferenceDao.findById(id).
                 orElseGet(Conference::new).buildName(), -1,
-                authorEntityItems, affiEntityItems, null, termItems, simplePaperVOS, yearlyTerms);
+                authorEntityItems, affiEntityItems, null, termItems, simplePaperVOS,
+                yearlyTerms, popTrend);
     }
 
     private List<AcademicEntityItem> generateAuthorEntityItems(List<Author> authors) {
@@ -202,7 +210,7 @@ public class AcademicEntityFetch {
         return simplePaperVOS.size() > 5 ? simplePaperVOS.subList(0, 5) : simplePaperVOS;
     }
 
-    private List<Long> getAllAliasIdsOfAuthor(long id, List<Long> results) {
+    public List<Long> getAllAliasIdsOfAuthor(long id, List<Long> results) {
         results.add(id);
         List<Author> aliasList = authorDao.getByAlias_Id(id);
         if (aliasList == null || aliasList.isEmpty()) {
@@ -214,7 +222,7 @@ public class AcademicEntityFetch {
         return results;
     }
 
-    private List<Long> getAllAliasIdsOfAffi(long id, List<Long> results) {
+    public List<Long> getAllAliasIdsOfAffi(long id, List<Long> results) {
         results.add(id);
         List<Affiliation> aliasList = affiliationDao.getByAlias_Id(id);
         if (aliasList == null || aliasList.isEmpty()) {
@@ -227,10 +235,10 @@ public class AcademicEntityFetch {
     }
 
     private List<YearlyTerm> getYearlyTermList(List<Paper> allPapers){
-        Map<Integer, List<Paper>> paperByYear = allPapers.stream().collect(
+        Map<Integer, List<Paper>> paperByYear = allPapers.stream().distinct().collect(
                 Collectors.groupingBy(Paper::getYear));
         return paperByYear.entrySet().stream().map(
-                en -> new YearlyTerm(en.getKey(),en.getValue().stream().distinct().flatMap(
+                en -> new YearlyTerm(en.getKey(),en.getValue().stream().flatMap(
                         paper-> fetchForCache.getTermPopByPaperID(paper.getId()).stream().map(
                                 termPop-> new TermItem(termPop.getTerm().getId(),
                                         termPop.getTerm().getContent(), -1)
@@ -239,5 +247,43 @@ public class AcademicEntityFetch {
         ).collect(Collectors.toList());
     }
 
+    private String getPopTrend(List<Paper> allPapers){
+        Map<Integer, List<Paper.Popularity>> popByYearMap = allPapers.stream().distinct().flatMap(
+                paper-> paper.getPops().stream()
+        ).collect(Collectors.groupingBy(Paper.Popularity::getYear));
+        List<PopByYear> popByYearList = popByYearMap.entrySet().stream().map(
+                en-> new PopByYear(en.getKey(),
+                        en.getValue().stream().mapToDouble(Paper.Popularity::getPopularity).sum())
+        ).sorted(Comparator.comparing(PopByYear::getYear)).collect(Collectors.toList());
+        if(popByYearList.size()==0) return "";
+        StringBuilder sb=new StringBuilder();
+        int beginYear=popByYearList.get(0).getYear();
+        sb.append(beginYear); sb.append(" "); sb.append(popByYearList.get(0).getPop());
+        beginYear++;
+        for(int i=1; i<popByYearList.size(); beginYear++){
+            sb.append(" ");
+            if(popByYearList.get(i).getYear()==beginYear){
+                sb.append(popByYearList.get(i).getPop());
+                i++;
+            }else{
+                sb.append(0);
+            }
+        }
+        return sb.toString();
+    }
 
+    static class PopByYear{
+        int year;
+        double pop;
+        public PopByYear(int year, double pop){
+            this.year = year;
+            this.pop = pop;
+        }
+        int getYear(){
+            return year;
+        }
+        double getPop(){
+            return pop;
+        }
+    }
 }

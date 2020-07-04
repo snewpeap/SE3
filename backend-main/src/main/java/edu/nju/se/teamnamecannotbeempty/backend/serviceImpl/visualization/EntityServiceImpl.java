@@ -40,7 +40,7 @@ public class EntityServiceImpl implements EntityService {
     }
 
     @Override
-    public List<SimplePaperVO> getSignificantPaper(long id, int type, String year, String term) {
+    public List<SimplePaperVO> getSignificantPaper(long id, int type, int year, long termId) {
         return null;
     }
 }

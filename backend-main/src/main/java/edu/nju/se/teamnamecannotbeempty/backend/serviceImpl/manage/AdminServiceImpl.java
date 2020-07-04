@@ -77,7 +77,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    @CacheEvict(value = {"papersByYear", "getRank", "getPopRank","getAcademicEntity","getBasicGraph","getCompleteGraph"},
+    @CacheEvict(value = {"papersByYear", "getRank", "getPopRank","getAcademicEntity",
+            "getBasicGraph","getCompleteGraph","getSignificantPaper"},
             allEntries = true)
     public ResponseVO operateDataAlias(long sonId, long fatherId, int type) {
         ResponseVO responseVO = new ResponseVO(true, "OK", null);

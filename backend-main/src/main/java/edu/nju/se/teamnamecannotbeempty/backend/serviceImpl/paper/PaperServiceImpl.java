@@ -88,7 +88,7 @@ public class PaperServiceImpl implements PaperService {
 
         responseVO = ResponseVO.success();
         responseVO.setContent(new PaperVO(paper.getId(), paper.getTitle(), author_affiliationVOS, paper.getConference().getName(),
-                paper.getConference().getId(), paper.getConference().getYear(),
+                paper.getConference().getId(), paper.getYear(),
                 assembleOrdno(paper.getConference().getOrdno()), paper.getStart_page(),
                 paper.getEnd_page(), paper.getSummary(), paper.getDoi(), pdf, keywords, ieees, controls,
                 noncontrols, paper.getCitation(), paper.getReference(), paper.getPublisher(), paper.getDocument_identifier()));
