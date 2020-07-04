@@ -11,10 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -96,11 +93,15 @@ public class AcademicEntityFetch {
                 .distinct().collect(Collectors.toList());
         List<SimplePaperVO> simplePaperVOS = generateTopPapers(paperPopList);
 
+        //生成总引用数
         int sumCitation = aliasIdList.stream().mapToInt(aliasId -> (int) paperDao.getCitationByAuthorId(aliasId)).sum();
+
+        //生成年度热度变化
+        String popTrend = getPopTrend(allPapers);
 
         return new AcademicEntityVO(entityMsg.getAuthorType(), id, authorDao.findById(id).orElseGet(Author::new).getActual().getName(),
                 sumCitation, null, affiEntityItems, conferenceEntityItems, termItems,
-                simplePaperVOS, yearlyTerms);
+                simplePaperVOS, yearlyTerms, popTrend);
     }
 
     private AcademicEntityVO affiliationEntity(long id) {
@@ -142,12 +143,16 @@ public class AcademicEntityFetch {
                 .distinct().collect(Collectors.toList());
         List<SimplePaperVO> simplePaperVOS = generateTopPapers(paperPopList);
 
+        //生成总引用数
         int sumCitation = aliasIdList.stream().mapToInt(aliasId -> (int) paperDao.getCitationByAffiId(aliasId)).sum();
+
+        //生成年度热度变化
+        String popTrend = getPopTrend(allPapers);
 
         return new AcademicEntityVO(entityMsg.getAffiliationType(), id, affiliationDao.findById(id).
                 orElseGet(Affiliation::new).getActual().getName(),
                 sumCitation, authorEntityItems, null, conferenceEntityItems, termItems,
-                simplePaperVOS, yearlyTerms);
+                simplePaperVOS, yearlyTerms, popTrend);
     }
 
     private AcademicEntityVO conferenceEntity(long id) {
@@ -166,9 +171,12 @@ public class AcademicEntityFetch {
 
         List<SimplePaperVO> simplePaperVOS = generateTopPapers(paperPopDao.findTopPapersByConferenceId(id));
 
+        String popTrend = getPopTrend(allPapers);
+
         return new AcademicEntityVO(entityMsg.getConferenceType(), id, conferenceDao.findById(id).
                 orElseGet(Conference::new).buildName(), -1,
-                authorEntityItems, affiEntityItems, null, termItems, simplePaperVOS, yearlyTerms);
+                authorEntityItems, affiEntityItems, null, termItems, simplePaperVOS,
+                yearlyTerms, popTrend);
     }
 
     private List<AcademicEntityItem> generateAuthorEntityItems(List<Author> authors) {
@@ -239,5 +247,43 @@ public class AcademicEntityFetch {
         ).collect(Collectors.toList());
     }
 
+    private String getPopTrend(List<Paper> allPapers){
+        Map<Integer, List<Paper.Popularity>> popByYearMap = allPapers.stream().distinct().flatMap(
+                paper-> paper.getPops().stream()
+        ).collect(Collectors.groupingBy(Paper.Popularity::getYear));
+        List<PopByYear> popByYearList = popByYearMap.entrySet().stream().map(
+                en-> new PopByYear(en.getKey(),
+                        en.getValue().stream().mapToDouble(Paper.Popularity::getPopularity).sum())
+        ).sorted(Comparator.comparing(PopByYear::getYear)).collect(Collectors.toList());
+        if(popByYearList.size()==0) return "";
+        StringBuilder sb=new StringBuilder();
+        int beginYear=popByYearList.get(0).getYear();
+        sb.append(beginYear); sb.append(" "); sb.append(popByYearList.get(0).getPop());
+        beginYear++;
+        for(int i=1; i<popByYearList.size(); beginYear++){
+            sb.append(" ");
+            if(popByYearList.get(i).getYear()==beginYear){
+                sb.append(popByYearList.get(i).getPop());
+                i++;
+            }else{
+                sb.append(0);
+            }
+        }
+        return sb.toString();
+    }
 
+    static class PopByYear{
+        int year;
+        double pop;
+        public PopByYear(int year, double pop){
+            this.year = year;
+            this.pop = pop;
+        }
+        int getYear(){
+            return year;
+        }
+        double getPop(){
+            return pop;
+        }
+    }
 }
