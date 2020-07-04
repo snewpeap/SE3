@@ -3,12 +3,11 @@ package edu.nju.se.teamnamecannotbeempty.batch.parser.csv.converters;
 import com.opencsv.bean.AbstractCsvConverter;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Author;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Collection;
+import java.util.HashMap;
 
 public class ToAuthor extends AbstractCsvConverter {
-    private static final ConcurrentHashMap<String, Author> saveMap = new ConcurrentHashMap<>();
+    private static final HashMap<String, Author> saveMap = new HashMap<>();
 
     @Override
     public Object convertToRead(String value) {
@@ -29,8 +28,8 @@ public class ToAuthor extends AbstractCsvConverter {
         return result;
     }
 
-    public static List<Author> getSaveList() {
-        return new ArrayList<>(saveMap.values());
+    public static Collection<Author> getSaveCollection() {
+        return saveMap.values();
     }
 
 }

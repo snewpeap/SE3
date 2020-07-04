@@ -3,26 +3,26 @@ package edu.nju.se.teamnamecannotbeempty.batch.job;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import edu.nju.se.teamnamecannotbeempty.api.IDataImportJob;
-import edu.nju.se.teamnamecannotbeempty.batch.job.worker.*;
+import edu.nju.se.teamnamecannotbeempty.batch.job.worker.AffiDupWorker;
+import edu.nju.se.teamnamecannotbeempty.batch.job.worker.AuthorDupWorker;
+import edu.nju.se.teamnamecannotbeempty.batch.job.worker.PaperPopWorker;
 import edu.nju.se.teamnamecannotbeempty.batch.parser.csv.FromCSV;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Ref;
+import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.sql.JDBCType;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.concurrent.Future;
 
 @Service
 public class DataImportJob implements IDataImportJob {
@@ -95,11 +95,11 @@ public class DataImportJob implements IDataImportJob {
 
     @Component
     static class Attacher {
-        private final JdbcTemplate jdbcTemplate;
+        private final PaperDao paperDao;
 
         @Autowired
-        public Attacher(JdbcTemplate jdbcTemplate) {
-            this.jdbcTemplate = jdbcTemplate;
+        public Attacher(PaperDao paperDao) {
+            this.paperDao = paperDao;
         }
 
         /*
@@ -108,39 +108,7 @@ public class DataImportJob implements IDataImportJob {
         @Async
         void attachAndSave(Collection<Paper> papers, InputStream jsonFile, String name) {
             try {
-                jdbcTemplate.batchUpdate(
-                        "insert papers(" +
-                                "id, citation, document_identifier, " +
-                                "doi, end_page, funding_info, " +
-                                "ieee_id, isbn, issn, " +
-                                "license, pdf_link, publisher, " +
-                                "reference, start_page, abstract, " +
-                                "title, volume, year, conference_id) " +
-                                "VALUES (0,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                        attachRefs(papers, jsonFile),
-                        500,
-                        (ps, paper) -> {
-                            ps.setObject(1, paper.getCitation(), JDBCType.INTEGER);
-                            ps.setString(2, paper.getDocument_identifier());
-                            ps.setString(3, paper.getDoi());
-                            ps.setObject(4, paper.getEnd_page(), JDBCType.INTEGER);
-                            ps.setString(5, paper.getFunding_info());
-                            ps.setObject(6, paper.getIeeeId(), JDBCType.BIGINT);
-                            ps.setString(7, paper.getIsbn());
-                            ps.setString(8, paper.getIssn());
-                            ps.setString(9, paper.getLicense());
-                            ps.setString(10, paper.getPdf_link());
-                            ps.setString(11, paper.getPublisher());
-                            ps.setObject(12, paper.getReference(), JDBCType.INTEGER);
-                            ps.setObject(13, paper.getStart_page(), JDBCType.INTEGER);
-                            ps.setString(14, paper.getSummary());
-                            ps.setString(15, paper.getTitle());
-                            ps.setObject(16, paper.getVolume(), JDBCType.INTEGER);
-                            ps.setObject(17, paper.getYear(), JDBCType.INTEGER);
-                            Long conferenceId = paper.getConference() == null ? null : paper.getConference().getId();
-                            ps.setObject(18, conferenceId, JDBCType.BIGINT);
-                        }
-                );
+                paperDao.saveAll(attachRefs(papers, jsonFile));
                 logger.info("Done saving data from " + name);
             } catch (Exception e) {
                 logger.error("Fatal saving papers.");
@@ -203,19 +171,19 @@ public class DataImportJob implements IDataImportJob {
 
     @Component
     static class BatchGenerator {
-        private final AuthorPopWorker authorPopWorker;
-        private final AffiPopWorker affiPopWorker;
-        private final TermPopWorker termPopWorker;
+        //        private final AuthorPopWorker authorPopWorker;
+//        private final AffiPopWorker affiPopWorker;
+//        private final TermPopWorker termPopWorker;
         private final PaperPopWorker paperPopWorker;
         private final AuthorDupWorker authorDupWorker;
         private final AffiDupWorker affiDupWorker;
 
         @Autowired
-        public BatchGenerator(AuthorPopWorker authorPopWorker, AffiPopWorker affiPopWorker, TermPopWorker termPopWorker,
-                              AuthorDupWorker authorDupWorker, AffiDupWorker affiDupWorker, PaperPopWorker paperPopWorker) {
-            this.authorPopWorker = authorPopWorker;
-            this.affiPopWorker = affiPopWorker;
-            this.termPopWorker = termPopWorker;
+        public BatchGenerator(/* AuthorPopWorker authorPopWorker, AffiPopWorker affiPopWorker, TermPopWorker termPopWorker, */
+                AuthorDupWorker authorDupWorker, AffiDupWorker affiDupWorker, PaperPopWorker paperPopWorker) {
+//            this.authorPopWorker = authorPopWorker;
+//            this.affiPopWorker = affiPopWorker;
+//            this.termPopWorker = termPopWorker;
             this.authorDupWorker = authorDupWorker;
             this.affiDupWorker = affiDupWorker;
             this.paperPopWorker = paperPopWorker;
@@ -223,6 +191,9 @@ public class DataImportJob implements IDataImportJob {
 
         @Async
         public void trigger_init(long total) {
+            affiDupWorker.generateAffiDup();
+            authorDupWorker.generateAuthorDup();
+
             long startTime = System.currentTimeMillis();
             final long DEADLINE = 1000 * 60 * 10;
             logger.info("Triggered, expect deadline is " + new Date(startTime + DEADLINE).toString());
@@ -243,11 +214,9 @@ public class DataImportJob implements IDataImportJob {
             System.gc();
             paperPopWorker.generatePaperPop();
             logger.info("Done generate paper popularity");
-            Future<?> authorFuture = authorPopWorker.generateAuthorPop();
-            Future<?> affiFuture = affiPopWorker.generateAffiPop();
-            termPopWorker.generateTermPop();
-            affiDupWorker.generateAffiDup(affiFuture);
-            authorDupWorker.generateAuthorDup(authorFuture);
+//            Future<?> authorFuture = authorPopWorker.generateAuthorPop();
+//            Future<?> affiFuture = affiPopWorker.generateAffiPop();
+//            termPopWorker.generateTermPop();
         }
     }
 }

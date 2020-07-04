@@ -1,15 +1,11 @@
 package edu.nju.se.teamnamecannotbeempty.data.domain;
 
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "authors")
@@ -25,9 +21,9 @@ public class Author implements Aliasable<Author> {
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_AUTHOR_ALIAS"))
     //别名，在需要去重的时候为空；去重后，如果没有重复为this，否则为重复对象
     private Author alias;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "author")
-    @Fetch(FetchMode.SUBSELECT)
-    private Set<Popularity> pops = new HashSet<>();
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "author")
+//    @Fetch(FetchMode.SUBSELECT)
+//    private Set<Popularity> pops = new HashSet<>();
 
     @Override
     public Author getActual() {
@@ -162,11 +158,11 @@ public class Author implements Aliasable<Author> {
         this.lowerCaseName = lowerCaseName;
     }
 
-    public Set<Popularity> getPops() {
-        return pops;
-    }
-
-    public void setPops(Set<Popularity> pops) {
-        this.pops = pops;
-    }
+//    public Set<Popularity> getPops() {
+//        return pops;
+//    }
+//
+//    public void setPops(Set<Popularity> pops) {
+//        this.pops = pops;
+//    }
 }

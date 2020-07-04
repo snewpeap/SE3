@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.Future;
 
 @Component
 public class AffiDupWorker {
@@ -37,15 +36,15 @@ public class AffiDupWorker {
     }
 
     @Async
-    public void generateAffiDup(Future<?> waitForImport) {
-        while (waitForImport.isDone()) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                logger.error("Generate duplicate authors aborted due to " + e.getMessage());
-                return;
-            }
-        }
+    public void generateAffiDup() {
+//        while (waitForImport.isDone()) {
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                logger.error("Generate duplicate authors aborted due to " + e.getMessage());
+//                return;
+//            }
+//        }
         /*
         下面进行分词
          */

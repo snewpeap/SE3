@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 @Component
@@ -34,15 +33,15 @@ public class AuthorDupWorker {
     }
 
     @Async
-    public void generateAuthorDup(Future<?> waitForImport) {
-        while (waitForImport.isDone()) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                logger.error("Generate duplicate authors aborted due to " + e.getMessage());
-                return;
-            }
-        }
+    public void generateAuthorDup() {
+//        while (waitForImport.isDone()) {
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                logger.error("Generate duplicate authors aborted due to " + e.getMessage());
+//                return;
+//            }
+//        }
         ArrayListValuedHashMap<Long, Long> cache = new ArrayListValuedHashMap<>();
         class TempAuthor {
             final Author author;
@@ -56,7 +55,7 @@ public class AuthorDupWorker {
                 }
             }
         }
-        List<TempAuthor> all = authorDao.findAll().stream()
+        List<TempAuthor> all = authorDao.findAll().parallelStream()
                 .map(author ->
                         new TempAuthor(author, author.getLowerCaseName().split(" "))
                 ).collect(Collectors.toList());

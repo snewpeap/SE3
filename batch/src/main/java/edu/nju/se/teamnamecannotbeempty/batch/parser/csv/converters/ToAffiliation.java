@@ -7,11 +7,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ToAffiliation extends AbstractCsvConverter {
-    private static final ConcurrentHashMap<String, Affiliation> saveMap = new ConcurrentHashMap<>();
+    private static final HashMap<String, Affiliation> saveMap = new HashMap<>();
     private static Map<String, String> synonyms = new HashMap<>();
 
     @Override
@@ -36,8 +38,8 @@ public class ToAffiliation extends AbstractCsvConverter {
         return result;
     }
 
-    public static List<Affiliation> getSaveList() {
-        return new ArrayList<>(saveMap.values());
+    public static Collection<Affiliation> getSaveCollection() {
+        return saveMap.values();
     }
 
     static {
@@ -49,9 +51,8 @@ public class ToAffiliation extends AbstractCsvConverter {
         String line;
         try {
             while ((line = reader.readLine()) != null) {
-                line = line.replaceAll("\\.", "\\.");
                 String[] ss = line.split(" ");
-                synonyms.put(ss[0], ss[1]);
+                synonyms.put(ss[0].replaceAll("\\.", "\\\\."), ss[1]);
             }
             reader.close();
         } catch (IOException e) {

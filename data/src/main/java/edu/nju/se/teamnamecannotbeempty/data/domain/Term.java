@@ -1,15 +1,11 @@
 package edu.nju.se.teamnamecannotbeempty.data.domain;
 
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "terms")
@@ -20,9 +16,9 @@ public class Term {
     @Column(nullable = false)
     @Field
     private String content;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "term")
-    @Fetch(FetchMode.SUBSELECT)
-    private Set<Popularity> pops = new HashSet<>();
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "term")
+//    @Fetch(FetchMode.SUBSELECT)
+//    private Set<Popularity> pops = new HashSet<>();
 
     public Term() {
     }
@@ -136,11 +132,11 @@ public class Term {
         this.content = content;
     }
 
-    public Set<Popularity> getPops() {
-        return pops;
-    }
-
-    public void setPops(Set<Popularity> pops) {
-        this.pops = pops;
-    }
+//    public Set<Popularity> getPops() {
+//        return pops;
+//    }
+//
+//    public void setPops(Set<Popularity> pops) {
+//        this.pops = pops;
+//    }
 }
