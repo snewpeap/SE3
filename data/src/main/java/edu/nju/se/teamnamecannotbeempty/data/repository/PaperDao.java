@@ -55,8 +55,8 @@ public interface PaperDao extends JpaRepository<Paper, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select sum(p.citation) from Paper p inner join p.aa aa where aa.author.id = ?1")
-    long getCitationByAuthorId(Long id);
+    @Query("select coalesce(sum(p.citation),0) from Paper p inner join p.aa aa where aa.author.id = ?1")
+    Long getCitationByAuthorId(Long id);
 
     /**
      * 获得机构的被引总数
@@ -66,8 +66,8 @@ public interface PaperDao extends JpaRepository<Paper, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select sum(p.citation) from Paper p inner join p.aa aa where aa.affiliation.id = ?1")
-    long getCitationByAffiId(Long id);
+    @Query("select coalesce(sum(p.citation),0) from Paper p inner join p.aa aa where aa.affiliation.id = ?1")
+    Long getCitationByAffiId(Long id);
 
     /**
      * 查找有相应的研究方向的论文
