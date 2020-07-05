@@ -99,7 +99,7 @@ public class AcademicEntityFetch {
                 .distinct().collect(Collectors.toList());
         List<SimplePaperVO> simplePaperVOS = paperList.stream().map(
                 SimplePaperVO::new).collect(Collectors.toList());
-        if(simplePaperVOS.size()>5) simplePaperVOS=simplePaperVOS.subList(0,5);
+        if(simplePaperVOS.size()>12) simplePaperVOS=simplePaperVOS.subList(0,12);
 
         //生成总引用数
         int sumCitation = aliasIdList.stream().mapToInt(aliasId ->
@@ -166,7 +166,7 @@ public class AcademicEntityFetch {
                 .distinct().collect(Collectors.toList());
         List<SimplePaperVO> simplePaperVOS = paperList.stream().map(
                 SimplePaperVO::new).collect(Collectors.toList());
-        if(simplePaperVOS.size()>5) simplePaperVOS=simplePaperVOS.subList(0,5);
+        if(simplePaperVOS.size()>12) simplePaperVOS=simplePaperVOS.subList(0,12);
 
         //生成总引用数
         int sumCitation = aliasIdList.stream().mapToInt(aliasId ->
@@ -208,7 +208,7 @@ public class AcademicEntityFetch {
         List<SimplePaperVO> simplePaperVOS = fetchForCache.getAllPapersByConference(id)
                 .stream().map(SimplePaperVO::new
         ).collect(Collectors.toList());
-        if(simplePaperVOS.size()>5) simplePaperVOS=simplePaperVOS.subList(0,5);
+        if(simplePaperVOS.size()>12) simplePaperVOS=simplePaperVOS.subList(0,12);
 
         return new AcademicEntityVO(entityMsg.getConferenceType(), id, conferenceDao.findById(id).
                 orElseGet(Conference::new).buildName(), -1,

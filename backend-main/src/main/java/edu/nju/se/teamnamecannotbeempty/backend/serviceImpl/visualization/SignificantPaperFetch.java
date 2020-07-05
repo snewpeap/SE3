@@ -30,10 +30,14 @@ public class SignificantPaperFetch {
 
     @Cacheable(value = "getSignificantPaper", key = "#p0+'_'+#p1+'_'+#p2+'_'+#p3")
     public List<SimplePaperVO> getSignificantPaper(long id, int type, int year, long termId) {
-        if (type == entityMsg.getAuthorType()) return getPapersOfAuthor(id,year,termId);
-        else if (type == entityMsg.getAffiliationType()) return getPapersOfAffi(id,year,termId);
-        else if (type == entityMsg.getConferenceType()) return getPapersOfConference(id,year,termId);
-        return new ArrayList<>(1);
+        List<SimplePaperVO> simplePaperVOS = new ArrayList<>(1);
+        if (type == entityMsg.getAuthorType())
+            simplePaperVOS=getPapersOfAuthor(id,year,termId);
+        else if (type == entityMsg.getAffiliationType())
+            simplePaperVOS=getPapersOfAffi(id,year,termId);
+        else if (type == entityMsg.getConferenceType())
+            simplePaperVOS=getPapersOfConference(id,year,termId);
+        return simplePaperVOS.size()>12?simplePaperVOS.subList(0,12):simplePaperVOS;
     }
 
     private List<SimplePaperVO> getPapersOfAuthor(long id, int year, long termId){
