@@ -28,7 +28,7 @@ public class Affiliation implements Aliasable<Affiliation> {
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_AFFI_ALIAS"))
     //别名，在需要去重的时候为空；去重后，如果没有重复为this，否则为重复对象
     private Affiliation alias;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "affiliation")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "affiliation")
     @Fetch(FetchMode.SUBSELECT)
     private List<Popularity> pops = new ArrayList<>();
 

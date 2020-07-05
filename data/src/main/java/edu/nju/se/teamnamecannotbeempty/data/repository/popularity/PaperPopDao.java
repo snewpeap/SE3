@@ -75,8 +75,6 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select distinct pp from paper_popularity pp " +
-            "where pp.paper.conference.id = ?1 order by pp.popularity desc")
     default List<Paper.Popularity> findTopPapersByConferenceId(Long id) {
         return findTopPapersByConferenceIdAndYearIsNullPaged(id, Pageable.unpaged());
     }
@@ -84,7 +82,7 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
     /**
      * @since 迭代三
      */
-    @Query("select distinct pp from paper_popularity pp " +
+    @Query("select pp from paper_popularity pp " +
             "where pp.paper.conference.id = ?1 and pp.year is null order by pp.popularity desc")
     List<Paper.Popularity> findTopPapersByConferenceIdAndYearIsNullPaged(Long id, Pageable page);
 

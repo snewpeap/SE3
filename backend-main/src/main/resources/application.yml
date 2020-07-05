@@ -8,6 +8,7 @@ spring:
           lucene_version: "5.5.5"
           default:
             directory_provider: "local-heap"
+    open-in-view: true
 
 server:
   servlet:

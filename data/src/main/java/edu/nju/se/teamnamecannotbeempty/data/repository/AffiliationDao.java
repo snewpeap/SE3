@@ -55,7 +55,7 @@ public interface AffiliationDao extends JpaRepository<Affiliation, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select distinct aa.affiliation, ap.popularity from Paper p " +
+    @Query("select distinct aa.affiliation from Paper p " +
             "inner join p.aa aa inner join affi_popularity ap on aa.affiliation.id = ap.affiliation.id " +
             "where p.conference.id = ?1 order by ap.popularity desc")
     List<Affiliation> getAffiliationsByConference(Long id);

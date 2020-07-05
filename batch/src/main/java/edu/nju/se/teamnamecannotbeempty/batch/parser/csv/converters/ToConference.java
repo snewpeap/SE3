@@ -22,6 +22,10 @@ public class ToConference extends AbstractBeanField<Conference, Object> {
 
     @Override
     protected Object convert(String value) {
+        return convertString(value);
+    }
+
+    private static Object convertString(String value) {
         value = value.trim();
         if (!StringUtils.isBlank(value)) {
             Conference result = saveMap.get(value);
@@ -40,11 +44,11 @@ public class ToConference extends AbstractBeanField<Conference, Object> {
             if ((result = saveMap.get(value)) == null) {
                 synchronized (saveMap) {
                     if ((result = saveMap.get(value)) == null) {
-                        Conference conference = new Conference();
-                        conference.setOrdno(ordno);
-                        conference.setYear(findYear(value));
-                        conference.setName(value);
-                        return saveMap.put(value, conference);
+                        result = new Conference();
+                        result.setOrdno(ordno);
+                        result.setYear(findYear(value));
+                        result.setName(value);
+                        saveMap.put(value, result);
                     }
                 }
             }
@@ -54,7 +58,7 @@ public class ToConference extends AbstractBeanField<Conference, Object> {
         }
     }
 
-    private Integer findYear(String value) {
+    private static Integer findYear(String value) {
         String[] split = value.split(" ", 0);
         Integer year = null;
         for (String s : split) {
@@ -68,5 +72,9 @@ public class ToConference extends AbstractBeanField<Conference, Object> {
 
     public static Collection<Conference> getSaveCollection() {
         return saveMap.values();
+    }
+
+    public static Conference addConference(String publisher) {
+        return (Conference) convertString(publisher);
     }
 }

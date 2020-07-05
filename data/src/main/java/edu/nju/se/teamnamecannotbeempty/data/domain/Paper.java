@@ -67,31 +67,31 @@ public class Paper {
     private String funding_info;
     // pdf原文链接
     private String pdf_link;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinTable(foreignKey = @ForeignKey(name = "FK_AUTHOR_KEYWORDS_PAPER"), inverseForeignKey = @ForeignKey(name = "FK_AUTHOR_KEYWORDS_TERM"))
     @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // 作者给出的关键字
     private List<Term> author_keywords = new ArrayList<>();
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinTable(foreignKey = @ForeignKey(name = "FK_IEEE_TERMS_PAPER"), inverseForeignKey = @ForeignKey(name = "FK_IEEE_TERMS_TERM"))
     @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // IEEE术语
     private List<Term> ieee_terms = new ArrayList<>();
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinTable(foreignKey = @ForeignKey(name = "FK_INSPECT_CONTROLLED_PAPER"), inverseForeignKey = @ForeignKey(name = "FK_INSPECT_CONTROLLED_TERM"))
     @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // INSPEC受控索引，有限集合
     private List<Term> inspec_controlled = new ArrayList<>();
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinTable(foreignKey = @ForeignKey(name = "FK_INSPECT_NON_CONTROLLED_PAPER"), inverseForeignKey = @ForeignKey(name = "FK_INSPECT_NON_CONTROLLED_TERM"))
     @Fetch(FetchMode.SUBSELECT)
     @IndexedEmbedded
     // INSPEC非受控索引，无限集合
     private List<Term> inspec_non_controlled = new ArrayList<>();
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinTable(foreignKey = @ForeignKey(name = "FK_MESH_TERMS_PAPER"), inverseForeignKey = @ForeignKey(name = "FK_MESH_TERMS_TERM"))
     @Fetch(FetchMode.SUBSELECT)
     // mesh terms，作用未知
@@ -112,7 +112,7 @@ public class Paper {
     private String publisher;
     // 文档标识符？
     private String document_identifier;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "referer", orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "referer", orphanRemoval = true, fetch = FetchType.LAZY)
     @Fetch(FetchMode.SUBSELECT)
     private List<Ref> refs = new ArrayList<>();
     @Field(name = "year", store = Store.YES)
@@ -128,7 +128,7 @@ public class Paper {
     @Transient
     //用于hibernate search高亮年份
     private String year_highlight;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "paper")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "paper")
     @Fetch(FetchMode.SUBSELECT)
     private List<Popularity> pops = new ArrayList<>();
 

@@ -111,6 +111,10 @@ public class PaperDelegation {
         paper.setDoi(StringUtils.isBlank(doi) ? null : doi.toUpperCase());
         paper.setPdf_link(pdf_link);
         paper.setTitle(title);
+
+        if (conference.getName().equals("NA") && !StringUtils.isBlank(publisher)) {
+            conference = ToConference.addConference(publisher);
+        }
         paper.setConference(conference);
         paper.setVolume(volume);
         if (StringUtils.isNumeric(start_page))

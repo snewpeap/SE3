@@ -25,7 +25,7 @@ public class Author implements Aliasable<Author> {
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_AUTHOR_ALIAS"))
     //别名，在需要去重的时候为空；去重后，如果没有重复为this，否则为重复对象
     private Author alias;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "author")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "author")
     @Fetch(FetchMode.SUBSELECT)
     private List<Popularity> pops = new ArrayList<>();
 

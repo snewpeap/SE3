@@ -3,7 +3,6 @@ spring:
     console:
       enabled: false
   jpa:
-    open-in-view: false
     show-sql: false
     properties:
       hibernate:
