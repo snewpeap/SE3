@@ -54,7 +54,7 @@ public interface AuthorDao extends JpaRepository<Author, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select distinct aa.author, ap.popularity from Paper p " +
+    @Query("select distinct aa.author from Paper p " +
             "inner join p.aa aa inner join author_popularity ap on aa.author.id = ap.author.id " +
             "where p.conference.id = ?1 order by ap.popularity desc")
     List<Author> getAuthorsByConference(Long id);
