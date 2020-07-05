@@ -96,9 +96,17 @@ public class AcademicEntityFetch {
         //生成总引用数
         int sumCitation = aliasIdList.stream().mapToInt(aliasId -> (int) paperDao.getCitationByAuthorId(aliasId)).sum();
 
+        //生成热度变化字符串
+        List<PopByYear> popByYearList = aliasIdList.stream().flatMap(authorId->authorDao.findById(authorId).orElseGet(Author::new).getPops().stream()).collect(
+                Collectors.groupingBy(Author.Popularity::getYear)
+        ).entrySet().stream().map(en->new PopByYear(en.getKey(), en.getValue().stream().mapToDouble(
+               Author.Popularity::getPopularity
+        ).sum())).collect(Collectors.toList());
+        String popTrend = generatePopTrend(popByYearList);
+
         return new AcademicEntityVO(entityMsg.getAuthorType(), id, authorDao.findById(id).orElseGet(Author::new).getActual().getName(),
                 sumCitation, null, affiEntityItems, conferenceEntityItems, termItems,
-                simplePaperVOS, yearlyTerms);
+                simplePaperVOS, yearlyTerms, popTrend);
     }
 
     private AcademicEntityVO affiliationEntity(long id) {
@@ -143,11 +151,18 @@ public class AcademicEntityFetch {
         //生成总引用数
         int sumCitation = aliasIdList.stream().mapToInt(aliasId -> (int) paperDao.getCitationByAffiId(aliasId)).sum();
 
+        //生成热度变化字符串
+        List<PopByYear> popByYearList = aliasIdList.stream().flatMap(affiId->affiliationDao.findById(affiId).orElseGet(Affiliation::new).getPops().stream()).collect(
+                Collectors.groupingBy(Affiliation.Popularity::getYear)
+        ).entrySet().stream().map(en->new PopByYear(en.getKey(), en.getValue().stream().mapToDouble(
+                Affiliation.Popularity::getPopularity
+        ).sum())).collect(Collectors.toList());
+        String popTrend = generatePopTrend(popByYearList);
 
         return new AcademicEntityVO(entityMsg.getAffiliationType(), id, affiliationDao.findById(id).
                 orElseGet(Affiliation::new).getActual().getName(),
                 sumCitation, authorEntityItems, null, conferenceEntityItems, termItems,
-                simplePaperVOS, yearlyTerms);
+                simplePaperVOS, yearlyTerms,popTrend);
     }
 
     private AcademicEntityVO conferenceEntity(long id) {
@@ -169,7 +184,7 @@ public class AcademicEntityFetch {
         return new AcademicEntityVO(entityMsg.getConferenceType(), id, conferenceDao.findById(id).
                 orElseGet(Conference::new).buildName(), -1,
                 authorEntityItems, affiEntityItems, null, termItems, simplePaperVOS,
-                yearlyTerms);
+                yearlyTerms,null);
     }
 
     private List<AcademicEntityItem> generateAuthorEntityItems(List<Author> authors) {
