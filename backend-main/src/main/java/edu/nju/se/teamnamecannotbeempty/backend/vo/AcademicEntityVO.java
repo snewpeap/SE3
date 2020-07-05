@@ -17,6 +17,7 @@ public class AcademicEntityVO {
     //以空格隔开的字符串，n个数字，第一个数字是年份
     private String popTrend;
 
+
     public AcademicEntityVO(int type, long id, String name, int refSum,
                             List<AcademicEntityItem> authors, List<AcademicEntityItem> affiliations,
                             List<AcademicEntityItem> conferences, List<TermItem> terms,

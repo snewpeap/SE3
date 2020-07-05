@@ -38,21 +38,25 @@ public class SignificantPaperFetch {
 
     private List<SimplePaperVO> getPapersOfAuthor(long id, int year, long termId){
         //获取作者的别名列表
-        List<Long> aliasIdList = academicEntityFetch.getAllAliasIdsOfAuthor(id, new ArrayList<>()).stream().distinct()
+        List<Long> aliasIdList = academicEntityFetch.getAllAliasIdsOfAuthor(id,
+                new ArrayList<>()).stream().distinct()
                 .collect(Collectors.toList());
         //获取作者的全部论文
         List<Paper> allPapers=new ArrayList<>();
-        aliasIdList.forEach(aliasId-> allPapers.addAll(fetchForCache.getAllPapersByAuthor(aliasId)));
+        aliasIdList.forEach(aliasId-> allPapers.addAll(
+                fetchForCache.getAllPapersByAuthor(aliasId)));
         return convertPaper(allPapers,year,termId);
     }
 
     private List<SimplePaperVO> getPapersOfAffi(long id, int year, long termId){
         //获取机构的别名列表
-        List<Long> aliasIdList = academicEntityFetch.getAllAliasIdsOfAffi(id, new ArrayList<>()).stream().distinct()
+        List<Long> aliasIdList = academicEntityFetch.getAllAliasIdsOfAffi(id,
+                new ArrayList<>()).stream().distinct()
                 .collect(Collectors.toList());
         //获取机构的全部论文
         List<Paper> allPapers=new ArrayList<>();
-        aliasIdList.forEach(aliasId-> allPapers.addAll(fetchForCache.getAllPapersByAffi(aliasId)));
+        aliasIdList.forEach(aliasId-> allPapers.addAll(
+                fetchForCache.getAllPapersByAffi(aliasId)));
         return convertPaper(allPapers,year,termId);
     }
 
