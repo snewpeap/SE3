@@ -14,9 +14,15 @@ public interface AuthorPopDao extends JpaRepository<Author.Popularity, Long> {
      * @前置条件 无
      * @后置条件 无
      */
-    List<Author.Popularity> findTop20ByOrderByPopularityDesc();
+    default List<Author.Popularity> findTop20ByOrderByPopularityDesc() {
+        return findTop20ByYearIsNullOrderByPopularityDesc();
+    }
 
-    List<Author.Popularity> getByAuthor_Id(Long AuthorId);
+    List<Author.Popularity> findTop20ByYearIsNullOrderByPopularityDesc();
 
-    Optional<Author.Popularity> findByAuthor_Id(Long AuthorId);
+    Optional<Author.Popularity> getByAuthor_IdAndYearIsNull(Long AuthorId);
+
+    default Optional<Author.Popularity> findByAuthor_Id(Long AuthorId) {
+        return getByAuthor_IdAndYearIsNull(AuthorId);
+    }
 }

@@ -64,7 +64,7 @@ public class PaperPopWorker {
                         Popularity::getPaper,
                         Collectors.summingDouble(Popularity::getPopularity)
                 )
-        ).forEach((paper, pop) -> sumPop.add(new Popularity(paper, pop)));
+        ).forEach((paper, pop) -> sumPop.add(new Popularity(paper, pop, null)));
         pops.addAll(sumPop);
 
         jdbcTemplate.batchUpdate(

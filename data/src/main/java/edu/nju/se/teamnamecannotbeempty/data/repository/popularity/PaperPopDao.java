@@ -1,6 +1,7 @@
 package edu.nju.se.teamnamecannotbeempty.data.repository.popularity;
 
 import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -17,7 +18,11 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    Optional<Paper.Popularity> getByPaper_Id(Long id);
+    default Optional<Paper.Popularity> getByPaper_Id(Long id) {
+        return getByPaper_IdAndYearIsNull(id);
+    }
+
+    Optional<Paper.Popularity> getByPaper_IdAndYearIsNull(Long id);
 
     /**
      * 查找某作者的代表作（即按论文热度排序）
@@ -27,9 +32,21 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select distinct pp from paper_popularity pp inner join pp.paper p inner join p.aa aa " +
-            "where aa.author.id = ?1 order by pp.popularity desc")
-    List<Paper.Popularity> findTopPapersByAuthorId(Long id);
+    default List<Paper.Popularity> findTopPapersByAuthorId(Long id) {
+        return findTopPapersByAuthorIdAndYearIsNullPaged(id, Pageable.unpaged());
+    }
+
+    /**
+     * 查找某作者代表作（即按论文热度排序）的某分页
+     *
+     * @param id 作者id
+     * @param page 分页
+     * @return 热度降序的分页的论文热度
+     * @since 迭代三
+     */
+    @Query("select pp from paper_popularity pp inner join pp.paper p inner join p.aa aa " +
+            "where aa.author.id = ?1 and pp.year is null order by pp.popularity desc")
+    List<Paper.Popularity> findTopPapersByAuthorIdAndYearIsNullPaged(Long id, Pageable page);
 
     /**
      * 查找机构的代表作
@@ -39,9 +56,16 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
+    default List<Paper.Popularity> findTopPapersByAffiId(Long id) {
+        return findTopPapersByAffiIdAndYearIsNullPaged(id, Pageable.unpaged());
+    }
+
+    /**
+     * @since 迭代三
+     */
     @Query("select distinct pp from paper_popularity pp inner join pp.paper p inner join p.aa aa " +
-            "where aa.affiliation.id = ?1 order by pp.popularity desc")
-    List<Paper.Popularity> findTopPapersByAffiId(Long id);
+            "where aa.affiliation.id = ?1 and pp.year is null order by pp.popularity desc")
+    List<Paper.Popularity> findTopPapersByAffiIdAndYearIsNullPaged(Long id, Pageable page);
 
     /**
      * 查找某个会议的最热门文章
@@ -51,8 +75,18 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select distinct pp from paper_popularity pp where pp.paper.conference.id = ?1 order by pp.popularity desc")
-    List<Paper.Popularity> findTopPapersByConferenceId(Long id);
+    @Query("select distinct pp from paper_popularity pp " +
+            "where pp.paper.conference.id = ?1 order by pp.popularity desc")
+    default List<Paper.Popularity> findTopPapersByConferenceId(Long id) {
+        return findTopPapersByConferenceIdAndYearIsNullPaged(id, Pageable.unpaged());
+    }
+
+    /**
+     * @since 迭代三
+     */
+    @Query("select distinct pp from paper_popularity pp " +
+            "where pp.paper.conference.id = ?1 and pp.year is null order by pp.popularity desc")
+    List<Paper.Popularity> findTopPapersByConferenceIdAndYearIsNullPaged(Long id, Pageable page);
 
     /**
      * 获得作者所发表论文的热度之和
@@ -62,8 +96,9 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select coalesce(sum(pp.popularity),0.0) from paper_popularity pp inner join pp.paper p inner join p.aa aa " +
-            "where aa.author.id = ?1")
+    @Query("select coalesce(sum(pp.popularity),0.0) from paper_popularity pp " +
+            "inner join pp.paper p inner join p.aa aa " +
+            "where aa.author.id = ?1 and pp.year is null")
     Double getPopSumByAuthorId(Long id);
 
     /**
@@ -74,8 +109,9 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select coalesce(sum(pp.popularity),0.0) from paper_popularity pp inner join pp.paper p inner join p.aa aa " +
-            "where aa.affiliation.id = ?1")
+    @Query("select coalesce(sum(pp.popularity),0.0) from paper_popularity pp " +
+            "inner join pp.paper p inner join p.aa aa " +
+            "where aa.affiliation.id = ?1 and pp.year is null")
     Double getPopSumByAffiId(Long id);
 
     /**
@@ -87,7 +123,7 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
      * @后置条件 无
      */
     @Query("select coalesce(sum(pp.popularity),0.0) from paper_popularity pp inner join pp.paper p " +
-            "where exists (select 1 from p.author_keywords ak where ak.id = ?1)")
+            "where pp.year is null and exists (select 1 from p.author_keywords ak where ak.id = ?1)")
     Double getPopSumByAuthorKeywordId(Long id);
 
     /**
@@ -101,7 +137,7 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
      */
     @Query("select coalesce(sum(pp.popularity),0.0) from paper_popularity pp inner join pp.paper p " +
             "where exists (select 1 from p.aa aa where aa.author.id = ?1) and " +
-            "exists (select 1 from p.author_keywords ak where ak.id = ?2)")
+            "exists (select 1 from p.author_keywords ak where ak.id = ?2) and pp.year is null")
     Double getWeightByAuthorOnKeyword(Long authorId, Long keywordId);
 
     /**
@@ -115,7 +151,7 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
      */
     @Query("select coalesce(sum(pp.popularity),0.0) from paper_popularity pp inner join pp.paper p " +
             "where exists (select 1 from p.aa aa where aa.affiliation.id = ?1) and " +
-            "exists (select 1 from p.author_keywords ak where ak.id = ?2)")
+            "exists (select 1 from p.author_keywords ak where ak.id = ?2) and pp.year is null")
     Double getWeightByAffiOnKeyword(Long affiId, Long keywordId);
 
     /**
@@ -129,6 +165,6 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
      */
     @Query("select coalesce(sum(pp.popularity),0.0) from paper_popularity pp inner join pp.paper p " +
             "where p.conference.id = ?1 and " +
-            "exists (select 1 from p.author_keywords ak where ak.id = ?2)")
+            "exists (select 1 from p.author_keywords ak where ak.id = ?2) and pp.year is null")
     Double getWeightByConferenceOnKeyword(Long cfrId, Long keywordId);
 }

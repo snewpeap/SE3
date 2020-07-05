@@ -46,7 +46,7 @@ public class SearchServiceHibernateImpl implements SearchService {
         FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
         try {
             fullTextEntityManager.createIndexer()
-                    .batchSizeToLoadObjects(500)
+                    .batchSizeToLoadObjects(200)
                     .idFetchSize(Integer.MIN_VALUE)
                     .progressMonitor(new SimpleIndexingProgressMonitor(2000))
                     .startAndWait();
@@ -141,7 +141,7 @@ public class SearchServiceHibernateImpl implements SearchService {
             try {
                 Search.getFullTextEntityManager(entityManager)
                         .createIndexer()
-                        .batchSizeToLoadObjects(500)
+                        .batchSizeToLoadObjects(100)
                         .idFetchSize(Integer.MIN_VALUE)
                         .progressMonitor(new SimpleIndexingProgressMonitor(2000))
                         .startAndWait();

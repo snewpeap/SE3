@@ -15,7 +15,11 @@ public interface TermPopDao extends JpaRepository<Term.Popularity, Long> {
      * @前置条件 无
      * @后置条件 无
      */
-    List<Term.Popularity> findTop20ByOrderByPopularityDesc();
+    default List<Term.Popularity> findTop20ByOrderByPopularityDesc() {
+        return findTop20ByYearIsNullOrderByPopularityDesc();
+    }
+
+    List<Term.Popularity> findTop20ByYearIsNullOrderByPopularityDesc();
 
     /**
      * 查询一个作者的研究方向及其热度
@@ -28,7 +32,7 @@ public interface TermPopDao extends JpaRepository<Term.Popularity, Long> {
      */
     @Query("select distinct tp from term_popularity tp where exists (" +
             "select p from Paper p inner join p.author_keywords pas inner join p.aa aa " +
-            "where tp.term.id = pas.id and aa.author.id = ?1)")
+            "where tp.term.id = pas.id and aa.author.id = ?1) and tp.year is null")
     List<Term.Popularity> getTermPopByAuthorID(Long id);
 
     /**
@@ -42,7 +46,7 @@ public interface TermPopDao extends JpaRepository<Term.Popularity, Long> {
      */
     @Query("select distinct tp from term_popularity tp where exists (" +
             "select p from Paper p inner join p.author_keywords pas inner join p.aa aa " +
-            "where tp.term.id = pas.id and aa.affiliation.id = ?1)")
+            "where tp.term.id = pas.id and aa.affiliation.id = ?1) and tp.year is null")
     List<Term.Popularity> getTermPopByAffiID(Long id);
 
     /**
@@ -55,7 +59,7 @@ public interface TermPopDao extends JpaRepository<Term.Popularity, Long> {
      */
     @Query("select distinct tp from term_popularity tp where exists (" +
             "select p from Paper p inner join p.author_keywords pas " +
-            "where tp.term.id = pas.id and p.id = ?1)")
+            "where tp.term.id = pas.id and p.id = ?1) and tp.year is null")
     List<Term.Popularity> getTermPopByPaperID(Long id);
 
     /**
@@ -68,7 +72,7 @@ public interface TermPopDao extends JpaRepository<Term.Popularity, Long> {
      */
     @Query("select distinct tp from term_popularity tp where exists (" +
             "select p from Paper p inner join p.author_keywords pas " +
-            "where tp.term.id = pas.id and p.conference.id = ?1)")
+            "where tp.term.id = pas.id and p.conference.id = ?1) and tp.year is null")
     List<Term.Popularity> getTermPopByConferenceID(Long id);
 
     /**
@@ -79,5 +83,9 @@ public interface TermPopDao extends JpaRepository<Term.Popularity, Long> {
      * @前置条件 id不为null
      * @后置条件 如果有与参数所给的id对应的数据，则Optional.get可获得该对象；否则Optional.isPresent==false
      */
-    Optional<Term.Popularity> getDistinctByTerm_Id(Long id);
+    default Optional<Term.Popularity> getDistinctByTerm_Id(Long id) {
+        return getByTerm_IdAndYearIsNull(id);
+    }
+
+    Optional<Term.Popularity> getByTerm_IdAndYearIsNull(Long id);
 }

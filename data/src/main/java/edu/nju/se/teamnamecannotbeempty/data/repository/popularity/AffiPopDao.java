@@ -14,9 +14,15 @@ public interface AffiPopDao extends JpaRepository<Affiliation.Popularity, Long> 
      * @前置条件 无
      * @后置条件 无
      */
-    List<Affiliation.Popularity> findTop20ByOrderByPopularityDesc();
+    default List<Affiliation.Popularity> findTop20ByOrderByPopularityDesc() {
+        return findTop20ByYearIsNullOrderByPopularityDesc();
+    }
 
-    List<Affiliation.Popularity> getByAffiliation_Id(Long id);
+    List<Affiliation.Popularity> findTop20ByYearIsNullOrderByPopularityDesc();
 
-    Optional<Affiliation.Popularity> findByAffiliation_Id(Long id);
+    Optional<Affiliation.Popularity> getByAffiliation_IdAndYearIsNull(Long id);
+
+    default Optional<Affiliation.Popularity> findByAffiliation_Id(Long id) {
+        return getByAffiliation_IdAndYearIsNull(id);
+    }
 }
