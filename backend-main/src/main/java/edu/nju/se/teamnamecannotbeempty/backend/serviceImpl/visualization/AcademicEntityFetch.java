@@ -110,7 +110,7 @@ public class AcademicEntityFetch {
                 Collectors.groupingBy(Author.Popularity::getYear)
         ).entrySet().stream().map(en -> new PopByYear(en.getKey(), en.getValue().stream().mapToDouble(
                 Author.Popularity::getPopularity
-        ).sum())).collect(Collectors.toList());
+        ).sum())).sorted(Comparator.comparing(PopByYear::getYear)).collect(Collectors.toList());
         String popTrend = generatePopTrend(popByYearList);
 
         return new AcademicEntityVO(entityMsg.getAuthorType(), id,
@@ -175,7 +175,7 @@ public class AcademicEntityFetch {
                 Collectors.groupingBy(Affiliation.Popularity::getYear)
         ).entrySet().stream().map(en -> new PopByYear(en.getKey(), en.getValue().stream().mapToDouble(
                 Affiliation.Popularity::getPopularity
-        ).sum())).collect(Collectors.toList());
+        ).sum())).sorted(Comparator.comparing(PopByYear::getYear)).collect(Collectors.toList());
         String popTrend = generatePopTrend(popByYearList);
 
         return new AcademicEntityVO(entityMsg.getAffiliationType(), id, affiliationDao.findById(id).
