@@ -19,7 +19,8 @@ public class EntityServiceImpl implements EntityService {
 
     @Autowired
     public EntityServiceImpl(AcademicEntityFetch academicEntityFetch, BasicGraphFetch basicGraphFetch,
-                             CompleteGraphFetch completeGraphFetch, SignificantPaperFetch significantPaperFetch) {
+                             CompleteGraphFetch completeGraphFetch,
+                             SignificantPaperFetch significantPaperFetch) {
         this.academicEntityFetch = academicEntityFetch;
         this.basicGraphFetch = basicGraphFetch;
         this.completeGraphFetch = completeGraphFetch;

@@ -38,18 +38,19 @@ public class PaperServiceImpl implements PaperService {
     }
 
     @Override
-    public List<SimplePaperVO> search(String text, String mode, Integer pageNumber, String sortMode, int perPage) {
-            if (pageNumber == null || pageNumber <= 0) pageNumber = 1;
-            SearchMode searchMode = (SearchMode) AppContextProvider.getBean(mode);
-            Pageable pageable = PageRequest.of(pageNumber - 1, perPage);
-            SortMode sort = (SortMode) AppContextProvider.getBean(sortMode);
-            Page<Paper> paperPage = searchService.search(text, searchMode, pageable, sort);
-            List<Paper> paperList = paperPage.getContent();
-            List<SimplePaperVO> simplePaperVOList = new ArrayList<>();
-            for (Paper paper : paperList) {
-                simplePaperVOList.add(new SimplePaperVO(paper));
-            }
-            return simplePaperVOList;
+    public List<SimplePaperVO> search(String text, String mode, Integer pageNumber,
+                                      String sortMode, int perPage) {
+        if (pageNumber == null || pageNumber <= 0) pageNumber = 1;
+        SearchMode searchMode = (SearchMode) AppContextProvider.getBean(mode);
+        Pageable pageable = PageRequest.of(pageNumber - 1, perPage);
+        SortMode sort = (SortMode) AppContextProvider.getBean(sortMode);
+        Page<Paper> paperPage = searchService.search(text, searchMode, pageable, sort);
+        List<Paper> paperList = paperPage.getContent();
+        List<SimplePaperVO> simplePaperVOList = new ArrayList<>();
+        for (Paper paper : paperList) {
+            simplePaperVOList.add(new SimplePaperVO(paper));
+        }
+        return simplePaperVOList;
     }
 
 
@@ -69,7 +70,8 @@ public class PaperServiceImpl implements PaperService {
         for (Author_Affiliation author_affiliation : author_affiliations) {
             author_affiliationVOS.add(new Author_AffiliationVO(author_affiliation.getAuthor().getName(),
                     author_affiliation.getAuthor().getActual().getId(),
-                    new AffiliationVO(author_affiliation.getAffiliation().getName() , author_affiliation.getAffiliation().getCountry(),
+                    new AffiliationVO(author_affiliation.getAffiliation().getName(),
+                            author_affiliation.getAffiliation().getCountry(),
                             author_affiliation.getAffiliation().getActual().getId())));
         }
         List<Term> termList_keywords = paper.getAuthor_keywords();
@@ -87,11 +89,13 @@ public class PaperServiceImpl implements PaperService {
         String pdf = paper.getPdf_link();
 
         responseVO = ResponseVO.success();
-        responseVO.setContent(new PaperVO(paper.getId(), paper.getTitle(), author_affiliationVOS, paper.getConference().getName(),
+        responseVO.setContent(new PaperVO(paper.getId(), paper.getTitle(),
+                author_affiliationVOS, paper.getConference().getName(),
                 paper.getConference().getId(), paper.getYear(),
                 assembleOrdno(paper.getConference().getOrdno()), paper.getStart_page(),
                 paper.getEnd_page(), paper.getSummary(), paper.getDoi(), pdf, keywords, ieees, controls,
-                noncontrols, paper.getCitation(), paper.getReference(), paper.getPublisher(), paper.getDocument_identifier()));
+                noncontrols, paper.getCitation(), paper.getReference(),
+                paper.getPublisher(), paper.getDocument_identifier()));
         return responseVO;
     }
 

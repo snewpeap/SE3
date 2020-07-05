@@ -41,7 +41,8 @@ public class RankServiceImpl implements RankService {
             return responseVO;
         }
 
-        int totalPage = len % rankMsg.getEachNum() == 0 ? len / rankMsg.getEachNum() : len / rankMsg.getEachNum() + 1;
+        int totalPage = len % rankMsg.getEachNum() == 0 ?
+                len / rankMsg.getEachNum() : len / rankMsg.getEachNum() + 1;
         int resultStart = (pageNumber - 1) * rankMsg.getEachNum();
         int resultLen = Math.min(len - resultStart, rankMsg.getEachNum());
         List<RankItem> result;
