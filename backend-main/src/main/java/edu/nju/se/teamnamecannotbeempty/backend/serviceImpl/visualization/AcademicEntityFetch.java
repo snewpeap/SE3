@@ -105,7 +105,8 @@ public class AcademicEntityFetch {
 
         //生成热度变化字符串
         List<PopByYear> popByYearList = aliasIdList.stream().flatMap(authorId ->
-                authorDao.findById(authorId).orElseGet(Author::new).getPops().stream()).collect(
+                authorDao.findById(authorId).orElseGet(Author::new).getPops().stream().filter(
+                        pop->pop.getYear()!=null)).collect(
                 Collectors.groupingBy(Author.Popularity::getYear)
         ).entrySet().stream().map(en -> new PopByYear(en.getKey(), en.getValue().stream().mapToDouble(
                 Author.Popularity::getPopularity
@@ -169,7 +170,8 @@ public class AcademicEntityFetch {
 
         //生成热度变化字符串
         List<PopByYear> popByYearList = aliasIdList.stream().flatMap(affiId ->
-                affiliationDao.findById(affiId).orElseGet(Affiliation::new).getPops().stream()).collect(
+                affiliationDao.findById(affiId).orElseGet(Affiliation::new).getPops().stream()
+        .filter(pop->pop.getYear()!=null)).collect(
                 Collectors.groupingBy(Affiliation.Popularity::getYear)
         ).entrySet().stream().map(en -> new PopByYear(en.getKey(), en.getValue().stream().mapToDouble(
                 Affiliation.Popularity::getPopularity
@@ -213,6 +215,7 @@ public class AcademicEntityFetch {
                 author -> new AcademicEntityItem(entityMsg.getAuthorType(), author.getActual().getId(),
                         author.getActual().getName(), generatePopTrend(
                         author.getPops().stream()
+                                .filter(pop->pop.getYear()!=null)
                                 .map(pop -> new PopByYear(pop.getYear(), pop.getPopularity())).sorted(
                                 Comparator.comparing(PopByYear::getYear)
                         ).collect(Collectors.toList())
@@ -229,6 +232,7 @@ public class AcademicEntityFetch {
                                 affiliation.getActual().getId(),
                                 affiliation.getActual().getName(), generatePopTrend(
                                 affiliation.getPops().stream()
+                                        .filter(pop->pop.getYear()!=null)
                                         .map(pop -> new PopByYear(pop.getYear(),
                                                 pop.getPopularity())).sorted(
                                         Comparator.comparing(PopByYear::getYear)
