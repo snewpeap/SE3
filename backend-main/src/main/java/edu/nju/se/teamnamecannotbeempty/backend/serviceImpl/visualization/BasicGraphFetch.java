@@ -13,7 +13,6 @@ import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +52,6 @@ public class BasicGraphFetch {
     }
 
     @Cacheable(value = "getBasicGraph", key = "#p0+'_'+#p1", unless = "#result=null")
-    @Transactional
     public GraphVO getBasicGraph(long id, int type) {
         if (type == entityMsg.getAuthorType()) return authorBasicGraph(id);
         else if (type == entityMsg.getAffiliationType()) return affiliationBasicGraph(id);
@@ -121,7 +119,7 @@ public class BasicGraphFetch {
                 paper -> new Node(paper.getId(), paper.getTitle(), entityMsg.getPaperType())
         ).collect(Collectors.toList());
         List<Link> links = generateLinksWithoutWeight(id, entityMsg.getConferenceType(), nodes);
-        String centerName = conferenceDao.findById(id).orElseGet(Conference::new).buildName();
+        String centerName = conferenceDao.findById(id).orElseGet(Conference::new).getName();
         Node centerNode = new Node(id, centerName, entityMsg.getConferenceType());
         nodes.add(centerNode);
         nodes.forEach(node -> node.setPopularity(addPopInNode(node)));

@@ -116,7 +116,7 @@ public class SimplePaperVO {
         this.author_simpleAffiliationVOS = author_simpleAffiliationVOS;
         this.publicationTitle = paper.getConference()==null? "":paper.getConference().getName();
         this.conferenceId = paper.getConference()==null? -1:paper.getConference().getId();
-        this.publicationYear = paper.getYear_highlight();
+        this.publicationYear = String.valueOf(paper.getYear());
         this.keywords = keywords;
     }
 

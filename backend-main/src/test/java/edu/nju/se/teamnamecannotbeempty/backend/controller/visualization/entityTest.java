@@ -3,6 +3,7 @@ package edu.nju.se.teamnamecannotbeempty.backend.controller.visualization;
 import edu.nju.se.teamnamecannotbeempty.backend.service.visualization.EntityService;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.AcademicEntityVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.GraphVO;
+import edu.nju.se.teamnamecannotbeempty.backend.vo.SimplePaperVO;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -11,6 +12,9 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -68,5 +72,21 @@ public class entityTest {
         Mockito.when(entityService.getCompleteGraph(0,1)).thenReturn(graphVO);
         assertEquals(graphVO,entityController.getMoreGraph(0,1));
     }
+
+    /**
+     * 新接口的测试
+     * 通过年份和trem获得代表作列表
+     */
+    @Test
+    public void getSignificantpaper(){
+        entityController = new EntityController();
+        entityController.setEntityService(entityService);
+        List<SimplePaperVO> list = new ArrayList<>();
+        SimplePaperVO simplePaperVO = new SimplePaperVO(1,"s",null,"title",11,"2000",null);
+        list.add(simplePaperVO);
+        Mockito.when(entityService.getSignificantPaper(0,0,2020,11111)).thenReturn(list);
+        assertEquals(list,entityController.getSignificantPaper(0,0,2020,11111));
+    }
+
 
 }

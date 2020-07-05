@@ -70,11 +70,11 @@ public class AcademicEntityTest {
         Affiliation affiliation3 = new Affiliation(); affiliation3.setId(3L); affiliation3.setName("affiliation3");
 
         Conference conference1 = mock(Conference.class); when(conference1.getId()).thenReturn(1L);
-        when(conference1.buildName()).thenReturn("conference1");
+        when(conference1.getName()).thenReturn("conference1");
         Conference conference2 = mock(Conference.class); when(conference2.getId()).thenReturn(2L);
-        when(conference2.buildName()).thenReturn("conference2");
+        when(conference2.getName()).thenReturn("conference2");
         Conference conference3 = mock(Conference.class); when(conference3.getId()).thenReturn(3L);
-        when(conference3.buildName()).thenReturn("conference3");
+        when(conference3.getName()).thenReturn("conference3");
 
         Term term1 = new Term(); term1.setId(1L); term1.setContent("term1");
         Term.Popularity termPopularity1 = new Term.Popularity(); termPopularity1.setTerm(term1);
