@@ -22,7 +22,7 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public class PaperDelegation {
     public static final Logger logger = LoggerFactory.getLogger(PaperDelegation.class);
-    public static final String DEFAULT_SPLIT_ON = ",|; ";
+    public static final String DEFAULT_SPLIT_ON = ",(?=[^ ])|; ";
     public static final String TERMS_SPLIT_ON = ";|, ?";
 
     @CsvBindByName(column = "Document Title")
