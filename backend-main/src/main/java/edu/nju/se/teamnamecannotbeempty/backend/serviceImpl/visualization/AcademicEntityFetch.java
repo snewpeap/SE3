@@ -94,10 +94,12 @@ public class AcademicEntityFetch {
         List<YearlyTerm> yearlyTerms = getYearlyTermList(allPapers);
 
         //生成代表作
-        List<Paper.Popularity> paperPopList = aliasIdList.stream().flatMap(aliasId ->
-                paperPopDao.findTopPapersByAuthorId(aliasId).stream())
+        List<Paper> paperList = aliasIdList.stream().flatMap(aliasId ->
+                fetchForCache.getAllPapersByAuthor(aliasId).stream())
                 .distinct().collect(Collectors.toList());
-        List<SimplePaperVO> simplePaperVOS = generateTopPapers(paperPopList);
+        List<SimplePaperVO> simplePaperVOS = paperList.stream().map(
+                SimplePaperVO::new).collect(Collectors.toList());
+        if(simplePaperVOS.size()>5) simplePaperVOS=simplePaperVOS.subList(0,5);
 
         //生成总引用数
         int sumCitation = aliasIdList.stream().mapToInt(aliasId ->
@@ -159,10 +161,12 @@ public class AcademicEntityFetch {
         List<YearlyTerm> yearlyTerms = getYearlyTermList(allPapers);
 
         //生成代表作
-        List<Paper.Popularity> paperPopList = aliasIdList.stream().flatMap(aliasId ->
-                paperPopDao.findTopPapersByAffiId(aliasId).stream())
+        List<Paper> paperList = aliasIdList.stream().flatMap(aliasId ->
+                fetchForCache.getAllPapersByAffi(aliasId).stream())
                 .distinct().collect(Collectors.toList());
-        List<SimplePaperVO> simplePaperVOS = generateTopPapers(paperPopList);
+        List<SimplePaperVO> simplePaperVOS = paperList.stream().map(
+                SimplePaperVO::new).collect(Collectors.toList());
+        if(simplePaperVOS.size()>5) simplePaperVOS=simplePaperVOS.subList(0,5);
 
         //生成总引用数
         int sumCitation = aliasIdList.stream().mapToInt(aliasId ->
@@ -201,8 +205,10 @@ public class AcademicEntityFetch {
         List<Paper> allPapers = fetchForCache.getAllPapersByConference(id);
         List<YearlyTerm> yearlyTerms = getYearlyTermList(allPapers);
 
-        List<SimplePaperVO> simplePaperVOS = generateTopPapers(
-                paperPopDao.findTopPapersByConferenceId(id));
+        List<SimplePaperVO> simplePaperVOS = fetchForCache.getAllPapersByConference(id)
+                .stream().map(SimplePaperVO::new
+        ).collect(Collectors.toList());
+        if(simplePaperVOS.size()>5) simplePaperVOS=simplePaperVOS.subList(0,5);
 
         return new AcademicEntityVO(entityMsg.getConferenceType(), id, conferenceDao.findById(id).
                 orElseGet(Conference::new).buildName(), -1,
