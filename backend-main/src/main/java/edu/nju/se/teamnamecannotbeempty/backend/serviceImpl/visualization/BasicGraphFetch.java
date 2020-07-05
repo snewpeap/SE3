@@ -139,7 +139,7 @@ public class BasicGraphFetch {
         List<Link> links = papers.stream().flatMap(paper -> paper.getAa().stream().map(
                 author_affiliation -> new Link(paper.getId(), entityMsg.getPaperType(),
                         author_affiliation.getAuthor().getActual().getId(),
-                        entityMsg.getAuthorType(), -1)
+                        entityMsg.getAuthorType(), -1.0)
         )).collect(Collectors.toList());
 
         List<Link> links1 = authors.stream().map(author -> new Link(id, entityMsg.getTermType(),
@@ -183,7 +183,7 @@ public class BasicGraphFetch {
     private List<Link> generateLinksWithoutWeight(long sourceId, int sourceType, List<Node> targetNodes) {
         return targetNodes.stream().map(
                 targetNode -> new Link(sourceId, sourceType, targetNode.getEntityId(),
-                        targetNode.getEntityType(), -1))
+                        targetNode.getEntityType(), -1.0))
                 .collect(Collectors.toList());
     }
 

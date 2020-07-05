@@ -68,7 +68,7 @@ public class CompleteGraphFetch {
                         author_affiliation.getAuthor().getActual().getId()).map(
                         author_affiliation -> new Link(paper.getId(), entityMsg.getPaperType(),
                                 author_affiliation.getAuthor().getActual().getId(),
-                                entityMsg.getAuthorType(), -1)
+                                entityMsg.getAuthorType(), -1.0)
                 )).collect(Collectors.toList());
         //去NA
         List<Affiliation> affiliationList = affiliationDao.getAffiliationsByAuthor(id).stream()
@@ -84,7 +84,7 @@ public class CompleteGraphFetch {
                         id != author.getActual().getId())
                         .map(author -> new Link(affiliation.getActual().getId(),
                                 entityMsg.getAffiliationType(), author.getActual().getId(),
-                                entityMsg.getAuthorType(), -1))).
+                                entityMsg.getAuthorType(), -1.0))).
                 collect(Collectors.toList());
         links.addAll(links1);
 
@@ -153,7 +153,7 @@ public class CompleteGraphFetch {
         List<Link> links = paperList.stream().map(paper ->
                 new Link(paper.getId(), entityMsg.getPaperType(),
                         paper.getAa().get(0).getAuthor().getActual().getId(),
-                        entityMsg.getAuthorType(), -1))
+                        entityMsg.getAuthorType(), -1.0))
                 .collect(Collectors.toList());
 
         List<Link> links1 = paperList.stream()
@@ -162,7 +162,7 @@ public class CompleteGraphFetch {
                 .map(paper ->
                         new Link(paper.getId(), entityMsg.getPaperType(),
                                 paper.getAa().get(0).getAffiliation().getActual().getId(),
-                                entityMsg.getAffiliationType(), -1))
+                                entityMsg.getAffiliationType(), -1.0))
                 .collect(Collectors.toList());
         links.addAll(links1);
 
@@ -187,7 +187,8 @@ public class CompleteGraphFetch {
                         affiliation.getActual().getId()))
                         .map(affiliation -> new Link(paper.getAa().get(0).getAuthor().getActual().getId(),
                                 entityMsg.getAuthorType(),
-                                affiliation.getActual().getId(), entityMsg.getAffiliationType(), -1))
+                                affiliation.getActual().getId(),
+                                entityMsg.getAffiliationType(), -1.0))
         ).collect(Collectors.toList());
 
         links.addAll(links2);
