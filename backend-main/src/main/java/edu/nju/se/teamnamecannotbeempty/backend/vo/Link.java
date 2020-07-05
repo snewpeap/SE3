@@ -6,9 +6,9 @@ public class Link {
 
     private String source;
     private String target;
-    private double value;
+    private Double value;
 
-    public Link(long sourceId, int sourceType, long targetId, int targetType, double value) {
+    public Link(long sourceId, int sourceType, long targetId, int targetType, Double value) {
         StringBuilder preSource = new StringBuilder(String.valueOf(sourceId));
         while (preSource.length()<10){
             preSource.insert(0, "0");
@@ -22,7 +22,7 @@ public class Link {
         preTarget.insert(0,String.valueOf(targetType));
         this.source = preSource.toString();
         this.target = preTarget.toString();
-        this.value = value;
+        this.value = value==null?0:value;
     }
 
     public String getSource() {
