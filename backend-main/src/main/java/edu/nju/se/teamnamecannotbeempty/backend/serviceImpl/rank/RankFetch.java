@@ -11,7 +11,6 @@ import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -56,7 +55,6 @@ public class RankFetch {
 
 
     @Cacheable(value = "getRank", key = "#mode+'_'+#startYear+'_'+#endYear", unless = "#result=null")
-    @Transactional
     public List<RankItem> getAllResult(String mode, int startYear, int endYear) {
         List<Paper> paperList = paperDao.findAllByConference_YearBetween(startYear, endYear);
         List<RankItem> rankItemList = new ArrayList<>();
@@ -137,7 +135,7 @@ public class RankFetch {
         List<Conference> conferenceList = paperList.stream().map(Paper::getConference)
                 .collect(Collectors.toList());
         Map<String, Long> publicationPaperNums = conferenceList.stream()
-                .collect(Collectors.groupingBy(Conference::buildName, Collectors.counting()));
+                .collect(Collectors.groupingBy(Conference::getName, Collectors.counting()));
         return mapToList(publicationPaperNums);
     }
 

@@ -15,7 +15,6 @@ import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,7 +51,6 @@ public class CompleteGraphFetch {
     }
 
     @Cacheable(value = "getCompleteGraph", key = "#p0+'_'+#p1", unless = "#result=null")
-    @Transactional
     public GraphVO getCompleteGraph(long id, int type) {
         if (type == entityMsg.getAuthorType()) return authorCompleteGraph(id);
         else if (type == entityMsg.getAffiliationType()) return affiliationCompleteGraph(id);
@@ -198,7 +196,7 @@ public class CompleteGraphFetch {
         List<Link> reLinks = links.stream().distinct().collect(Collectors.toList());
 
         return new GraphVO(id, entityMsg.getConferenceType(), conferenceDao.findById(id).
-                orElseGet(Conference::new).buildName(), reNodes, reLinks, -1.0);
+                orElseGet(Conference::new).getName(), reNodes, reLinks, -1.0);
     }
 
     private List<Node> generateAffiliationNode(List<Affiliation> affiliations) {

@@ -95,8 +95,4 @@ public class Conference {
     public void setYear_highlight(String year_highlight) {
         this.year_highlight = year_highlight;
     }
-
-    public String buildName() {
-        return year + " " + ordno + " " + name;
-    }
 }

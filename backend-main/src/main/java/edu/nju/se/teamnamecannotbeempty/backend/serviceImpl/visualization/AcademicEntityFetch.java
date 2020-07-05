@@ -9,7 +9,6 @@ import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -44,7 +43,6 @@ public class AcademicEntityFetch {
     }
 
     @Cacheable(value = "getAcademicEntity", key = "#p0+'_'+#p1")
-    @Transactional
     public AcademicEntityVO getAcademicEntity(long id, int type) {
         AcademicEntityVO academicEntityVO = null;
         if (type == entityMsg.getAuthorType()) academicEntityVO = authorsEntity(id);
@@ -211,7 +209,7 @@ public class AcademicEntityFetch {
         if(simplePaperVOS.size()>12) simplePaperVOS=simplePaperVOS.subList(0,12);
 
         return new AcademicEntityVO(entityMsg.getConferenceType(), id, conferenceDao.findById(id).
-                orElseGet(Conference::new).buildName(), -1,
+                orElseGet(Conference::new).getName(), -1,
                 authorEntityItems, affiEntityItems, null, termItems, simplePaperVOS,
                 yearlyTerms, null);
     }
@@ -251,7 +249,7 @@ public class AcademicEntityFetch {
     private List<AcademicEntityItem> generateConferenceEntityItems(List<Conference> conferences) {
         List<AcademicEntityItem> academicEntityItems = conferences.stream().map(
                 conference -> new AcademicEntityItem(entityMsg.getConferenceType(), conference.getId(),
-                        conference.buildName(), null)) //会议没有热度
+                        conference.getName(), null)) //会议没有热度
                 .collect(Collectors.toList());
         return academicEntityItems.size() > 15 ? academicEntityItems.subList(0, 15) : academicEntityItems;
     }
