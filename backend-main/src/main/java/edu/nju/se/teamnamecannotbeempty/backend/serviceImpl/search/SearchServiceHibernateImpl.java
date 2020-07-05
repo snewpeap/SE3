@@ -11,6 +11,7 @@ import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.QueryScorer;
 import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
 import org.hibernate.Session;
+import org.hibernate.search.batchindexing.impl.SimpleIndexingProgressMonitor;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
@@ -44,7 +45,11 @@ public class SearchServiceHibernateImpl implements SearchService {
     public void hibernateSearchInit() {
         FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
         try {
-            fullTextEntityManager.createIndexer().startAndWait();
+            fullTextEntityManager.createIndexer()
+                    .batchSizeToLoadObjects(500)
+                    .idFetchSize(Integer.MIN_VALUE)
+                    .progressMonitor(new SimpleIndexingProgressMonitor(2000))
+                    .startAndWait();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -134,10 +139,16 @@ public class SearchServiceHibernateImpl implements SearchService {
                 }
             }
             try {
-                Search.getFullTextEntityManager(entityManager).createIndexer().startAndWait();
+                Search.getFullTextEntityManager(entityManager)
+                        .createIndexer()
+                        .batchSizeToLoadObjects(500)
+                        .idFetchSize(Integer.MIN_VALUE)
+                        .progressMonitor(new SimpleIndexingProgressMonitor(2000))
+                        .startAndWait();
             } catch (InterruptedException e) {
                 logger.error("Index procedure failed!");
             } finally {
+                System.gc();
                 searchable.endIndexing();
             }
         }

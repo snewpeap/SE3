@@ -1,12 +1,12 @@
 package edu.nju.se.teamnamecannotbeempty.data.repository.popularity;
 
 import edu.nju.se.teamnamecannotbeempty.data.domain.Affiliation;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface AffiPopDao extends CrudRepository<Affiliation.Popularity, Long> {
+public interface AffiPopDao extends JpaRepository<Affiliation.Popularity, Long> {
     /**
      * 获得按照热度（活跃度）降序排列的前20名
      *
@@ -15,6 +15,8 @@ public interface AffiPopDao extends CrudRepository<Affiliation.Popularity, Long>
      * @后置条件 无
      */
     List<Affiliation.Popularity> findTop20ByOrderByPopularityDesc();
+
+    List<Affiliation.Popularity> getByAffiliation_Id(Long id);
 
     Optional<Affiliation.Popularity> findByAffiliation_Id(Long id);
 }

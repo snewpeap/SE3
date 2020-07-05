@@ -11,7 +11,14 @@ import java.util.regex.Pattern;
 
 public class ToConference extends AbstractBeanField<Conference, Object> {
     private static final HashMap<String, Conference> saveMap = new HashMap<>();
+    private static final Conference na;
     private static final Pattern ordnoPat = Pattern.compile("(\\d*(?:1st|2nd|3rd|[0-9]th)) ");
+
+    static {
+        na = new Conference();
+        na.setName("NA");
+        saveMap.put("NA", na);
+    }
 
     @Override
     protected Object convert(String value) {
@@ -43,7 +50,7 @@ public class ToConference extends AbstractBeanField<Conference, Object> {
             }
             return result;
         } else {
-            return null;
+            return na;
         }
     }
 

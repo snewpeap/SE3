@@ -1,10 +1,14 @@
 package edu.nju.se.teamnamecannotbeempty.data.domain;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -24,9 +28,9 @@ public class Affiliation implements Aliasable<Affiliation> {
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_AFFI_ALIAS"))
     //别名，在需要去重的时候为空；去重后，如果没有重复为this，否则为重复对象
     private Affiliation alias;
-//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "affiliation")
-//    @Fetch(FetchMode.SUBSELECT)
-//    private Set<Popularity> pops = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "affiliation")
+    @Fetch(FetchMode.SUBSELECT)
+    private List<Popularity> pops = new ArrayList<>();
 
     public Affiliation() {
     }
@@ -174,11 +178,11 @@ public class Affiliation implements Aliasable<Affiliation> {
         this.country = country;
     }
 
-//    public Set<Popularity> getPops() {
-//        return pops;
-//    }
-//
-//    public void setPops(Set<Popularity> pops) {
-//        this.pops = pops;
-//    }
+    public List<Popularity> getPops() {
+        return pops;
+    }
+
+    public void setPops(List<Popularity> pops) {
+        this.pops = pops;
+    }
 }

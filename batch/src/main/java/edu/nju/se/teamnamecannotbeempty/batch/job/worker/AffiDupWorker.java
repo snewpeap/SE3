@@ -37,14 +37,6 @@ public class AffiDupWorker {
 
     @Async
     public void generateAffiDup() {
-//        while (waitForImport.isDone()) {
-//            try {
-//                Thread.sleep(1000);
-//            } catch (InterruptedException e) {
-//                logger.error("Generate duplicate authors aborted due to " + e.getMessage());
-//                return;
-//            }
-//        }
         /*
         下面进行分词
          */

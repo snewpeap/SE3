@@ -34,14 +34,6 @@ public class AuthorDupWorker {
 
     @Async
     public void generateAuthorDup() {
-//        while (waitForImport.isDone()) {
-//            try {
-//                Thread.sleep(1000);
-//            } catch (InterruptedException e) {
-//                logger.error("Generate duplicate authors aborted due to " + e.getMessage());
-//                return;
-//            }
-//        }
         ArrayListValuedHashMap<Long, Long> cache = new ArrayListValuedHashMap<>();
         class TempAuthor {
             final Author author;

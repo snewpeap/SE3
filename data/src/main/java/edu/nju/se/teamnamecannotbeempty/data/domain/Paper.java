@@ -130,7 +130,7 @@ public class Paper {
     private String year_highlight;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "paper")
     @Fetch(FetchMode.SUBSELECT)
-    private Set<Popularity> pops = new HashSet<>();
+    private List<Popularity> pops = new ArrayList<>();
 
     public Paper() {
     }
@@ -524,11 +524,11 @@ public class Paper {
     }
 
 
-    public Set<Popularity> getPops() {
+    public List<Popularity> getPops() {
         return pops;
     }
 
-    public void setPops(Set<Popularity> pops) {
+    public void setPops(List<Popularity> pops) {
         this.pops = pops;
     }
 }
