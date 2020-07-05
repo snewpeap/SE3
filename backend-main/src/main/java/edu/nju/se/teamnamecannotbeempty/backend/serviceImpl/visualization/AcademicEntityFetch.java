@@ -297,7 +297,7 @@ public class AcademicEntityFetch {
                                         termPop.getTerm().getContent(), -1)
                         )
                 ).distinct().collect(Collectors.toList()))
-        ).filter(yearlyTerm -> yearlyTerm.getTermItemList().size()==0)
+        ).filter(yearlyTerm -> yearlyTerm.getTermItemList().size()!=0)
                 .collect(Collectors.toList());
     }
 
