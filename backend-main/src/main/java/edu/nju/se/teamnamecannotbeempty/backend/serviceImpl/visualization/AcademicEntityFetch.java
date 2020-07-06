@@ -297,8 +297,7 @@ public class AcademicEntityFetch {
                                         termPop.getTerm().getContent(), -1)
                         )
                 ).distinct().collect(Collectors.toList()))
-        ).filter(yearlyTerm -> yearlyTerm.getTermItemList().size()!=0)
-                .collect(Collectors.toList());
+        ).collect(Collectors.toList());
     }
 
     private String generatePopTrend(List<PopByYear> popByYearList) {

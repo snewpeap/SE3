@@ -1,7 +1,6 @@
 package edu.nju.se.teamnamecannotbeempty.data.repository;
 
 import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,17 +34,22 @@ public interface PaperDao extends JpaRepository<Paper, Long> {
     Page<Paper> findAll(Pageable pageable);
 
     /**
+     * @deprecated
+     */
+    @SuppressWarnings("SpringCacheAnnotationsOnInterfaceInspection")
+    List<Paper> findAllByConference_YearBetween(Integer from, Integer to);
+
+    /**
+     * TODO
      * 查找在给定会议年份（也即发表年份）区间内的论文
      *
      * @param from 开始年份
      * @param to   截止年份
      * @return 符合条件的论文列表
-     * @throws org.springframework.dao.InvalidDataAccessApiUsageException，如果任意参数为null
-     * @apiNote 如果from大于true，不会抛出异常，会返回空列表
      */
-    @SuppressWarnings("SpringCacheAnnotationsOnInterfaceInspection")
-    @Cacheable(value = "papersByYear", key = "#root.args[0]+'_'+#root.args[1]", unless = "#result = null")
-    List<Paper> findAllByConference_YearBetween(Integer from, Integer to);
+    default List<Paper> findAllByYearBetween(Integer from, Integer to){
+        return findAllByConference_YearBetween(from, to);
+    }
 
     /**
      * 获得作者的被引总数

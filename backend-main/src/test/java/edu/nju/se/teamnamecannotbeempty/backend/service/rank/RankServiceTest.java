@@ -3,12 +3,12 @@ package edu.nju.se.teamnamecannotbeempty.backend.service.rank;
 import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.RankMsg;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.rank.RankFetch;
 import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.rank.RankServiceImpl;
+import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.visualization.FetchForCache;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.PopRankItem;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.RankItem;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.RankVO;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.ResponseVO;
 import edu.nju.se.teamnamecannotbeempty.data.domain.*;
-import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.*;
 public class RankServiceTest {
 
     @Mock
-    private PaperDao paperDao;
+    private FetchForCache fetchForCache;
     @Mock
     private RankMsg rankMsg;
     @Mock
