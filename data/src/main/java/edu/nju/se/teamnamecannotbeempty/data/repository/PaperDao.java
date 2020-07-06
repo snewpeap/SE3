@@ -36,20 +36,16 @@ public interface PaperDao extends JpaRepository<Paper, Long> {
     /**
      * @deprecated
      */
-    @SuppressWarnings("SpringCacheAnnotationsOnInterfaceInspection")
     List<Paper> findAllByConference_YearBetween(Integer from, Integer to);
 
     /**
-     * TODO
      * 查找在给定会议年份（也即发表年份）区间内的论文
      *
      * @param from 开始年份
      * @param to   截止年份
      * @return 符合条件的论文列表
      */
-    default List<Paper> findAllByYearBetween(Integer from, Integer to){
-        return findAllByConference_YearBetween(from, to);
-    }
+    List<Paper> findAllByYearBetween(Integer from, Integer to);
 
     /**
      * 获得作者的被引总数
