@@ -53,4 +53,13 @@ public class FetchForCache {
     public List<Paper> getAllPapersByConference(long id){
         return paperDao.findByConferenceID(id);
     }
+
+    /**
+     *
+     * 查找在给定会议年份（也即发表年份）区间内的论文
+     */
+    @Cacheable(value = "papersByYear", key = "#root.args[0]+'_'+#root.args[1]", unless = "#result = null")
+    public List<Paper> findAllByYearBetween(int start, int end){
+        return paperDao.findAllByYearBetween(start,end);
+    }
 }

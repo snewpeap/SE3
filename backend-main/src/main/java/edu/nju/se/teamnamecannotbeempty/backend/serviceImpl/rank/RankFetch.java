@@ -1,10 +1,10 @@
 package edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.rank;
 
 import edu.nju.se.teamnamecannotbeempty.backend.config.parameter.EntityMsg;
+import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.visualization.FetchForCache;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.PopRankItem;
 import edu.nju.se.teamnamecannotbeempty.backend.vo.RankItem;
 import edu.nju.se.teamnamecannotbeempty.data.domain.*;
-import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.AffiPopDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.AuthorPopDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.TermPopDao;
@@ -18,20 +18,20 @@ import java.util.stream.Collectors;
 @Service
 public class RankFetch {
 
-    private final PaperDao paperDao;
     private final AffiPopDao affiPopDao;
     private final AuthorPopDao authorPopDao;
     private final TermPopDao termPopDao;
     private final EntityMsg entityMsg;
+    private final FetchForCache fetchForCache;
 
     @Autowired
-    public RankFetch(PaperDao paperDao, AuthorPopDao authorPopDao, AffiPopDao affiPopDao,
-                     TermPopDao termPopDao, EntityMsg entityMsg) {
-        this.paperDao = paperDao;
+    public RankFetch(AuthorPopDao authorPopDao, AffiPopDao affiPopDao,
+                     TermPopDao termPopDao, EntityMsg entityMsg, FetchForCache fetchForCache) {
         this.affiPopDao = affiPopDao;
         this.authorPopDao = authorPopDao;
         this.termPopDao = termPopDao;
         this.entityMsg = entityMsg;
+        this.fetchForCache = fetchForCache;
     }
 
     static class AuthorPaperCitationNum {
@@ -56,7 +56,7 @@ public class RankFetch {
 
     @Cacheable(value = "getRank", key = "#mode+'_'+#startYear+'_'+#endYear", unless = "#result=null")
     public List<RankItem> getAllResult(String mode, int startYear, int endYear) {
-        List<Paper> paperList = paperDao.findAllByConference_YearBetween(startYear, endYear);
+        List<Paper> paperList = fetchForCache.findAllByYearBetween(startYear, endYear);
         List<RankItem> rankItemList = new ArrayList<>();
 
         //'Paper-Cited', 'Author-Cited', 'Author-Paper', 'Affiliation-Paper', 'Publication-Paper', 'Keyword-Paper'
