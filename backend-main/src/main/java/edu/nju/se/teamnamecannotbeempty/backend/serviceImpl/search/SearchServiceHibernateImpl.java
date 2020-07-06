@@ -10,7 +10,8 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.QueryScorer;
 import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
-import org.hibernate.Session;
+import org.hibernate.*;
+import org.hibernate.search.FullTextSession;
 import org.hibernate.search.batchindexing.impl.SimpleIndexingProgressMonitor;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
@@ -94,8 +95,9 @@ public class SearchServiceHibernateImpl implements SearchService {
         //noinspection unchecked
         List<Paper> result = fullTextQuery.getResultList();
 
+        Session session = entityManager.unwrap(Session.class);
         for (Paper paper : result) {
-            entityManager.unwrap(Session.class).evict(paper);
+            session.setReadOnly(paper, true);
             mode.highlight(
                     highlighter,
                     fullTextEntityManager.getSearchFactory().getAnalyzer("noStopWords"),
@@ -139,13 +141,34 @@ public class SearchServiceHibernateImpl implements SearchService {
                 }
             }
             try {
-                Search.getFullTextEntityManager(entityManager)
-                        .createIndexer()
-                        .batchSizeToLoadObjects(100)
-                        .idFetchSize(Integer.MIN_VALUE)
-                        .progressMonitor(new SimpleIndexingProgressMonitor(2000))
-                        .startAndWait();
-            } catch (InterruptedException e) {
+                FullTextSession fullTextSession =
+                        org.hibernate.search.Search.getFullTextSession(entityManager.unwrap(Session.class));
+                fullTextSession.setHibernateFlushMode(FlushMode.MANUAL);
+                fullTextSession.setCacheMode(CacheMode.IGNORE);
+
+                final int batch_size = 300;
+                ScrollableResults scrollableResults = fullTextSession.createCriteria(Paper.class)
+                        .setFetchSize(batch_size).scroll(ScrollMode.FORWARD_ONLY);
+
+                Transaction tx = fullTextSession.beginTransaction();
+                int index = 0;
+                while(scrollableResults.next()) {
+                    index++;
+                    fullTextSession.index(scrollableResults.get(0)); //index each element
+                    if (index % batch_size == 0) {
+                        fullTextSession.flushToIndexes(); //apply changes to indexes
+                        fullTextSession.clear(); //free memory since the queue is processed
+                    }
+                }
+                tx.commit();
+                logger.info("Index finished.");
+//                Search.getFullTextEntityManager(entityManager)
+//                        .createIndexer()
+//                        .batchSizeToLoadObjects(100)
+//                        .idFetchSize(Integer.MIN_VALUE)
+//                        .progressMonitor(new SimpleIndexingProgressMonitor(2000))
+//                        .startAndWait();
+            } catch (Exception e) {
                 logger.error("Index procedure failed!");
             } finally {
                 System.gc();

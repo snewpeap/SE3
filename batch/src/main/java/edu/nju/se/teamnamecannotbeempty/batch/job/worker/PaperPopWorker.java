@@ -4,7 +4,6 @@ import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Paper.Popularity;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Ref;
 import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
-import edu.nju.se.teamnamecannotbeempty.data.repository.RefDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +19,12 @@ import java.util.stream.Stream;
 public class PaperPopWorker {
     private static final ArrayList<Popularity> pops = new ArrayList<>();
     private final PaperDao paperDao;
-    private final RefDao refDao;
     private final JdbcTemplate jdbcTemplate;
     public static final Logger logger = LoggerFactory.getLogger(PaperPopWorker.class);
 
     @Autowired
-    public PaperPopWorker(PaperDao paperDao, RefDao refDao, JdbcTemplate jdbcTemplate) {
+    public PaperPopWorker(PaperDao paperDao, JdbcTemplate jdbcTemplate) {
         this.paperDao = paperDao;
-        this.refDao = refDao;
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -35,7 +32,7 @@ public class PaperPopWorker {
         //TODO PageRank
         int count = Math.toIntExact(count());
         pops.ensureCapacity(2 * count);
-        refDao.findAll().stream().filter(ref -> ref.getReferee() != null)
+        Attacher.getRefs().parallelStream().filter(ref -> ref.getReferee() != null)
                 .collect(Collectors.groupingBy(Ref::getReferee))
                 .forEach((referee, refs) ->
                         refs.stream().collect(

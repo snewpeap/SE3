@@ -11,7 +11,7 @@ import java.util.Objects;
  * 在论文PO中新增年份属性
  */
 @Entity
-@Table(name = "conferences")
+@Table(name = "conferences", indexes = @Index(name = "YEAR_DESC", columnList = "hold_year DESC"))
 public class Conference {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

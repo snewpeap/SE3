@@ -139,6 +139,8 @@ public class PaperDelegation {
         paper.setCitation(citation == null ? Integer.valueOf(0) : citation);
         paper.setReference(reference == null ? Integer.valueOf(0) : reference);
         paper.setPublisher(publisher);
+        if (year == null && conference != null)
+            year = conference.getYear();
         paper.setYear(year);
         return paper;
     }

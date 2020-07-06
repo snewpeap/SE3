@@ -14,7 +14,7 @@ import java.io.Serializable;
 import java.util.*;
 
 @Entity
-@Table(name = "papers")
+@Table(name = "papers", indexes = @javax.persistence.Index(name = "YEAR_DESC", columnList = "year DESC"))
 @Indexed
 @Analyzer(definition = "noStopWords")
 @SuppressWarnings("unused")
