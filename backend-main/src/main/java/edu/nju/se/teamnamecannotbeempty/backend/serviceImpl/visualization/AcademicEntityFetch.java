@@ -247,7 +247,9 @@ public class AcademicEntityFetch {
     }
 
     private List<AcademicEntityItem> generateConferenceEntityItems(List<Conference> conferences) {
-        List<AcademicEntityItem> academicEntityItems = conferences.stream().map(
+        List<AcademicEntityItem> academicEntityItems = conferences.stream()
+                .filter(conference -> !conference.getName().equals("NA"))
+                .map(
                 conference -> new AcademicEntityItem(entityMsg.getConferenceType(), conference.getId(),
                         conference.getName(), null)) //会议没有热度
                 .collect(Collectors.toList());
