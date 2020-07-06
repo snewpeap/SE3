@@ -3,7 +3,6 @@ package edu.nju.se.teamnamecannotbeempty.data.repository;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Affiliation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -44,7 +43,7 @@ public interface AffiliationDao extends JpaRepository<Affiliation, Long> {
             value = "select distinct affiliations.id, af_name, formatted_name, country, alias_id from affiliations " +
                     "inner join paper_aa on affiliations.id = paper_aa.affiliation_id " +
                     "inner join affi_popularity ap on affiliations.id = ap.affiliation_id " +
-                    "where paper_aa.author_id = ?1 order by popularity desc, af_name")
+                    "where paper_aa.author_id = ?1 order by popularity desc")
     List<Affiliation> getAffiliationsByAuthor(Long id);
 
     /**
@@ -71,9 +70,6 @@ public interface AffiliationDao extends JpaRepository<Affiliation, Long> {
     @Query("select distinct aa.affiliation from Paper p inner join p.aa aa " +
             "where exists (select 1 from p.author_keywords ak where ak.id = ?1)")
     List<Affiliation> getAffiliationsByKeyword(Long id);
-
-    @Query("select a from Affiliation a")
-    Streamable<Affiliation> getAll();
 
     List<Affiliation> getByAlias_Id(Long id);
 }

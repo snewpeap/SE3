@@ -30,9 +30,15 @@ public interface TermPopDao extends JpaRepository<Term.Popularity, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select distinct tp from term_popularity tp where exists (" +
-            "select p from Paper p inner join p.author_keywords pas inner join p.aa aa " +
-            "where tp.term.id = pas.id and aa.author.id = ?1) and tp.year is null")
+//    @Query("select distinct tp from term_popularity tp where exists (" +
+//            "select p from Paper p inner join p.author_keywords pas inner join p.aa aa " +
+//            "where tp.term.id = pas.id and aa.author.id = ?1) and tp.year is null")
+    @Query(nativeQuery = true,
+            value = "SELECT distinct tp.id, tp.term_id, tp.popularity, tp.year " +
+                    "FROM se3.term_popularity tp " +
+                    "LEFT JOIN se3.papers_author_keywords pak ON pak.author_keywords_id = tp.term_id " +
+                    "LEFT JOIN se3.paper_aa aa ON pak.paper_id = aa.paper_id " +
+                    "WHERE tp.year IS NULL AND aa.author_id = ?1")
     List<Term.Popularity> getTermPopByAuthorID(Long id);
 
     /**
@@ -44,9 +50,15 @@ public interface TermPopDao extends JpaRepository<Term.Popularity, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select distinct tp from term_popularity tp where exists (" +
-            "select p from Paper p inner join p.author_keywords pas inner join p.aa aa " +
-            "where tp.term.id = pas.id and aa.affiliation.id = ?1) and tp.year is null")
+//    @Query("select distinct tp from term_popularity tp where exists (" +
+//            "select p from Paper p inner join p.author_keywords pas inner join p.aa aa " +
+//            "where tp.term.id = pas.id and aa.affiliation.id = ?1) and tp.year is null")
+    @Query(nativeQuery = true,
+            value = "SELECT distinct tp.id, tp.term_id, tp.popularity, tp.year " +
+                    "FROM se3.term_popularity tp " +
+                    "LEFT JOIN se3.papers_author_keywords pak ON pak.author_keywords_id = tp.term_id " +
+                    "LEFT JOIN se3.paper_aa aa ON pak.paper_id = aa.paper_id " +
+                    "WHERE tp.year IS NULL AND aa.affiliation_id = ?1")
     List<Term.Popularity> getTermPopByAffiID(Long id);
 
     /**
@@ -57,9 +69,14 @@ public interface TermPopDao extends JpaRepository<Term.Popularity, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select distinct tp from term_popularity tp where exists (" +
-            "select p from Paper p inner join p.author_keywords pas " +
-            "where tp.term.id = pas.id and p.id = ?1) and tp.year is null")
+//    @Query("select distinct tp from term_popularity tp where exists (" +
+//            "select p from Paper p inner join p.author_keywords pas " +
+//            "where tp.term.id = pas.id and p.id = ?1) and tp.year is null")
+    @Query(nativeQuery = true,
+            value = "SELECT distinct tp.id, tp.term_id, tp.popularity, tp.year " +
+                    "FROM se3.term_popularity tp " +
+                    "LEFT JOIN se3.papers_author_keywords pak ON pak.author_keywords_id = tp.term_id " +
+                    "WHERE tp.year IS NULL AND pak.paper_id = ?1")
     List<Term.Popularity> getTermPopByPaperID(Long id);
 
     /**
@@ -70,9 +87,15 @@ public interface TermPopDao extends JpaRepository<Term.Popularity, Long> {
      * @前置条件 id不为null
      * @后置条件 无
      */
-    @Query("select distinct tp from term_popularity tp where exists (" +
-            "select p from Paper p inner join p.author_keywords pas " +
-            "where tp.term.id = pas.id and p.conference.id = ?1) and tp.year is null")
+//    @Query("select distinct tp from term_popularity tp where exists (" +
+//            "select p from Paper p inner join p.author_keywords pas " +
+//            "where tp.term.id = pas.id and p.conference.id = ?1) and tp.year is null")
+    @Query(nativeQuery = true,
+            value = "SELECT distinct tp.id, tp.term_id, tp.popularity, tp.year " +
+                    "FROM se3.term_popularity tp " +
+                    "LEFT JOIN se3.papers_author_keywords pak ON pak.author_keywords_id = tp.term_id " +
+                    "LEFT JOIN se3.papers p ON pak.paper_id = p.id " +
+                    "WHERE tp.year IS NULL AND p.conference_id = ?1")
     List<Term.Popularity> getTermPopByConferenceID(Long id);
 
     /**

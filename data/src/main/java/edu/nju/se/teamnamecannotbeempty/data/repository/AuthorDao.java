@@ -44,7 +44,7 @@ public interface AuthorDao extends JpaRepository<Author, Long> {
             value = "select distinct authors.id, au_name, lower_case_name, alias_id from authors " +
                     "inner join paper_aa on authors.id = paper_aa.author_id " +
                     "inner join author_popularity ap on authors.id = ap.author_id " +
-                    "where paper_aa.affiliation_id = ?1 order by popularity desc, au_name")
+                    "where paper_aa.affiliation_id = ?1 order by popularity desc")
     List<Author> getAuthorsByAffiliation(Long id);
 
     /**

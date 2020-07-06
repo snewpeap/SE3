@@ -60,6 +60,10 @@ public class Author implements Aliasable<Author> {
     }
 
     @Entity(name = "author_popularity")
+    @Table(indexes = {
+            @javax.persistence.Index(name = "POPULARITY_DESC", columnList = "popularity DESC"),
+            @javax.persistence.Index(name = "YEAR", columnList = "year")
+    })
     public static class Popularity implements Serializable {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
