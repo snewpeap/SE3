@@ -9,27 +9,29 @@ import org.hibernate.search.query.dsl.SimpleQueryStringMatchingContext;
 import org.hibernate.search.query.dsl.TermMatchingContext;
 import org.springframework.stereotype.Component;
 
+import static edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.SearchMappingFactory.*;
+
 @Component("All")
 public class FuzzySearch extends SearchMode {
     @Override
     public TermMatchingContext getFieldsBaseOnKeyword(QueryBuilder queryBuilder) {
         return queryBuilder.keyword()
-                .onField(Paper.getFieldName_searchYear()).boostedTo(4f)
-                .andField(Paper.getFieldName_title())
-                .andField(Paper.getFieldName_author())
-                .andField(Paper.getFieldName_affiliation())
-                .andField(Paper.getFieldName_conference())
-                .andField(Paper.getFieldName_authorKeywords());
+                .onField(getFieldName_searchYear()).boostedTo(4f)
+                .andField(getFieldName_title())
+                .andField(getFieldName_author())
+                .andField(getFieldName_affiliation())
+                .andField(getFieldName_conference())
+                .andField(getFieldName_authorKeywords());
     }
 
     @Override
     public SimpleQueryStringMatchingContext getFieldsBaseOnSQS(QueryBuilder queryBuilder) {
         return queryBuilder.simpleQueryString().onFields(
-                Paper.getFieldName_title(),
-                Paper.getFieldName_author(),
-                Paper.getFieldName_affiliation(),
-                Paper.getFieldName_conference(),
-                Paper.getFieldName_authorKeywords(), Paper.getFieldName_searchYear()
+                getFieldName_title(),
+                getFieldName_author(),
+                getFieldName_affiliation(),
+                getFieldName_conference(),
+                getFieldName_authorKeywords(), getFieldName_searchYear()
         );
     }
 

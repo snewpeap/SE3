@@ -3,7 +3,6 @@ package edu.nju.se.teamnamecannotbeempty.data.domain;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,7 +17,6 @@ public class Affiliation implements Aliasable<Affiliation> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "af_name", nullable = false)
-    @Field
     // 机构名，包括部门/院系名和组织/单位名（如软件学院of南京大学）
     private String name;
     private String formattedName;

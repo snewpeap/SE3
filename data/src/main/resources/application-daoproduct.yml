@@ -9,11 +9,6 @@ spring:
         dialect: edu.nju.se.teamnamecannotbeempty.data.MyDialect
         show_sql: false
         format_sql: false
-        search:
-          analyzer: "noStopWords"
-          default:
-            directory_provider: "filesystem"
-            indexBase: "/var/lucene/indexes"
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

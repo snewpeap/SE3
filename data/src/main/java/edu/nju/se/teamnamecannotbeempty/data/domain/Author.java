@@ -3,7 +3,6 @@ package edu.nju.se.teamnamecannotbeempty.data.domain;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,7 +17,6 @@ public class Author implements Aliasable<Author> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "au_name", nullable = false)
-    @Field
     private String name;
     private String lowerCaseName;
     @ManyToOne

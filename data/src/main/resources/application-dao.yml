@@ -9,7 +9,3 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
         show_sql: false
         format_sql: false
-        search:
-          analyzer: "noStopWords"
-          default:
-            directory_provider: "local-heap"

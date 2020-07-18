@@ -8,4 +8,4 @@ EXPOSE 9910
 EXPOSE 9911
 EXPOSE 9912
 
-ENTRYPOINT ["java", "-Dspring.profiles.active=daoproduct,product", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-XX:MinHeapFreeRatio=16", "-Dspring.profiles.active=daoproduct,product", "-jar", "/app.jar"]

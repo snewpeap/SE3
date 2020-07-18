@@ -9,18 +9,21 @@ import org.hibernate.search.query.dsl.SimpleQueryStringMatchingContext;
 import org.hibernate.search.query.dsl.TermMatchingContext;
 import org.springframework.stereotype.Component;
 
+import static edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.SearchMappingFactory.getFieldName_affiliation;
+import static edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.SearchMappingFactory.getFieldName_searchYear;
+
 @Component("Affiliation")
 public class SearchByAffiliation extends SearchMode {
     @Override
     public TermMatchingContext getFieldsBaseOnKeyword(QueryBuilder queryBuilder) {
         return queryBuilder.keyword()
-                .onField(Paper.getFieldName_searchYear()).boostedTo(2f)
-                .andField(Paper.getFieldName_affiliation());
+                .onField(getFieldName_searchYear()).boostedTo(2f)
+                .andField(getFieldName_affiliation());
     }
 
     @Override
     public SimpleQueryStringMatchingContext getFieldsBaseOnSQS(QueryBuilder queryBuilder) {
-        return queryBuilder.simpleQueryString().onFields(Paper.getFieldName_affiliation(), Paper.getFieldName_searchYear());
+        return queryBuilder.simpleQueryString().onFields(getFieldName_affiliation(), getFieldName_searchYear());
     }
 
     @Override

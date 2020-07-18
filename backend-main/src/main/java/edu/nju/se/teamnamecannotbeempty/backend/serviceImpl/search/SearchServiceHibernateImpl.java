@@ -47,7 +47,6 @@ public class SearchServiceHibernateImpl implements SearchService {
         FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
         try {
             fullTextEntityManager.createIndexer()
-                    .batchSizeToLoadObjects(200)
                     .idFetchSize(Integer.MIN_VALUE)
                     .progressMonitor(new SimpleIndexingProgressMonitor(2000))
                     .startAndWait();
@@ -78,7 +77,7 @@ public class SearchServiceHibernateImpl implements SearchService {
         FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
         QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory()
                 .buildQueryBuilder().forEntity(Paper.class).get();
-        Query luceneQuery = mode.getFieldsBaseOnKeyword(queryBuilder).matching(keywords).createQuery();
+        Query luceneQuery = mode.buildQuery(queryBuilder, keywords);
         FullTextQuery fullTextQuery = fullTextEntityManager.createFullTextQuery(luceneQuery, Paper.class);
 
         fullTextQuery.setSort(sortMode.getSort());
@@ -147,6 +146,7 @@ public class SearchServiceHibernateImpl implements SearchService {
                 fullTextSession.setCacheMode(CacheMode.IGNORE);
 
                 final int batch_size = 300;
+                //noinspection deprecation
                 ScrollableResults scrollableResults = fullTextSession.createCriteria(Paper.class)
                         .setFetchSize(batch_size).scroll(ScrollMode.FORWARD_ONLY);
 

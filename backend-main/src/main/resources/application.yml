@@ -5,6 +5,7 @@ spring:
     properties:
       hibernate:
         search:
+          model_mapping: "edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.SearchMappingFactory"
           lucene_version: "5.5.5"
           default:
             directory_provider: "local-heap"

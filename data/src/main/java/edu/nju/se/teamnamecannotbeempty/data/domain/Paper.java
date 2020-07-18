@@ -1,13 +1,9 @@
 package edu.nju.se.teamnamecannotbeempty.data.domain;
 
-import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.*;
-import org.hibernate.search.bridge.builtin.IntegerBridge;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,8 +11,6 @@ import java.util.*;
 
 @Entity
 @Table(name = "papers", indexes = @javax.persistence.Index(name = "YEAR_DESC", columnList = "year DESC"))
-@Indexed
-@Analyzer(definition = "noStopWords")
 @SuppressWarnings("unused")
 public class Paper {
     // IEEE论文的id
@@ -27,22 +21,15 @@ public class Paper {
     // 论文的代理主键
     private Long id;
     @Column(nullable = false, length = 1000)
-    @Fields({
-            @Field(name = "title", index = Index.YES, analyze = Analyze.YES, store = Store.NO),
-            @Field(name = "sortTitle", index = Index.NO, analyze = Analyze.NO, store = Store.NO)
-    })
-    @SortableField(forField = "sortTitle")
     // 论文的标题
     private String title;
     @ElementCollection(fetch = FetchType.EAGER)
     @Cascade(org.hibernate.annotations.CascadeType.DETACH)
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_AA_PAPER"))
-    @IndexedEmbedded
     // 发表论文的每个作者-机构构成的对象的列表
     private List<Author_Affiliation> aa = new ArrayList<>();
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(foreignKey = @ForeignKey(name = "FK_PAPER_CONFERENCE"))
-    @IndexedEmbedded
     // 会议对象。对应数据中的出版物
     private Conference conference;
     @Temporal(TemporalType.DATE)
@@ -67,28 +54,24 @@ public class Paper {
     private String funding_info;
     // pdf原文链接
     private String pdf_link;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinTable(foreignKey = @ForeignKey(name = "FK_AUTHOR_KEYWORDS_PAPER"), inverseForeignKey = @ForeignKey(name = "FK_AUTHOR_KEYWORDS_TERM"))
     @Fetch(FetchMode.SUBSELECT)
-    @IndexedEmbedded
     // 作者给出的关键字
     private List<Term> author_keywords = new ArrayList<>();
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinTable(foreignKey = @ForeignKey(name = "FK_IEEE_TERMS_PAPER"), inverseForeignKey = @ForeignKey(name = "FK_IEEE_TERMS_TERM"))
     @Fetch(FetchMode.SUBSELECT)
-    @IndexedEmbedded
     // IEEE术语
     private List<Term> ieee_terms = new ArrayList<>();
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinTable(foreignKey = @ForeignKey(name = "FK_INSPECT_CONTROLLED_PAPER"), inverseForeignKey = @ForeignKey(name = "FK_INSPECT_CONTROLLED_TERM"))
     @Fetch(FetchMode.SUBSELECT)
-    @IndexedEmbedded
     // INSPEC受控索引，有限集合
     private List<Term> inspec_controlled = new ArrayList<>();
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinTable(foreignKey = @ForeignKey(name = "FK_INSPECT_NON_CONTROLLED_PAPER"), inverseForeignKey = @ForeignKey(name = "FK_INSPECT_NON_CONTROLLED_TERM"))
     @Fetch(FetchMode.SUBSELECT)
-    @IndexedEmbedded
     // INSPEC非受控索引，无限集合
     private List<Term> inspec_non_controlled = new ArrayList<>();
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
@@ -115,14 +98,6 @@ public class Paper {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "referer", orphanRemoval = true, fetch = FetchType.LAZY)
     @Fetch(FetchMode.SUBSELECT)
     private List<Ref> refs = new ArrayList<>();
-    @Field(name = "year", store = Store.YES)
-    @NumericField(forField = "year")
-    @SortableField(forField = "year")
-    @Field(
-            name = "search_year",
-            bridge = @FieldBridge(impl = IntegerBridge.class),
-            analyzer = @Analyzer(impl = KeywordAnalyzer.class)
-    )
     //出版年份
     private Integer year;
     @Transient
@@ -233,30 +208,6 @@ public class Paper {
     @Override
     public int hashCode() {
         return Objects.hash(doi == null ? UUID.randomUUID() : doi);
-    }
-
-    public static String getFieldName_title() {
-        return "title";
-    }
-
-    public static String getFieldName_author() {
-        return "aa.author.name";
-    }
-
-    public static String getFieldName_affiliation() {
-        return "aa.affiliation.name";
-    }
-
-    public static String getFieldName_conference() {
-        return "conference.name";
-    }
-
-    public static String getFieldName_searchYear() {
-        return "search_year";
-    }
-
-    public static String getFieldName_authorKeywords() {
-        return "author_keywords.content";
     }
 
     /**
@@ -526,7 +477,6 @@ public class Paper {
     public void setYear_highlight(String year_highlight) {
         this.year_highlight = year_highlight;
     }
-
 
     public List<Popularity> getPops() {
         return pops;

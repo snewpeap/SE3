@@ -90,6 +90,12 @@ public class PaperDelegation {
     @CsvBindByName(column = "Publisher")
     private String publisher;
 
+    /**
+     * 完成从批处理中的代理对象到领域模型对象的转换
+     * 如果文章既无ieeeID，也无doi，或者作者与机构数量不匹配，将返回null，代表抛弃此解析结果
+     *
+     * @return 转换后的领域模型对象
+     */
     Paper toPaper() {
         Paper paper = new Paper();
         if (pdf_link != null && pdf_link.contains("arnumber=")) {

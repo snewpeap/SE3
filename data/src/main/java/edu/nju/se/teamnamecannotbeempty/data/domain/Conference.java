@@ -1,7 +1,5 @@
 package edu.nju.se.teamnamecannotbeempty.data.domain;
 
-import org.hibernate.search.annotations.Field;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -17,7 +15,6 @@ public class Conference {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "c_name")
-    @Field
     private String name;
     @Column(name = "hold_year")
     // 出版或会议举办年份，可能为空

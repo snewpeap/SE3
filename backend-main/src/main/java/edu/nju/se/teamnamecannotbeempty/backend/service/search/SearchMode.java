@@ -1,7 +1,9 @@
 package edu.nju.se.teamnamecannotbeempty.backend.service.search;
 
+import edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.SearchMappingFactory;
 import edu.nju.se.teamnamecannotbeempty.data.domain.*;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.InvalidTokenOffsetsException;
 import org.hibernate.search.query.dsl.QueryBuilder;
@@ -16,14 +18,19 @@ public abstract class SearchMode {
 
     public abstract TermMatchingContext getFieldsBaseOnKeyword(QueryBuilder queryBuilder);
 
+    @SuppressWarnings("unused")
     public abstract SimpleQueryStringMatchingContext getFieldsBaseOnSQS(QueryBuilder queryBuilder);
+
+    public Query buildQuery(QueryBuilder queryBuilder, String searchString) {
+        return getFieldsBaseOnKeyword(queryBuilder).matching(searchString).createQuery();
+    }
 
     public abstract void highlight(Highlighter highlighter, Analyzer analyzer, Paper paper);
 
     protected void highlightTitle(Paper paper, Highlighter highlighter, Analyzer analyzer) {
         String hl = null;
         try {
-            hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_title(), paper.getTitle());
+            hl = highlighter.getBestFragment(analyzer, SearchMappingFactory.getFieldName_title(), paper.getTitle());
         } catch (IOException | InvalidTokenOffsetsException e) {
             e.printStackTrace();
         } finally {
@@ -41,13 +48,11 @@ public abstract class SearchMode {
             BeanUtils.copyProperties(author, copy);
             String hl = null;
             try {
-                hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_author(), copy.getName());
-//                hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_author(), author.getName());
+                hl = highlighter.getBestFragment(analyzer, SearchMappingFactory.getFieldName_author(), copy.getName());
             } catch (IOException | InvalidTokenOffsetsException e) {
                 e.printStackTrace();
             } finally {
                 if (hl != null) {
-//                    author.setName(hl);
                     copy.setName(hl);
                     aa.setAuthor(copy);
                 }
@@ -62,15 +67,13 @@ public abstract class SearchMode {
             BeanUtils.copyProperties(affiliation, copy);
             String hl = null;
             try {
-                hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_affiliation(), copy.getName());
-//                hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_affiliation(), affiliation.getName());
+                hl = highlighter.getBestFragment(analyzer, SearchMappingFactory.getFieldName_affiliation(), copy.getName());
             } catch (IOException | InvalidTokenOffsetsException e) {
                 e.printStackTrace();
             } finally {
                 if (hl != null) {
                     copy.setName(hl);
                     aa.setAffiliation(copy);
-//                    affiliation.setName(hl);
                 }
             }
         }
@@ -83,14 +86,12 @@ public abstract class SearchMode {
         Conference copy = new Conference();
         BeanUtils.copyProperties(paper.getConference(), copy);
         try {
-            hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_conference(), copy.getName());
-//            hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_conference(), conference.getName());
+            hl = highlighter.getBestFragment(analyzer, SearchMappingFactory.getFieldName_conference(), copy.getName());
         } catch (IOException | InvalidTokenOffsetsException e) {
             e.printStackTrace();
         } finally {
             if (hl != null) {
                 copy.setName(hl);
-//                conference.setName(hl);
             }
             paper.setConference(copy);
         }
@@ -104,15 +105,13 @@ public abstract class SearchMode {
             BeanUtils.copyProperties(term, copy);
             String hl = null;
             try {
-                hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_authorKeywords(), copy.getContent());
-//                hl = highlighter.getBestFragment(analyzer, Paper.getFieldName_authorKeywords(), term.getContent());
+                hl = highlighter.getBestFragment(analyzer, SearchMappingFactory.getFieldName_authorKeywords(), copy.getContent());
             } catch (IOException | InvalidTokenOffsetsException e) {
                 e.printStackTrace();
             } finally {
                 if (hl != null) {
                     copy.setContent(hl);
                     author_keywords.set(i, copy);
-//                    term.setContent(hl);
                 }
             }
         }
@@ -121,7 +120,7 @@ public abstract class SearchMode {
     protected void highlightYear(Paper paper, Highlighter highlighter, Analyzer analyzer) {
         String hlyear = String.valueOf(paper.getYear());
         try {
-            hlyear = highlighter.getBestFragment(analyzer, Paper.getFieldName_searchYear(), hlyear);
+            hlyear = highlighter.getBestFragment(analyzer, SearchMappingFactory.getFieldName_searchYear(), hlyear);
         } catch (IOException | InvalidTokenOffsetsException e) {
             e.printStackTrace();
         } finally {
