@@ -19,13 +19,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
+import java.util.HashMap;
+import java.util.Map;
 
-import static edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.SearchMappingFactory.getFieldName_title;
+import static edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.SearchMappingFactory.*;
 
 @Component("Advanced")
 public class AdvancedSearch extends SearchMode {
     private final FullTextEntityManager fullTextEntityManager;
+    private static final HashMap<String, String> fieldMapping = new HashMap<>();
     public static final Logger logger = LoggerFactory.getLogger(AdvancedSearch.class);
+
+    static {
+        fieldMapping.put("Title", getFieldName_title());
+        fieldMapping.put("Author", getFieldName_author());
+        fieldMapping.put("Affiliation", getFieldName_affiliation());
+        fieldMapping.put("Publication", getFieldName_conference());
+        fieldMapping.put("Keyword", getFieldName_authorKeywords());
+        fieldMapping.put("Year", getFieldName_searchYear());
+    }
 
     @Autowired
     public AdvancedSearch(EntityManager entityManager) {
@@ -44,6 +56,11 @@ public class AdvancedSearch extends SearchMode {
 
     @Override
     public Query buildQuery(QueryBuilder queryBuilder, String searchString) {
+        for (Map.Entry<String, String> entry : fieldMapping.entrySet()) {
+            String from = entry.getKey();
+            String to = entry.getValue();
+            searchString = searchString.replace(from + ":", to + ":");
+        }
         Analyzer analyzer = fullTextEntityManager.getSearchFactory().getAnalyzer("noStopWords");
         QueryParser parser = new QueryParser(getFieldName_title(), analyzer);
         Query query = new MatchNoDocsQuery();
@@ -59,5 +76,6 @@ public class AdvancedSearch extends SearchMode {
     public void highlight(Highlighter highlighter, Analyzer analyzer, Paper paper) {
 
     }
+
 
 }
