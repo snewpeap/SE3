@@ -10,13 +10,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class entityTest {
 
@@ -75,7 +80,7 @@ public class entityTest {
 
     /**
      * 新接口的测试
-     * 通过年份和trem获得代表作列表
+     * 通过年份和term获得代表作列表
      */
     @Test
     public void getSignificantpaper(){
@@ -88,5 +93,22 @@ public class entityTest {
         assertEquals(list,entityController.getSignificantPaper(0,0,2020,11111));
     }
 
-
+    @Test
+    public void getSignificantpaper2() throws Exception {
+        String url = "/academic/significantPapers";
+        List<SimplePaperVO> list = new ArrayList<>();
+        SimplePaperVO simplePaperVO = new SimplePaperVO(1,"s",null,"title",11,"2000",null);
+        list.add(simplePaperVO);
+        Mockito.when(entityService.getSignificantPaper(0,0,2020,11111)).thenReturn(list);
+        MvcResult result = mockMvc
+                .perform(MockMvcRequestBuilders.get(url)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("id","1")
+                        .param("type", "0")
+                        .param("year", "2020")
+                        .param("termId", "11111"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+    }
 }
