@@ -5,7 +5,6 @@ import edu.nju.se.teamnamecannotbeempty.data.domain.Affiliation;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
@@ -17,13 +16,6 @@ public class ToAffiliation extends AbstractCsvConverter {
     private static final HashMap<String, Affiliation> saveMap = new HashMap<>();
     private static final Affiliation na;
     private static Map<String, String> synonyms = new HashMap<>();
-
-    static {
-        na = new Affiliation();
-        na.setName("NA");
-        na.setFormattedName("NA");
-        saveMap.put("NA", na);
-    }
 
     @Override
     public Object convertToRead(String value) {
@@ -52,6 +44,11 @@ public class ToAffiliation extends AbstractCsvConverter {
     }
 
     static {
+        na = new Affiliation();
+        na.setName("NA");
+        na.setFormattedName("NA");
+        saveMap.put("NA", na);
+
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(
                         ToAffiliation.class.getResourceAsStream("/synonyms.txt"),
@@ -64,7 +61,7 @@ public class ToAffiliation extends AbstractCsvConverter {
                 synonyms.put(ss[0].replaceAll("\\.", "\\\\."), ss[1]);
             }
             reader.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             synonyms = Collections.unmodifiableMap(synonyms);

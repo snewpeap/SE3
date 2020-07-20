@@ -12,7 +12,6 @@ import org.apache.lucene.analysis.standard.ClassicTokenizerFactory;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,7 +31,7 @@ public class ToTerm extends AbstractCsvConverter {
                     .addTokenFilter(EnglishMinimalStemFilterFactory.class)
                     .addTokenFilter(ClassicFilterFactory.class)
                     .build();
-        } catch (IOException | URISyntaxException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             analyzer1 = null;
         }
