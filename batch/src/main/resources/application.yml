@@ -1,0 +1,18 @@
+rmi.host: localhost
+spring:
+  main:
+    web-application-type: none
+  devtools:
+    livereload:
+      enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: true
+    properties:
+      hibernate:
+        order_inserts: true
+          order_updates: true
+          jdbc:
+            batch_versioned_data: true
+            batch_size: 500
