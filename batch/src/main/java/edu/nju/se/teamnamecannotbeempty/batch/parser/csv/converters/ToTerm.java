@@ -12,7 +12,6 @@ import org.apache.lucene.analysis.standard.ClassicTokenizerFactory;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,7 +25,7 @@ public class ToTerm extends AbstractCsvConverter {
     static {
         Analyzer analyzer1;
         try {
-            analyzer1 = CustomAnalyzer.builder(Paths.get(ToTerm.class.getResource("/analyzerConfigs").toURI()))
+            analyzer1 = CustomAnalyzer.builder()
                     .withTokenizer(ClassicTokenizerFactory.class)
                     .addTokenFilter(EnglishMinimalStemFilterFactory.class)
                     .addTokenFilter(ClassicFilterFactory.class)
