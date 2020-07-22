@@ -28,15 +28,23 @@ import static edu.nju.se.teamnamecannotbeempty.backend.serviceImpl.search.Search
 public class AdvancedSearch extends SearchMode {
     private final FullTextEntityManager fullTextEntityManager;
     private static final HashMap<String, String> fieldMapping = new HashMap<>();
+    private final ThreadLocal<String> currentQuery = new ThreadLocal<>();
     public static final Logger logger = LoggerFactory.getLogger(AdvancedSearch.class);
 
+    public static final String USER_QUERY_TITLE = "Title";
+    public static final String USER_QUERY_AUTHOR = "Author";
+    public static final String USER_QUERY_AFFILIATION = "Affiliation";
+    public static final String USER_QUERY_CONFERENCE = "Publication";
+    public static final String USER_QUERY_KEYWORD = "Keyword";
+    public static final String USER_QUERY_YEAR = "Year";
+
     static {
-        fieldMapping.put("Title", getFieldName_title());
-        fieldMapping.put("Author", getFieldName_author());
-        fieldMapping.put("Affiliation", getFieldName_affiliation());
-        fieldMapping.put("Publication", getFieldName_conference());
-        fieldMapping.put("Keyword", getFieldName_authorKeywords());
-        fieldMapping.put("Year", getFieldName_searchYear());
+        fieldMapping.put(USER_QUERY_TITLE, getFieldName_title());
+        fieldMapping.put(USER_QUERY_AUTHOR, getFieldName_author());
+        fieldMapping.put(USER_QUERY_AFFILIATION, getFieldName_affiliation());
+        fieldMapping.put(USER_QUERY_CONFERENCE, getFieldName_conference());
+        fieldMapping.put(USER_QUERY_KEYWORD, getFieldName_authorKeywords());
+        fieldMapping.put(USER_QUERY_YEAR, getFieldName_searchYear());
     }
 
     @Autowired
@@ -56,16 +64,18 @@ public class AdvancedSearch extends SearchMode {
 
     @Override
     public Query buildQuery(QueryBuilder queryBuilder, String searchString) {
+        String availableQuery = searchString;
         for (Map.Entry<String, String> entry : fieldMapping.entrySet()) {
             String from = entry.getKey();
             String to = entry.getValue();
-            searchString = searchString.replace(from + ":", to + ":");
+            availableQuery = availableQuery.replace(from + ":", to + ":");
         }
         Analyzer analyzer = fullTextEntityManager.getSearchFactory().getAnalyzer("noStopWords");
         QueryParser parser = new QueryParser(getFieldName_title(), analyzer);
         Query query = new MatchNoDocsQuery();
         try {
-            query = parser.parse(searchString);
+            query = parser.parse(availableQuery);
+            currentQuery.set(searchString);
         } catch (ParseException e) {
             logger.warn(String.format("Search string \"%s\" can't parse to query", searchString));
         }
@@ -74,8 +84,37 @@ public class AdvancedSearch extends SearchMode {
 
     @Override
     public void highlight(Highlighter highlighter, Analyzer analyzer, Paper paper) {
-
+        String query = currentQuery.get();
+        if (query != null) {
+            for (String field : fieldMapping.keySet()) {
+                if (query.contains(field + ":"))
+                    highlight(highlighter, analyzer, paper, field);
+            }
+            currentQuery.remove();
+        }
     }
 
-
+    private void highlight(Highlighter highlighter, Analyzer analyzer, Paper paper, String field) {
+        switch (field) {
+            case USER_QUERY_TITLE:
+                highlightTitle(paper, highlighter, analyzer);
+                break;
+            case USER_QUERY_AUTHOR:
+                highlightAuthor(paper, highlighter, analyzer);
+                break;
+            case USER_QUERY_AFFILIATION:
+                highlightAffiliation(paper, highlighter, analyzer);
+                break;
+            case USER_QUERY_CONFERENCE:
+                highlightConference(paper, highlighter, analyzer);
+                break;
+            case USER_QUERY_KEYWORD:
+                highlightKeyword(paper, highlighter, analyzer);
+                break;
+            case USER_QUERY_YEAR:
+                highlightYear(paper, highlighter, analyzer);
+            default:
+                break;
+        }
+    }
 }
