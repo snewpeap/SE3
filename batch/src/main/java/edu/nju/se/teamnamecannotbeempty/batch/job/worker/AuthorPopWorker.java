@@ -52,7 +52,7 @@ public class AuthorPopWorker {
                         Collectors.summingDouble(Paper.Popularity::getPopularity)
                 )
         ).forEach((year, sum) ->
-                authorPops.add(new Author.Popularity(author, sum, year))
+                authorPops.add(new Author.Popularity(author, (double) Math.round(sum * 100) / 100, year))
         ));
         ArrayList<Author.Popularity> sumPops = new ArrayList<>(count);
         authorPops.stream().collect(
@@ -60,7 +60,8 @@ public class AuthorPopWorker {
                         Author.Popularity::getAuthor,
                         Collectors.summingDouble(Author.Popularity::getPopularity)
                 )
-        ).forEach((author, popSum) -> sumPops.add(new Author.Popularity(author, popSum)));
+        ).forEach((author, popSum) ->
+                sumPops.add(new Author.Popularity(author, (double) Math.round(popSum * 100) / 100)));
         authorPops.addAll(sumPops);
 
         jdbcTemplate.batchUpdate(

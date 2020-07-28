@@ -1,6 +1,5 @@
 package edu.nju.se.teamnamecannotbeempty.batch.job.worker;
 
-import edu.nju.se.teamnamecannotbeempty.data.domain.Paper;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Paper.Popularity;
 import edu.nju.se.teamnamecannotbeempty.data.domain.Ref;
 import edu.nju.se.teamnamecannotbeempty.data.repository.PaperDao;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.sql.JDBCType;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -29,7 +29,6 @@ public class PaperPopWorker {
     }
 
     public void generatePaperPop() {
-        //TODO PageRank
         int count = Math.toIntExact(count());
         pops.ensureCapacity(2 * count);
         Attacher.getRefs().parallelStream().filter(ref -> ref.getReferee() != null)
@@ -37,20 +36,21 @@ public class PaperPopWorker {
                 .forEach((referee, refs) ->
                         refs.stream().collect(
                                 Collectors.groupingBy(ref -> {
-                                            Paper referer = ref.getReferer();
-                                            Integer year = referer.getYear();
-                                            if (year == null) {
-                                                year = referer.getConference().getYear();
-                                                if (year == null) {
-                                                    year = 0;
-                                                }
-                                            }
+                                            Integer year = ref.getReferer().getYear();
+                                            if (year == null) year = 0;
                                             return year;
                                         }
                                 )
                         ).forEach((year, yearlyRefs) -> {
                             if (year != 0) {
-                                pops.add(new Popularity(referee, (double) yearlyRefs.size(), year));
+                                BigDecimal pop = BigDecimal.ZERO;
+                                for (Ref ref : yearlyRefs) {
+                                    //pop += 0.01 * referer's citation + 1.0
+                                    pop = pop.add(new BigDecimal(Double.toString(ref.getReferer().getCitation()))
+                                                    .multiply(new BigDecimal("0.01"))
+                                                    .add(BigDecimal.ONE));
+                                }
+                                pops.add(new Popularity(referee, pop.doubleValue(), year));
                             }
                         })
                 );
@@ -61,7 +61,7 @@ public class PaperPopWorker {
                         Popularity::getPaper,
                         Collectors.summingDouble(Popularity::getPopularity)
                 )
-        ).forEach((paper, pop) -> sumPop.add(new Popularity(paper, pop, null)));
+        ).forEach((paper, pop) -> sumPop.add(new Popularity(paper, (double) Math.round(pop * 100) / 100, null)));
         pops.addAll(sumPop);
 
         jdbcTemplate.batchUpdate(
@@ -79,10 +79,6 @@ public class PaperPopWorker {
 
     public long count() {
         return paperDao.count();
-    }
-
-    public static Stream<Popularity> popsStream() {
-        return pops.stream();
     }
 
     public static Stream<Popularity> popsParallelStream() {

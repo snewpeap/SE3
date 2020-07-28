@@ -45,7 +45,7 @@ public class TermPopWorker {
                         Collectors.summingDouble(Paper.Popularity::getPopularity)
                 )
         ).forEach((year, sum) ->
-                termPops.add(new Term.Popularity(term, sum, year))
+                termPops.add(new Term.Popularity(term, (double) Math.round(sum * 100) / 100, year))
         ));
         ArrayList<Term.Popularity> sumPops = new ArrayList<>(count);
         termPops.stream().collect(
@@ -53,7 +53,8 @@ public class TermPopWorker {
                         Term.Popularity::getTerm,
                         Collectors.summingDouble(Term.Popularity::getPopularity)
                 )
-        ).forEach((term, popSum) -> sumPops.add(new Term.Popularity(term, popSum)));
+        ).forEach((term, popSum) ->
+                sumPops.add(new Term.Popularity(term, (double) Math.round(popSum * 100) / 100)));
         termPops.addAll(sumPops);
 
         jdbcTemplate.batchUpdate(

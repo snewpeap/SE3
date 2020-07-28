@@ -53,7 +53,7 @@ public class AffiPopWorker {
                         Collectors.summingDouble(Paper.Popularity::getPopularity)
                 )
         ).forEach((year, sum) ->
-                affiPops.add(new Affiliation.Popularity(affiliation, sum, year))
+                affiPops.add(new Affiliation.Popularity(affiliation, (double) Math.round(sum * 100) / 100, year))
         ));
         ArrayList<Affiliation.Popularity> sumPops = new ArrayList<>(count);
         affiPops.stream().collect(
@@ -61,7 +61,8 @@ public class AffiPopWorker {
                         Affiliation.Popularity::getAffiliation,
                         Collectors.summingDouble(Affiliation.Popularity::getPopularity)
                 )
-        ).forEach((affiliation, popSum) -> sumPops.add(new Affiliation.Popularity(affiliation, popSum)));
+        ).forEach((affiliation, popSum) ->
+                sumPops.add(new Affiliation.Popularity(affiliation, (double) Math.round(popSum * 100) / 100)));
         affiPops.addAll(sumPops);
 
         jdbcTemplate.batchUpdate(
@@ -104,7 +105,7 @@ public class AffiPopWorker {
      * 将两个机构相同年份的热度相减
      * 如果两个参数机构相同，则将被减机构的所有热度置零
      *
-     * @param minuendAffi 被减机构
+     * @param minuendAffi    被减机构
      * @param subtrahendAffi 减数机构
      */
     void minusPop(Affiliation minuendAffi, Affiliation subtrahendAffi) {
