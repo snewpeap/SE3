@@ -78,13 +78,33 @@ public class AuthorPopWorker {
         return new AsyncResult<>(null);
     }
 
-    Author.Popularity generatePop(Author author) {
+    void refreshPop(Author author) {
         Author actual = author.getActual();
-        Optional<Author.Popularity> result = authorPopDao.findByAuthor_Id(actual.getId());
-        Author.Popularity pop = result.orElse(new Author.Popularity(actual, 0.0));
-        Double sum = paperPopDao.getPopSumByAuthorId(actual.getId());
-        sum = sum == null ? 0.0 : sum;
-        pop.setPopularity(pop.getPopularity() + sum);
-        return pop;
+        Long actualId = actual.getId();
+        boolean isSelf = author.getId().equals(actualId);
+        if (!actual.getName().equals("NA")) {
+            for (Author.Popularity popularity : authorPopDao.getAllByAuthor_Id(actualId)) {
+                Double sum = paperPopDao.getPopSumByAuthorIdAndYear(author.getId(), popularity.getYear());
+                if (sum == null) sum = 0.0;
+                popularity.setPopularity(sum + (isSelf ? 0.0 : popularity.getPopularity()));
+                authorPopDao.saveAndFlush(popularity);
+            }
+        }
+    }
+
+    void minusPop(Author minuendAuthor, Author subtrahendAuthor) {
+        Long subtrahendId = subtrahendAuthor.getId();
+        boolean isSelf = minuendAuthor.getId().equals(subtrahendId);
+        Long minuendId = isSelf ? minuendAuthor.getId() : minuendAuthor.getActual().getId();
+        for (Author.Popularity popularity : authorPopDao.getAllByAuthor_Id(minuendId)) {
+            if (isSelf) {
+                popularity.setPopularity(0.0);
+            } else {
+                Optional<Author.Popularity> result =
+                        authorPopDao.getByAuthor_IdAndYear(subtrahendId, popularity.getYear());
+                result.ifPresent(value -> popularity.setPopularity(popularity.getPopularity() - value.getPopularity()));
+            }
+            authorPopDao.saveAndFlush(popularity);
+        }
     }
 }

@@ -22,7 +22,11 @@ public interface AffiPopDao extends JpaRepository<Affiliation.Popularity, Long> 
 
     Optional<Affiliation.Popularity> getByAffiliation_IdAndYearIsNull(Long id);
 
+    Optional<Affiliation.Popularity> getByAffiliation_IdAndYear(Long affiId, Integer year);
+
     default Optional<Affiliation.Popularity> findByAffiliation_Id(Long id) {
         return getByAffiliation_IdAndYearIsNull(id);
     }
+
+    List<Affiliation.Popularity> getAllByAffiliation_Id(Long id);
 }

@@ -22,7 +22,11 @@ public interface AuthorPopDao extends JpaRepository<Author.Popularity, Long> {
 
     Optional<Author.Popularity> getByAuthor_IdAndYearIsNull(Long AuthorId);
 
+    Optional<Author.Popularity> getByAuthor_IdAndYear(Long authorId, Integer year);
+
     default Optional<Author.Popularity> findByAuthor_Id(Long AuthorId) {
         return getByAuthor_IdAndYearIsNull(AuthorId);
     }
+
+    List<Author.Popularity> getAllByAuthor_Id(Long id);
 }

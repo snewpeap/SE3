@@ -79,15 +79,47 @@ public class AffiPopWorker {
         return new AsyncResult<>(null);
     }
 
-    Affiliation.Popularity generatePop(Affiliation affi) {
+    /**
+     * 刷新给定的机构对象所指向的实际机构对象的热度
+     * 如果参数对象另有所指，则刷新热度意味着：为实际指向的对象累加参数对象的热度
+     * 否则意味着：重置参数对象的热度
+     *
+     * @param affi 给定机构对象，不一定是所更新的实际对象
+     */
+    void refreshPop(Affiliation affi) {
         Affiliation actual = affi.getActual();
-        Optional<Affiliation.Popularity> result = affiPopDao.findByAffiliation_Id(actual.getId());
-        Affiliation.Popularity pop = result.orElse(new Affiliation.Popularity(actual, 0.0));
+        Long actualId = actual.getId();
+        boolean isSelf = affi.getId().equals(actualId);
         if (!actual.getName().equals("NA")) {
-            Double sum = paperPopDao.getPopSumByAffiId(actual.getId());
-            sum = sum == null ? 0.0 : sum;
-            pop.setPopularity(pop.getPopularity() + sum);
+            for (Affiliation.Popularity popularity : affiPopDao.getAllByAffiliation_Id(actualId)) {
+                Double sum = paperPopDao.getPopSumByAffiIdAndYear(affi.getId(), popularity.getYear());
+                if (sum == null) sum = 0.0;
+                popularity.setPopularity(sum + (isSelf ? 0.0 : popularity.getPopularity()));
+                affiPopDao.saveAndFlush(popularity);
+            }
         }
-        return pop;
+    }
+
+    /**
+     * 将两个机构相同年份的热度相减
+     * 如果两个参数机构相同，则将被减机构的所有热度置零
+     *
+     * @param minuendAffi 被减机构
+     * @param subtrahendAffi 减数机构
+     */
+    void minusPop(Affiliation minuendAffi, Affiliation subtrahendAffi) {
+        Long subtrahendId = subtrahendAffi.getId();
+        boolean isSelf = minuendAffi.getId().equals(subtrahendId);
+        Long minuendId = isSelf ? minuendAffi.getId() : minuendAffi.getActual().getId();
+        for (Affiliation.Popularity popularity : affiPopDao.getAllByAffiliation_Id(minuendId)) {
+            if (isSelf) {
+                popularity.setPopularity(0.0);
+            } else {
+                Optional<Affiliation.Popularity> result =
+                        affiPopDao.getByAffiliation_IdAndYear(subtrahendId, popularity.getYear());
+                result.ifPresent(value -> popularity.setPopularity(popularity.getPopularity() - value.getPopularity()));
+            }
+            affiPopDao.saveAndFlush(popularity);
+        }
     }
 }

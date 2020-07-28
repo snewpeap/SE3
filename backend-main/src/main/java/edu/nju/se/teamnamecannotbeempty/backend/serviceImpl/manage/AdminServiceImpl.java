@@ -28,7 +28,7 @@ public class AdminServiceImpl implements AdminService {
     private final DuplicateAffiliationDao duplicateAffiliationDao;
     private final AuthorDao authorDao;
     private final AffiliationDao affiliationDao;
-    private EntityMsg entityMsg;
+    private final EntityMsg entityMsg;
     public static final int SIZE = 10;
 
     @Autowired
@@ -77,8 +77,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    @CacheEvict(value = {"papersByYear", "getRank", "getPopRank","getAcademicEntity",
-            "getBasicGraph","getCompleteGraph","getSignificantPaper"},
+    @CacheEvict(value = {"papersByYear", "getRank", "getPopRank", "getAcademicEntity",
+            "getBasicGraph", "getCompleteGraph", "getSignificantPaper"},
             allEntries = true)
     public ResponseVO operateDataAlias(long sonId, long fatherId, int type) {
         ResponseVO responseVO = new ResponseVO(true, "OK", null);
@@ -108,7 +108,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    @CacheEvict(value = {"papersByYear", "getRank", "getPopRank","getAcademicEntity","getBasicGraph","getCompleteGraph"},
+    @CacheEvict(value = {"papersByYear", "getRank", "getPopRank", "getAcademicEntity", "getBasicGraph", "getCompleteGraph"},
             allEntries = true)
     public ResponseVO undoOperate(long sonId, int type) {
         ResponseVO responseVO = new ResponseVO(true, "OK", null);

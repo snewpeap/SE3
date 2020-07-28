@@ -93,42 +93,28 @@ public interface PaperPopDao extends CrudRepository<Paper.Popularity, Long> {
     List<Paper.Popularity> findTopPapersByConferenceIdAndYearIsNullPaged(Long id, Pageable page);
 
     /**
-     * 获得作者所发表论文的热度之和
+     * 获得作者某一年所发表论文的热度之和
      *
-     * @param id 作者id
-     * @return 作者所发表论文的热度之和
-     * @前置条件 id不为null
-     * @后置条件 无
+     * @param authorId 作者id
+     * @param year 年份
+     * @return 热度之和
      */
     @Query("select coalesce(sum(pp.popularity),0.0) from paper_popularity pp " +
             "inner join pp.paper p inner join p.aa aa " +
-            "where aa.author.id = ?1 and pp.year is null")
-    Double getPopSumByAuthorId(Long id);
+            "where aa.author.id = ?1 and pp.year = ?2")
+    Double getPopSumByAuthorIdAndYear(Long authorId, Integer year);
 
     /**
      * 获得机构的论文热度之和
      *
-     * @param id 机构id
+     * @param affiId 机构id
+     * @param year 年份
      * @return 机构论文热度之和
-     * @前置条件 id不为null
-     * @后置条件 无
      */
     @Query("select coalesce(sum(pp.popularity),0.0) from paper_popularity pp " +
             "inner join pp.paper p inner join p.aa aa " +
-            "where aa.affiliation.id = ?1 and pp.year is null")
-    Double getPopSumByAffiId(Long id);
-
-    /**
-     * 获得研究方向的论文热度之和
-     *
-     * @param id 机构id
-     * @return 研究方向论文热度之和
-     * @前置条件 id不为null
-     * @后置条件 无
-     */
-    @Query("select coalesce(sum(pp.popularity),0.0) from paper_popularity pp inner join pp.paper p " +
-            "where pp.year is null and exists (select 1 from p.author_keywords ak where ak.id = ?1)")
-    Double getPopSumByAuthorKeywordId(Long id);
+            "where aa.affiliation.id = ?1 and pp.year = ?2")
+    Double getPopSumByAffiIdAndYear(Long affiId, Integer year);
 
     /**
      * 获得作者在某个研究方向上的论文热度之和（权重）

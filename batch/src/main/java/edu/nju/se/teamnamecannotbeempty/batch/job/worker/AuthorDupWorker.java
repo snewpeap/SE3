@@ -4,7 +4,6 @@ import edu.nju.se.teamnamecannotbeempty.data.domain.Author;
 import edu.nju.se.teamnamecannotbeempty.data.domain.DuplicateAuthor;
 import edu.nju.se.teamnamecannotbeempty.data.repository.AuthorDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.duplication.DuplicateAuthorDao;
-import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.AuthorPopDao;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,22 +13,19 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
 public class AuthorDupWorker {
     private final DuplicateAuthorDao duplicateAuthorDao;
-    private final AuthorPopDao authorPopDao;
     private final AuthorDao authorDao;
     private final AuthorPopWorker authorPopWorker;
 
     @Autowired
-    public AuthorDupWorker(DuplicateAuthorDao duplicateAuthorDao, AuthorDao authorDao, AuthorPopWorker authorPopWorker, AuthorPopDao authorPopDao) {
+    public AuthorDupWorker(DuplicateAuthorDao duplicateAuthorDao, AuthorDao authorDao, AuthorPopWorker authorPopWorker) {
         this.duplicateAuthorDao = duplicateAuthorDao;
         this.authorDao = authorDao;
         this.authorPopWorker = authorPopWorker;
-        this.authorPopDao = authorPopDao;
     }
 
     @Async
@@ -126,15 +122,12 @@ public class AuthorDupWorker {
     @Async
     public void refresh(Date date) {
         duplicateAuthorDao.findByUpdatedAtAfter(date).forEach(dup -> {
-            authorPopWorker.generatePop(dup.getSon());
+            Author son = dup.getSon();
+            authorPopWorker.refreshPop(son);
             if (dup.getClear() && !dup.getSon().getId().equals(dup.getSon().getActual().getId())) {
-                Optional<Author.Popularity> result = authorPopDao.findByAuthor_Id(dup.getSon().getId());
-                result.ifPresent(pop -> {
-                    pop.setPopularity(0.0);
-                    authorPopDao.save(pop);
-                });
+                authorPopWorker.minusPop(son, son);
             } else if (!dup.getClear()) {
-                authorPopWorker.generatePop(dup.getFather());
+                authorPopWorker.refreshPop(dup.getFather());
             }
         });
     }

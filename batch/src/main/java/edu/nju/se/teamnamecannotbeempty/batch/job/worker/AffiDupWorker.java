@@ -4,7 +4,6 @@ import edu.nju.se.teamnamecannotbeempty.data.domain.Affiliation;
 import edu.nju.se.teamnamecannotbeempty.data.domain.DuplicateAffiliation;
 import edu.nju.se.teamnamecannotbeempty.data.repository.AffiliationDao;
 import edu.nju.se.teamnamecannotbeempty.data.repository.duplication.DuplicateAffiliationDao;
-import edu.nju.se.teamnamecannotbeempty.data.repository.popularity.AffiPopDao;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -21,18 +20,16 @@ import java.util.*;
 @Component
 public class AffiDupWorker {
     private final DuplicateAffiliationDao duplicateAffiliationDao;
-    private final AffiPopDao affiPopDao;
     private final AffiliationDao affiliationDao;
     private final AffiPopWorker affiPopWorker;
     private HashMap<Affiliation, HashSet<String>> tokenSetMap;
     private StandardAnalyzer analyzer;
 
     @Autowired
-    public AffiDupWorker(DuplicateAffiliationDao duplicateAffiliationDao, AffiliationDao affiliationDao, AffiPopWorker affiPopWorker, AffiPopDao affiPopDao) {
+    public AffiDupWorker(DuplicateAffiliationDao duplicateAffiliationDao, AffiliationDao affiliationDao, AffiPopWorker affiPopWorker) {
         this.duplicateAffiliationDao = duplicateAffiliationDao;
         this.affiliationDao = affiliationDao;
         this.affiPopWorker = affiPopWorker;
-        this.affiPopDao = affiPopDao;
     }
 
     @Async
@@ -67,7 +64,7 @@ public class AffiDupWorker {
                         (cache.containsKey(compare) && !cache.get(compare).contains(affi))) { //判断是否已经有倒置的重复
                     HashSet<String> compareSet = tokenSetMap.get(compare);
                     if (compareSet != null && affiSet.containsAll(compareSet) && notBelongsTo(affiSet, compareSet)) {
-                        //判断全包含，但是没有考虑到词序，所以有可能误杀 //TODO
+                        //判断全包含，但是没有考虑到词序，所以有可能误杀
                         cache.put(affi, compare);
                         dups.add(new DuplicateAffiliation(affi, compare));
                     }
@@ -84,7 +81,7 @@ public class AffiDupWorker {
      * 主要思想是father的词集里有部门/学院/实验室等表示它可能是下属机构的词，而son没有，就说明存在隶属关系
      *
      * @param father 词集全包含son
-     * @param son 词集被father全包含
+     * @param son    词集被father全包含
      * @return father是否隶属于son
      */
     private boolean notBelongsTo(HashSet<String> father, HashSet<String> son) {
@@ -119,15 +116,15 @@ public class AffiDupWorker {
     @Async
     public void refresh(Date date) {
         duplicateAffiliationDao.findByUpdatedAtAfter(date).forEach(dup -> {
-            affiPopWorker.generatePop(dup.getSon());
-            if (dup.getClear() && !dup.getSon().getId().equals(dup.getSon().getActual().getId())) {
-                Optional<Affiliation.Popularity> result = affiPopDao.findByAffiliation_Id(dup.getSon().getId());
-                result.ifPresent(pop -> {
-                    pop.setPopularity(0.0);
-                    affiPopDao.save(pop);
-                });
+            //记录状态发生了修改，因此无论如何都需要通过作为son一方的机构来更新热度
+            Affiliation son = dup.getSon();
+            affiPopWorker.refreshPop(son);
+            if (dup.getClear() && !son.getId().equals(son.getActual().getId())) {
+                //该疑似重复记录被判定为发生了重复，son机构的热度归零
+                affiPopWorker.minusPop(son, son);
             } else if (!dup.getClear()) {
-                affiPopWorker.generatePop(dup.getFather());
+                //该疑似重复记录被重置为未解决状态，复原father机构的热度
+                affiPopWorker.minusPop(dup.getFather(), son);
             }
         });
     }
