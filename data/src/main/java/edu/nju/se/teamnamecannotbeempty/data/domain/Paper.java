@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.*;
 
 @Entity
-@Table(name = "papers", indexes = @javax.persistence.Index(name = "YEAR_DESC", columnList = "year DESC"))
+@Table(name = "papers", indexes = @Index(name = "YEAR_DESC", columnList = "year DESC"))
 @SuppressWarnings("unused")
 public class Paper {
     // IEEE论文的id
@@ -123,8 +123,8 @@ public class Paper {
 
     @Entity(name = "paper_popularity")
     @Table(indexes = {
-            @javax.persistence.Index(name = "POPULARITY_DESC", columnList = "popularity DESC"),
-            @javax.persistence.Index(name = "YEAR", columnList = "year")
+            @Index(name = "POPULARITY_DESC", columnList = "popularity DESC"),
+            @Index(name = "YEAR", columnList = "year")
     })
     public static class Popularity implements Serializable {
         @Id
