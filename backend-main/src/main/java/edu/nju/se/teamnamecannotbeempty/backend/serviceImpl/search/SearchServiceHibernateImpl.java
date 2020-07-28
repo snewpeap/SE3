@@ -96,7 +96,7 @@ public class SearchServiceHibernateImpl implements SearchService {
 
         Session session = entityManager.unwrap(Session.class);
         for (Paper paper : result) {
-            session.setReadOnly(paper, true);
+            session.refresh(paper);
             mode.highlight(
                     highlighter,
                     fullTextEntityManager.getSearchFactory().getAnalyzer("noStopWords"),
