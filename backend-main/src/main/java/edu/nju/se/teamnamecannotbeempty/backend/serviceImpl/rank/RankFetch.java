@@ -143,18 +143,18 @@ public class RankFetch {
         List<Term> termList = paperList.stream().flatMap(paper ->
                 paper.getAuthor_keywords().stream().filter(a -> !"".equals(a.getContent()))).
                 collect(Collectors.toList());
-        termList.addAll(paperList.stream().flatMap(paper ->
-                paper.getIeee_terms().stream().filter(a ->
-                        !"".equals(a.getContent()))).collect(Collectors.toList()));
-        termList.addAll(paperList.stream().flatMap(paper ->
-                paper.getInspec_controlled().stream().filter(a ->
-                        !"".equals(a.getContent()))).collect(Collectors.toList()));
-        termList.addAll(paperList.stream().flatMap(paper ->
-                paper.getInspec_non_controlled().stream().filter(a ->
-                        !"".equals(a.getContent()))).collect(Collectors.toList()));
-        termList.addAll(paperList.stream().flatMap(paper ->
-                paper.getMesh_terms().stream().filter(a ->
-                        !"".equals(a.getContent()))).collect(Collectors.toList()));
+//        termList.addAll(paperList.stream().flatMap(paper ->
+//                paper.getIeee_terms().stream().filter(a ->
+//                        !"".equals(a.getContent()))).collect(Collectors.toList()));
+//        termList.addAll(paperList.stream().flatMap(paper ->
+//                paper.getInspec_controlled().stream().filter(a ->
+//                        !"".equals(a.getContent()))).collect(Collectors.toList()));
+//        termList.addAll(paperList.stream().flatMap(paper ->
+//                paper.getInspec_non_controlled().stream().filter(a ->
+//                        !"".equals(a.getContent()))).collect(Collectors.toList()));
+//        termList.addAll(paperList.stream().flatMap(paper ->
+//                paper.getMesh_terms().stream().filter(a ->
+//                        !"".equals(a.getContent()))).collect(Collectors.toList()));
         Map<String, Long> termPaperNums = termList.stream()
                 .collect(Collectors.groupingBy(Term::getContent, Collectors.counting()));
         return mapToList(termPaperNums);
