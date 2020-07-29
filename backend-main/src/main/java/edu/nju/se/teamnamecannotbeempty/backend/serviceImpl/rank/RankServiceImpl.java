@@ -62,7 +62,7 @@ public class RankServiceImpl implements RankService {
     }
 
     @Override
-    public List<PopRankItem> getPopRank(int type) {
+    public synchronized List<PopRankItem> getPopRank(int type) {
         return rankFetch.getPopRank(type);
     }
 
