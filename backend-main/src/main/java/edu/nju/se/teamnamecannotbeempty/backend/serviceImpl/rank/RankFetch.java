@@ -135,6 +135,7 @@ public class RankFetch {
         List<Conference> conferenceList = paperList.stream().map(Paper::getConference)
                 .collect(Collectors.toList());
         Map<String, Long> publicationPaperNums = conferenceList.stream()
+                .filter(conference -> (!"NA".equals(conference.getName())))
                 .collect(Collectors.groupingBy(Conference::getName, Collectors.counting()));
         return mapToList(publicationPaperNums);
     }
