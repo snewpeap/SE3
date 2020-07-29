@@ -95,14 +95,6 @@ public class PaperVO {
         this.author_affiliationVOS = author_affiliationVOS;
     }
 
-    public long getConferenceId() {
-        return conferenceId;
-    }
-
-    public void setConferenceId(long conferenceId) {
-        this.conferenceId = conferenceId;
-    }
-
     public String getPublicationTitle() {
         return publicationTitle;
     }
@@ -111,27 +103,43 @@ public class PaperVO {
         this.publicationTitle = publicationTitle;
     }
 
-    public int getPublicationYear() {
+    public Long getConferenceId() {
+        return conferenceId;
+    }
+
+    public void setConferenceId(Long conferenceId) {
+        this.conferenceId = conferenceId;
+    }
+
+    public Integer getPublicationYear() {
         return publicationYear;
     }
 
-    public void setPublicationYear(int publicationYear) {
+    public void setPublicationYear(Integer publicationYear) {
         this.publicationYear = publicationYear;
     }
 
-    public int getStartPage() {
+    public String getOrdno() {
+        return ordno;
+    }
+
+    public void setOrdno(String ordno) {
+        this.ordno = ordno;
+    }
+
+    public Integer getStartPage() {
         return startPage;
     }
 
-    public void setStartPage(int startPage) {
+    public void setStartPage(Integer startPage) {
         this.startPage = startPage;
     }
 
-    public int getEndPage() {
+    public Integer getEndPage() {
         return endPage;
     }
 
-    public void setEndPage(int endPage) {
+    public void setEndPage(Integer endPage) {
         this.endPage = endPage;
     }
 
@@ -191,19 +199,19 @@ public class PaperVO {
         this.nonControlledTerms = nonControlledTerms;
     }
 
-    public int getCitationCount() {
+    public Integer getCitationCount() {
         return citationCount;
     }
 
-    public void setCitationCount(int citationCount) {
+    public void setCitationCount(Integer citationCount) {
         this.citationCount = citationCount;
     }
 
-    public int getReferenceCount() {
+    public Integer getReferenceCount() {
         return referenceCount;
     }
 
-    public void setReferenceCount(int referenceCount) {
+    public void setReferenceCount(Integer referenceCount) {
         this.referenceCount = referenceCount;
     }
 
@@ -221,15 +229,6 @@ public class PaperVO {
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
-    }
-
-
-    public String getOrdno() {
-        return ordno;
-    }
-
-    public void setOrdno(String ordno) {
-        this.ordno = ordno;
     }
 
     public boolean equals(Object o) {
