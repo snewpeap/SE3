@@ -120,6 +120,8 @@ public class AcademicEntityFetch {
     }
 
     private AcademicEntityVO affiliationEntity(long id) {
+        Affiliation affiliation=affiliationDao.getOne(id);
+        if(affiliation.getName().equals("NA")) return null;
 
         //生成机构的别名列表
         List<Long> aliasIdList = getAllAliasIdsOfAffi(id, new ArrayList<>()).stream().distinct()
@@ -187,6 +189,8 @@ public class AcademicEntityFetch {
     }
 
     private AcademicEntityVO conferenceEntity(long id) {
+        Conference conference=conferenceDao.getOne(id);
+        if(conference.getName().equals("NA")) return null;
 
         List<AcademicEntityItem> authorEntityItems = generateAuthorEntityItems(
                 authorDao.getAuthorsByConference(id));

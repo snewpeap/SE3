@@ -12,15 +12,15 @@ public class PaperVO {
 
     private String publicationTitle; // 会议
 
-    private long conferenceId;
+    private Long conferenceId;
 
-    private int publicationYear;
+    private Integer publicationYear;
 
     private String ordno;
 
-    private int startPage;
+    private Integer startPage;
 
-    private int endPage;
+    private Integer endPage;
 
     private String summary; //摘要，abstract重名了
 
@@ -36,19 +36,19 @@ public class PaperVO {
 
     private List<String> nonControlledTerms;
 
-    private int citationCount;
+    private Integer citationCount;
 
-    private int referenceCount;
+    private Integer referenceCount;
 
     private String publisher;
 
     private String identifier;
 
     public PaperVO(long id, String title, List<Author_AffiliationVO> author_affiliationVOS, String publicationTitle,
-                   long conferenceId, int publicationYear, String ordno, int startPage, int endPage,
+                   Long conferenceId, Integer publicationYear, String ordno, Integer startPage, Integer endPage,
                    String summary, String DOI, String PDFLink, List<String> authorKeywords, List<String> IEEETerms,
-                   List<String> controlledTerms, List<String> nonControlledTerms, int citationCount,
-                   int referenceCount, String publisher, String identifier) {
+                   List<String> controlledTerms, List<String> nonControlledTerms, Integer citationCount,
+                   Integer referenceCount, String publisher, String identifier) {
         this.id = id;
         this.title = title;
         this.author_affiliationVOS = author_affiliationVOS;
