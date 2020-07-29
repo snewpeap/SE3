@@ -33,7 +33,10 @@ public class RankServiceImpl implements RankService {
     public ResponseVO getRank(String mode, Integer pageNumber, boolean descend, int startYear, int endYear) {
         if (pageNumber == null || pageNumber <= 0) pageNumber = 1;
 
-        List<RankItem> rankItemList = rankFetch.getAllResult(mode, startYear, endYear);
+        List<RankItem> rankItemList;
+        synchronized (this) {
+            rankItemList = rankFetch.getAllResult(mode, startYear, endYear);
+        }
         int len = rankItemList.size();
         ResponseVO responseVO;
         if (pageNumber * rankMsg.getEachNum() - len > rankMsg.getEachNum()) {

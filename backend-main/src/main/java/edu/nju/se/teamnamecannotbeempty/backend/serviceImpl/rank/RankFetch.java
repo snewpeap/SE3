@@ -55,7 +55,7 @@ public class RankFetch {
 
 
     @Cacheable(value = "getRank", key = "#mode+'_'+#startYear+'_'+#endYear", unless = "#result=null")
-    public synchronized List<RankItem> getAllResult(String mode, int startYear, int endYear) {
+    public List<RankItem> getAllResult(String mode, int startYear, int endYear) {
         List<Paper> paperList = fetchForCache.findAllByYearBetween(startYear, endYear);
         List<RankItem> rankItemList = new ArrayList<>();
 
