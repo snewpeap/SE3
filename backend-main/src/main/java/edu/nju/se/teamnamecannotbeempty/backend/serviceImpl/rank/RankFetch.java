@@ -93,13 +93,13 @@ public class RankFetch {
         return new ArrayList<>();
     }
 
-    private List<RankItem> paperCited(List<Paper> paperList) {
+    private synchronized List<RankItem> paperCited(List<Paper> paperList) {
         return paperList.stream().sorted(Comparator.comparingInt(Paper::getCitation))
                 .map(paper -> new RankItem(paper.getTitle(),
                         paper.getCitation())).collect(Collectors.toList());
     }
 
-    private List<RankItem> authorCited(List<Paper> paperList) {
+    private synchronized List<RankItem> authorCited(List<Paper> paperList) {
         List<AuthorPaperCitationNum> authorPaperCitationNumList = getAuthorPaperCitationNumList(paperList);
         Map<String, Long> authorCitedNums = authorPaperCitationNumList.stream()
                 .collect(Collectors.groupingBy(
@@ -108,14 +108,14 @@ public class RankFetch {
         return mapToList(authorCitedNums);
     }
 
-    private List<RankItem> authorPaper(List<Paper> paperList) {
+    private synchronized List<RankItem> authorPaper(List<Paper> paperList) {
         List<AuthorPaperCitationNum> authorPaperCitationNumList = getAuthorPaperCitationNumList(paperList);
         Map<String, Long> authorPaperNums = authorPaperCitationNumList.stream().
                 collect(Collectors.groupingBy(AuthorPaperCitationNum::getAuthor, Collectors.counting()));
         return mapToList(authorPaperNums);
     }
 
-    private List<RankItem> affiliationPaper(List<Paper> paperList) {
+    private synchronized List<RankItem> affiliationPaper(List<Paper> paperList) {
         List<Affiliation> affiliationList = paperList.stream().flatMap(paper ->
                 paper.getAa().stream().filter(author_affiliation ->
                 (!"".equals(author_affiliation.getAffiliation().getName())
@@ -131,7 +131,7 @@ public class RankFetch {
         return mapToList(affiliationPaperNums);
     }
 
-    private List<RankItem> publicationPaper(List<Paper> paperList) {
+    private synchronized List<RankItem> publicationPaper(List<Paper> paperList) {
         List<Conference> conferenceList = paperList.stream().map(Paper::getConference)
                 .collect(Collectors.toList());
         Map<String, Long> publicationPaperNums = conferenceList.stream()
@@ -140,7 +140,7 @@ public class RankFetch {
         return mapToList(publicationPaperNums);
     }
 
-    private List<RankItem> keywordPaper(List<Paper> paperList) {
+    private synchronized List<RankItem> keywordPaper(List<Paper> paperList) {
         List<Term> termList = paperList.stream().flatMap(paper ->
                 paper.getAuthor_keywords().stream().filter(a -> !"".equals(a.getContent()))).
                 collect(Collectors.toList());
