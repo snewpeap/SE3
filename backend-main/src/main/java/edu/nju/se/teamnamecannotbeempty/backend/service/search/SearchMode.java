@@ -13,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 
 public abstract class SearchMode {
 
@@ -42,7 +43,8 @@ public abstract class SearchMode {
 
     protected void highlightAuthor(Paper paper, Highlighter highlighter, Analyzer analyzer) {
         LinkedList<Author_Affiliation> highlightPriorList = new LinkedList<>();
-        for (Author_Affiliation aa : paper.getAa()) {
+        List<Author_Affiliation> paperAa = paper.getAa();
+        for (Author_Affiliation aa : paperAa) {
             Author author = aa.getAuthor();
             Author copy = new Author();
             BeanUtils.copyProperties(author, copy);
@@ -61,12 +63,15 @@ public abstract class SearchMode {
                 }
             }
         }
-        paper.setAa(highlightPriorList);
+        for (int i = 0; i < highlightPriorList.size(); i++) {
+            paperAa.set(i, highlightPriorList.get(i));
+        }
     }
 
     protected void highlightAffiliation(Paper paper, Highlighter highlighter, Analyzer analyzer) {
         LinkedList<Author_Affiliation> highlightPriorList = new LinkedList<>();
-        for (Author_Affiliation aa : paper.getAa()) {
+        List<Author_Affiliation> paperAa = paper.getAa();
+        for (Author_Affiliation aa : paperAa) {
             Affiliation affiliation = aa.getAffiliation();
             Affiliation copy = new Affiliation();
             BeanUtils.copyProperties(affiliation, copy);
@@ -85,7 +90,9 @@ public abstract class SearchMode {
                 }
             }
         }
-        paper.setAa(highlightPriorList);
+        for (int i = 0; i < highlightPriorList.size(); i++) {
+            paperAa.set(i, highlightPriorList.get(i));
+        }
     }
 
     protected void highlightConference(Paper paper, Highlighter highlighter, Analyzer analyzer) {
