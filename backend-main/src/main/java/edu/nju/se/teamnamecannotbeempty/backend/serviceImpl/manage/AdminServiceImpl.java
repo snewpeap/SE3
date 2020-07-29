@@ -82,7 +82,8 @@ public class AdminServiceImpl implements AdminService {
             allEntries = true)
     public ResponseVO operateDataAlias(long sonId, long fatherId, int type) {
         ResponseVO responseVO = new ResponseVO(true, "OK", null);
-        if (type == entityMsg.getAuthorType() && duplicateAuthorDao.existsByFather_IdAndSon_Id(fatherId, sonId)) {
+        if (type == entityMsg.getAuthorType() &&
+                (duplicateAuthorDao.existsByFather_IdAndSon_Id(fatherId, sonId) || fatherId == sonId)) {
             duplicateAuthorDao.findBySon_Id(sonId).forEach(dup -> {
                 dup.setClear(true);
                 duplicateAuthorDao.save(dup);
@@ -91,7 +92,8 @@ public class AdminServiceImpl implements AdminService {
                 author.setAlias(authorDao.findById(fatherId).orElse(null));
                 authorDao.saveAndFlush(author);
             });
-        } else if (type == entityMsg.getAffiliationType() && duplicateAffiliationDao.existsByFather_IdAndSon_Id(fatherId, sonId)) {
+        } else if (type == entityMsg.getAffiliationType() &&
+                (duplicateAffiliationDao.existsByFather_IdAndSon_Id(fatherId, sonId) || fatherId == sonId)) {
             duplicateAffiliationDao.findBySon_Id(sonId).forEach(dup -> {
                 dup.setClear(true);
                 duplicateAffiliationDao.save(dup);
