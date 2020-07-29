@@ -64,6 +64,7 @@ public class AdvancedSearch extends SearchMode {
 
     @Override
     public Query buildQuery(QueryBuilder queryBuilder, String searchString) {
+        currentQuery.remove();
         String availableQuery = searchString;
         for (Map.Entry<String, String> entry : fieldMapping.entrySet()) {
             String from = entry.getKey();
@@ -90,7 +91,6 @@ public class AdvancedSearch extends SearchMode {
                 if (query.contains(field + ":"))
                     highlight(highlighter, analyzer, paper, field);
             }
-            currentQuery.remove();
         }
     }
 

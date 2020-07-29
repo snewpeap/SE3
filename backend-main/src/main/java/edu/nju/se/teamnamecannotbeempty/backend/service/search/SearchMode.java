@@ -12,7 +12,7 @@ import org.hibernate.search.query.dsl.TermMatchingContext;
 import org.springframework.beans.BeanUtils;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.LinkedList;
 
 public abstract class SearchMode {
 
@@ -41,8 +41,8 @@ public abstract class SearchMode {
     }
 
     protected void highlightAuthor(Paper paper, Highlighter highlighter, Analyzer analyzer) {
-        List<Author_Affiliation> paperAa = paper.getAa();
-        for (Author_Affiliation aa : paperAa) {
+        LinkedList<Author_Affiliation> highlightPriorList = new LinkedList<>();
+        for (Author_Affiliation aa : paper.getAa()) {
             Author author = aa.getAuthor();
             Author copy = new Author();
             BeanUtils.copyProperties(author, copy);
@@ -55,12 +55,17 @@ public abstract class SearchMode {
                 if (hl != null) {
                     copy.setName(hl);
                     aa.setAuthor(copy);
+                    highlightPriorList.addFirst(aa);
+                } else {
+                    highlightPriorList.addLast(aa);
                 }
             }
         }
+        paper.setAa(highlightPriorList);
     }
 
     protected void highlightAffiliation(Paper paper, Highlighter highlighter, Analyzer analyzer) {
+        LinkedList<Author_Affiliation> highlightPriorList = new LinkedList<>();
         for (Author_Affiliation aa : paper.getAa()) {
             Affiliation affiliation = aa.getAffiliation();
             Affiliation copy = new Affiliation();
@@ -74,9 +79,13 @@ public abstract class SearchMode {
                 if (hl != null) {
                     copy.setName(hl);
                     aa.setAffiliation(copy);
+                    highlightPriorList.addFirst(aa);
+                } else {
+                    highlightPriorList.addLast(aa);
                 }
             }
         }
+        paper.setAa(highlightPriorList);
     }
 
     protected void highlightConference(Paper paper, Highlighter highlighter, Analyzer analyzer) {
@@ -98,9 +107,8 @@ public abstract class SearchMode {
     }
 
     protected void highlightKeyword(Paper paper, Highlighter highlighter, Analyzer analyzer) {
-        List<Term> author_keywords = paper.getAuthor_keywords();
-        for (int i = 0; i < author_keywords.size(); i++) {
-            Term term = author_keywords.get(i);
+        LinkedList<Term> highlightPriorList = new LinkedList<>();
+        for (Term term : paper.getAuthor_keywords()) {
             Term copy = new Term();
             BeanUtils.copyProperties(term, copy);
             String hl = null;
@@ -111,10 +119,13 @@ public abstract class SearchMode {
             } finally {
                 if (hl != null) {
                     copy.setContent(hl);
-                    author_keywords.set(i, copy);
+                    highlightPriorList.addFirst(copy);
+                } else {
+                    highlightPriorList.addLast(copy);
                 }
             }
         }
+        paper.setAuthor_keywords(highlightPriorList);
     }
 
     protected void highlightYear(Paper paper, Highlighter highlighter, Analyzer analyzer) {

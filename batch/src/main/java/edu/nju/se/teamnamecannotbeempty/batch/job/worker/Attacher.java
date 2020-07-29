@@ -81,7 +81,7 @@ public class Attacher {
                         String title = jsonObject.getStr("title");
                         if (!StringUtils.isBlank(title)) {
                             String link = jsonObject.getStr("link");
-                            String doi = jsonObject.getStr("doi");
+                            String doi = jsonObject.getStr("doi").toUpperCase();
                             Ref ref = new Ref(title);
                             if (!StringUtils.isBlank(link)) {
                                 Long refereeIeeeId = Long.parseLong(
