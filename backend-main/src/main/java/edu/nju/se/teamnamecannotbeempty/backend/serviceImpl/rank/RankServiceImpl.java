@@ -16,7 +16,6 @@ import java.util.List;
 @Service
 public class RankServiceImpl implements RankService {
 
-
     private final RankMsg rankMsg;
     private final RankFetch rankFetch;
 
@@ -27,7 +26,6 @@ public class RankServiceImpl implements RankService {
         this.rankFetch = rankFetch;
 
     }
-
 
     @Override
     public ResponseVO getRank(String mode, Integer pageNumber, boolean descend, int startYear, int endYear) {
@@ -62,9 +60,8 @@ public class RankServiceImpl implements RankService {
     }
 
     @Override
-    public synchronized List<PopRankItem> getPopRank(int type) {
+    public List<PopRankItem> getPopRank(int type) {
         return rankFetch.getPopRank(type);
     }
-
 
 }
