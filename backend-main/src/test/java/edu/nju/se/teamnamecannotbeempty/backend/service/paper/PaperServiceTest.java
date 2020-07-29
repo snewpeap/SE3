@@ -190,7 +190,7 @@ public class PaperServiceTest {
         Author_AffiliationVO author_affiliationVO1 = new Author_AffiliationVO("ZhenZhen",0L, new AffiliationVO("NJU", "NanJing",0L));
         Author_AffiliationVO author_affiliationVO2 = new Author_AffiliationVO("PiaoLiang", 1L,new AffiliationVO("ZhengXingYiYuan", "TianTangDao", 1L));
         PaperVO paperVO = new PaperVO((long) 0, "Do You Want To Be More Beautiful?", Arrays.asList(author_affiliationVO1, author_affiliationVO2),
-                "GKD", 0,2121, "99th", 12,
+                "GKD", 0L,2121, "99th", 12,
                 23, "I do not want to write test case!", "1001", null, keywords, new ArrayList<>(), new ArrayList<>(),
                 new ArrayList<>(), 1, 100, null, null);
         ResponseVO responseVO = paperService.getPaper((long) 0);
