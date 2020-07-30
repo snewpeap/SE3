@@ -2,6 +2,7 @@ package edu.nju.se.teamnamecannotbeempty.data;
 
 import org.hibernate.dialect.MySQL57Dialect;
 
+@SuppressWarnings("unused")
 public class MyDialect extends MySQL57Dialect {
     @Override
     public String getTableTypeString() {

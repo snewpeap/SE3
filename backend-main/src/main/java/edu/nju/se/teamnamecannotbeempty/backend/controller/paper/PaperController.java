@@ -35,7 +35,7 @@ public class PaperController {
      * @param pageNumber 当前展示到第几页（没有默认为1）
      * @param sortMode   排序模式（默认降序）
      * @param perPage    每页显示多少条目
-     * @return （应该是SimplePaperVO的List??）
+     * @return （SimplePaperVO的List）
      */
     @RequestMapping(value = "/search/{text}/{mode}", method = RequestMethod.GET)
     public List<SimplePaperVO> search(@PathVariable String text, @PathVariable String mode, @RequestParam(required = false) Integer pageNumber, @RequestParam String sortMode, @RequestParam int perPage) {
@@ -47,17 +47,22 @@ public class PaperController {
      * 获得某一篇论文的详细信息
      *
      * @param id 论文id
-     * @return 论文详细信息PaperVO??
+     * @return 论文详细信息PaperVO
      */
     @RequestMapping(value = "/paperDetail/{id}", method = RequestMethod.GET)
     public ResponseVO getPaper(@PathVariable long id) {
         return paperService.getPaper(id);
     }
 
-
+    /**
+     * 判断是否可以查询，并在不可查询时阻塞请求至系统可以处理查询
+     *
+     * @return 总是返回成功的响应
+     * @throws InterruptedException exception
+     */
     @RequestMapping(value = "/searchable", method = RequestMethod.GET)
     public ResponseVO getSearchable() throws InterruptedException {
-        while (!searchable.isOk()){
+        while (!searchable.isOk()) {
             Thread.sleep(3000);
         }
         return ResponseVO.success();

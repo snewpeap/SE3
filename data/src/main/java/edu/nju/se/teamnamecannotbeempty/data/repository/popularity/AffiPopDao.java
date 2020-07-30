@@ -22,8 +22,21 @@ public interface AffiPopDao extends JpaRepository<Affiliation.Popularity, Long> 
 
     Optional<Affiliation.Popularity> getByAffiliation_IdAndYearIsNull(Long id);
 
+    /**
+     * 通过机构ID查找机构某年的热度
+     *
+     * @param affiId 机构id
+     * @param year 年份
+     * @return 机构该年度热度（若有）
+     */
     Optional<Affiliation.Popularity> getByAffiliation_IdAndYear(Long affiId, Integer year);
 
+    /**
+     * 通过机构ID查找该机构的总热度
+     *
+     * @param id 机构id
+     * @return 机构的总热度
+     */
     default Optional<Affiliation.Popularity> findByAffiliation_Id(Long id) {
         return getByAffiliation_IdAndYearIsNull(id);
     }

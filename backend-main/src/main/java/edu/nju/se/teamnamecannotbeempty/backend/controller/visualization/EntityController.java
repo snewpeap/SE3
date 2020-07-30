@@ -20,17 +20,17 @@ public class EntityController {
         this.entityService = entityService;
     }
 
-    @Autowired(required = false)
+    @Autowired
     EntityService entityService;
 
     @RequestMapping(value = "/academic/{id}", method = RequestMethod.GET)
     public AcademicEntityVO getAcademicEntity(@PathVariable long id, @RequestParam int type) {
-        return entityService.getAcademicEntity(id,type);
+        return entityService.getAcademicEntity(id, type);
     }
 
     @RequestMapping(value = "/graph/basic/{id}", method = RequestMethod.GET)
     public GraphVO getGraph(@PathVariable long id, @RequestParam int type) {
-        return entityService.getBasicGraph(id,type);
+        return entityService.getBasicGraph(id, type);
     }
 
     @RequestMapping(value = "/graph/more/{id}", method = RequestMethod.GET)
@@ -38,8 +38,8 @@ public class EntityController {
         return entityService.getCompleteGraph(id, type);
     }
 
-    @RequestMapping(value = "/academic/significantPapers",method = RequestMethod.GET)
-    public List<SimplePaperVO> getSignificantPaper(@RequestParam long id, @RequestParam int type,@RequestParam int year, @RequestParam long termId){
-        return entityService.getSignificantPaper(id,type,year,termId);
+    @RequestMapping(value = "/academic/significantPapers", method = RequestMethod.GET)
+    public List<SimplePaperVO> getSignificantPaper(@RequestParam long id, @RequestParam int type, @RequestParam int year, @RequestParam long termId) {
+        return entityService.getSignificantPaper(id, type, year, termId);
     }
 }

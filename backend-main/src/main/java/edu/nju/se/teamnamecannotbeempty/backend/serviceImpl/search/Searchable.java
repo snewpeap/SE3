@@ -28,6 +28,9 @@ public class Searchable {
         return (ok && !indexing) || pass;
     }
 
+    /**
+     * 跳过导入阶段，可以直接搜索
+     */
     public void pass() {
         pass = true;
     }

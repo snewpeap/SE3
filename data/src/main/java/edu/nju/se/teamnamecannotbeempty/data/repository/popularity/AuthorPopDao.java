@@ -22,8 +22,21 @@ public interface AuthorPopDao extends JpaRepository<Author.Popularity, Long> {
 
     Optional<Author.Popularity> getByAuthor_IdAndYearIsNull(Long AuthorId);
 
+    /**
+     * 通过作者ID查找作者某年的热度
+     *
+     * @param authorId 作者id
+     * @param year 年份
+     * @return 作者该年度热度（若有）
+     */
     Optional<Author.Popularity> getByAuthor_IdAndYear(Long authorId, Integer year);
 
+    /**
+     * 通过作者ID查找作者的总热度
+     *
+     * @param AuthorId 作者id
+     * @return 作者的总热度
+     */
     default Optional<Author.Popularity> findByAuthor_Id(Long AuthorId) {
         return getByAuthor_IdAndYearIsNull(AuthorId);
     }

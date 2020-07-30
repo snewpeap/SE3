@@ -30,7 +30,7 @@ public class RankController {
      * @param descend    是否降序
      * @param startYear  开始年份
      * @param endYear    结束年份
-     * @return 排行榜信息 RankVO??
+     * @return 排行榜信息 RankVO
      */
     @RequestMapping(value = "/rank/{mode}")
     public ResponseVO getRank(@PathVariable String mode, @RequestParam(required = false) Integer pageNumber, @RequestParam boolean descend, @RequestParam int startYear, @RequestParam int endYear) {
@@ -39,11 +39,12 @@ public class RankController {
 
     /**
      * 获取实体热度排行榜（作者，机构，研究方向）
+     *
      * @param type 实体类型
      * @return 排行榜（前20）
      */
     @RequestMapping(value = "/hot", method = RequestMethod.GET)
-    public List<PopRankItem> getPopRank(@RequestParam int type){
+    public List<PopRankItem> getPopRank(@RequestParam int type) {
         return rankService.getPopRank(type);
     }
 }
