@@ -12,6 +12,6 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://se3mysql:3306/se3?serverTimezone=CTT&characterEncoding=UTF-8
+    url: jdbc:mysql://se3mysql:3306/se3?serverTimezone=CTT&characterEncoding=UTF-8&autoReconnect=true
     username: root
     password: root
