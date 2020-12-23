@@ -38,6 +38,7 @@ public class InitDataSource implements ApplicationListener<ContextRefreshedEvent
                     logger.info(total + " papers to import. 从数据库获取count(Paper)来确认导入完成");
                     serviceHibernate.flushIndexes();
                 } catch (RemoteLookupFailureException e) {
+                    e.printStackTrace();
                     logger.error("Connect to remote batch service fail. Import aborted.");
                 }
             } else {

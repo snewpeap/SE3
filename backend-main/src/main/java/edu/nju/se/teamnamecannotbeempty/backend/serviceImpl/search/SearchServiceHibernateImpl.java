@@ -88,7 +88,7 @@ public class SearchServiceHibernateImpl implements SearchService {
         fullTextQuery.setFirstResult(firstResultIndex);
         fullTextQuery.setMaxResults(maxResult);
 
-        SimpleHTMLFormatter formatter = new SimpleHTMLFormatter("<b><span style=\"color: #b04c50; \">", "</span></b>");
+        SimpleHTMLFormatter formatter = new SimpleHTMLFormatter("<b class='search-highlight'>", "</b>");
         Highlighter highlighter = new Highlighter(formatter, new QueryScorer(luceneQuery));
 
         //noinspection unchecked

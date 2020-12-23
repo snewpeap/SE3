@@ -19,7 +19,7 @@ public class FuzzySearch extends SearchMode {
                 .onField(getFieldName_searchYear()).boostedTo(4f)
                 .andField(getFieldName_title())
                 .andField(getFieldName_author())
-                .andField(getFieldName_affiliation())
+//                .andField(getFieldName_affiliation())
                 .andField(getFieldName_conference())
                 .andField(getFieldName_authorKeywords());
     }
@@ -29,7 +29,7 @@ public class FuzzySearch extends SearchMode {
         return queryBuilder.simpleQueryString().onFields(
                 getFieldName_title(),
                 getFieldName_author(),
-                getFieldName_affiliation(),
+//                getFieldName_affiliation(),
                 getFieldName_conference(),
                 getFieldName_authorKeywords(), getFieldName_searchYear()
         );
@@ -39,7 +39,7 @@ public class FuzzySearch extends SearchMode {
     public void highlight(Highlighter highlighter, Analyzer analyzer, Paper paper) {
         highlightTitle(paper, highlighter, analyzer);
         highlightAuthor(paper, highlighter, analyzer);
-        highlightAffiliation(paper, highlighter, analyzer);
+//        highlightAffiliation(paper, highlighter, analyzer);
         highlightConference(paper, highlighter, analyzer);
         highlightKeyword(paper, highlighter, analyzer);
         highlightYear(paper, highlighter, analyzer);
