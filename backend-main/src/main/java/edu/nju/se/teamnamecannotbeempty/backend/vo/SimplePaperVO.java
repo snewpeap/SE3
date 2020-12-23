@@ -24,6 +24,10 @@ public class SimplePaperVO {
 
     private List<String> keywords;
 
+    private String pdfLink;
+
+    private String doi;
+
     public long getId() {
         return id;
     }
@@ -88,7 +92,23 @@ public class SimplePaperVO {
         this.author_simpleAffiliationVOS = author_simpleAffiliationVOS;
     }
 
-    public SimplePaperVO(long id, String title, List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS, String publicationTitle,long conferenceId, String publicationYear, List<String> keywords) {
+    public String getPdfLink() {
+        return pdfLink;
+    }
+
+    public void setPdfLink(String pdfLink) {
+        this.pdfLink = pdfLink;
+    }
+
+    public String getDoi() {
+        return doi;
+    }
+
+    public void setDoi(String doi) {
+        this.doi = doi;
+    }
+
+    public SimplePaperVO(long id, String title, List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS, String publicationTitle, long conferenceId, String publicationYear, List<String> keywords) {
         this.id = id;
         this.title = title;
         this.author_simpleAffiliationVOS = author_simpleAffiliationVOS;
@@ -96,6 +116,18 @@ public class SimplePaperVO {
         this.conferenceId = conferenceId;
         this.publicationYear = publicationYear;
         this.keywords = keywords;
+    }
+
+    public SimplePaperVO(long id, String title, List<Author_SimpleAffiliationVO> author_simpleAffiliationVOS, String publicationTitle, long conferenceId, String publicationYear, List<String> keywords, String pdfLink, String doi) {
+        this.id = id;
+        this.title = title;
+        this.author_simpleAffiliationVOS = author_simpleAffiliationVOS;
+        this.publicationTitle = publicationTitle;
+        this.conferenceId = conferenceId;
+        this.publicationYear = publicationYear;
+        this.keywords = keywords;
+        this.pdfLink = pdfLink;
+        this.doi = doi;
     }
 
     public SimplePaperVO(Paper paper){
@@ -118,6 +150,8 @@ public class SimplePaperVO {
         this.conferenceId = paper.getConference()==null? -1:paper.getConference().getId();
         this.publicationYear = String.valueOf(paper.getYear());
         this.keywords = keywords;
+        this.pdfLink = paper.getPdf_link();
+        this.doi = paper.getDoi();
     }
 
     @Override
@@ -131,12 +165,13 @@ public class SimplePaperVO {
                 Objects.equals(author_simpleAffiliationVOS, that.author_simpleAffiliationVOS) &&
                 Objects.equals(publicationTitle, that.publicationTitle) &&
                 Objects.equals(publicationYear, that.publicationYear) &&
-                Objects.equals(keywords, that.keywords);
+                Objects.equals(keywords, that.keywords) &&
+                Objects.equals(pdfLink, that.pdfLink) &&
+                Objects.equals(doi, that.doi);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id, title, author_simpleAffiliationVOS, publicationTitle, conferenceId, publicationYear, keywords);
+        return Objects.hash(id, title, author_simpleAffiliationVOS, publicationTitle, conferenceId, publicationYear, keywords, pdfLink, doi);
     }
 }

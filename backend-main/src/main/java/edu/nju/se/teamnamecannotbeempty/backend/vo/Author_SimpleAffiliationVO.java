@@ -52,8 +52,8 @@ public class Author_SimpleAffiliationVO{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Author_SimpleAffiliationVO that = (Author_SimpleAffiliationVO) o;
-        return authorId == that.authorId &&
-                affiliationId == that.affiliationId &&
+        return authorId.equals(that.authorId) &&
+                Objects.equals(affiliationId, that.affiliationId) &&
                 Objects.equals(author, that.author) &&
                 Objects.equals(affiliation, that.affiliation);
     }
