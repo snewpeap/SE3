@@ -16,12 +16,12 @@ public class FuzzySearch extends SearchMode {
     @Override
     public TermMatchingContext getFieldsBaseOnKeyword(QueryBuilder queryBuilder) {
         return queryBuilder.keyword()
-                .onField(getFieldName_searchYear()).boostedTo(4f)
-                .andField(getFieldName_title())
+                .onField(getFieldName_searchYear()).boostedTo(8f)
+                .andField(getFieldName_title()).boostedTo(4f)
                 .andField(getFieldName_author())
 //                .andField(getFieldName_affiliation())
                 .andField(getFieldName_conference())
-                .andField(getFieldName_authorKeywords());
+                .andField(getFieldName_authorKeywords()).boostedTo(2f);
     }
 
     @Override
